@@ -1,0 +1,395 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/copiable-hash.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CopiableHash",
+          "members": [
+            {
+              "kind": "field",
+              "name": "hash",
+              "type": {
+                "text": "HoloHash"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "sliceLength",
+              "type": {
+                "text": "number"
+              },
+              "default": "8"
+            },
+            {
+              "kind": "field",
+              "name": "_copyNotification",
+              "type": {
+                "text": "Snackbar"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "strHash"
+            },
+            {
+              "kind": "method",
+              "name": "copyHash"
+            },
+            {
+              "kind": "field",
+              "name": "scopedElements",
+              "static": true
+            }
+          ],
+          "mixins": [
+            {
+              "name": "ScopedElementsMixin",
+              "package": "@open-wc/scoped-elements"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CopiableHash",
+          "declaration": {
+            "name": "CopiableHash",
+            "module": "src/copiable-hash.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/holo-hash-property.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "hashState"
+        },
+        {
+          "kind": "function",
+          "name": "hashProperty",
+          "return": {
+            "type": {
+              "text": "PropertyDeclaration<Object | null, unknown>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "attributeName",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hashState",
+          "declaration": {
+            "name": "hashState",
+            "module": "src/holo-hash-property.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "hashProperty",
+          "declaration": {
+            "name": "hashProperty",
+            "module": "src/holo-hash-property.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/holo-identicon.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "HoloIdenticon",
+          "members": [
+            {
+              "kind": "field",
+              "name": "hash",
+              "type": {
+                "text": "HoloHash"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "size",
+              "type": {
+                "text": "number"
+              },
+              "default": "32",
+              "description": "Size of the identicon in pixels."
+            },
+            {
+              "kind": "field",
+              "name": "shape",
+              "type": {
+                "text": "\"square\" | \"circle\""
+              },
+              "default": "\"circle\"",
+              "description": "Shape of the identicon."
+            },
+            {
+              "kind": "field",
+              "name": "_canvas",
+              "type": {
+                "text": "HTMLCanvasElement"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_tooltip",
+              "type": {
+                "text": "SlTooltip"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "justCopiedHash",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "timeout",
+              "type": {
+                "text": "any"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "copyHash"
+            },
+            {
+              "kind": "field",
+              "name": "strHash"
+            },
+            {
+              "kind": "method",
+              "name": "renderCanvas"
+            },
+            {
+              "kind": "field",
+              "name": "scopedElements",
+              "static": true
+            }
+          ],
+          "mixins": [
+            {
+              "name": "ScopedElementsMixin",
+              "package": "@open-wc/scoped-elements"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "HoloIdenticon",
+          "declaration": {
+            "name": "HoloIdenticon",
+            "module": "src/holo-identicon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/image.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "resizeAndExport",
+          "parameters": [
+            {
+              "name": "img",
+              "type": {
+                "text": "HTMLImageElement"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "resizeAndExport",
+          "declaration": {
+            "name": "resizeAndExport",
+            "module": "src/image.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./copiable-hash\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./holo-identicon\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./select-avatar\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./holo-hash-property\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/select-avatar.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "SelectAvatar",
+          "members": [
+            {
+              "kind": "field",
+              "name": "shape",
+              "type": {
+                "text": "\"circle\" | \"square\" | \"rounded\""
+              },
+              "default": "\"circle\""
+            },
+            {
+              "kind": "field",
+              "name": "_avatar",
+              "type": {
+                "text": "string | undefined"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_avatarFilePicker",
+              "type": {
+                "text": "HTMLInputElement"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "onAvatarUploaded"
+            },
+            {
+              "kind": "method",
+              "name": "clear"
+            },
+            {
+              "kind": "method",
+              "name": "renderAvatar"
+            },
+            {
+              "kind": "field",
+              "name": "scopedElements",
+              "static": true
+            }
+          ],
+          "events": [
+            {
+              "name": "avatar-selected",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "mixins": [
+            {
+              "name": "ScopedElementsMixin",
+              "package": "@open-wc/scoped-elements"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SelectAvatar",
+          "declaration": {
+            "name": "SelectAvatar",
+            "module": "src/select-avatar.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/definitions/copiable-hash.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/definitions/holo-identicon.ts",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/definitions/select-avatar.ts",
+      "declarations": [],
+      "exports": []
+    }
+  ]
+}
