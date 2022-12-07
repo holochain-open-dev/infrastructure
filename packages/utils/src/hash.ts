@@ -41,9 +41,9 @@ export function fakeCreateAction(): Action {
     prev_action: fakeActionHash(),
     entry_type: {
       App: {
-        id: 0,
+        entry_index: 0,
         visibility: { Public: null },
-        zome_id: 0,
+        zome_index: 0,
       },
     },
     entry_hash: fakeEntryHash(),

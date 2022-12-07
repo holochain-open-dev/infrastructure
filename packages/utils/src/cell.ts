@@ -3,7 +3,7 @@ import {
   CellId,
   InstalledAppInfo,
   InstalledCell,
-  RoleId,
+  RoleName,
 } from "@holochain/client";
 import isEqual from "lodash-es/isEqual";
 
@@ -24,9 +24,9 @@ export function findCellByCellId(
 // Get the cell data for the given cellId
 export function findCellByRoleId(
   appInfo: InstalledAppInfo,
-  roleId: RoleId
+  roleName: RoleName
 ): InstalledCell | undefined {
-  return appInfo.cell_data.find((c) => c.role_id === roleId);
+  return appInfo.cell_data.find((c) => c.role_name === roleName);
 }
 
 export function getCellIdForDnaHash(
