@@ -26,7 +26,7 @@ We can't really use well normal JS objects to index by holo hashes because we lo
 
 ```ts
 // Imagine we have out public key
-const myAgentPubKey = appInfo.cell_data[0].cell_id[1];
+const myAgentPubKey = appInfo.cell_info[0].cell_id[1];
 
 const map = new HoloHashMap<number>();
 
