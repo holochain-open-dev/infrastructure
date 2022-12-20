@@ -1,11 +1,7 @@
 {
   "name": "@holochain-open-dev/common-dev",
   "private": true,
-  "workspaces": [
-    "packages/utils",
-    "packages/elements",
-    "packages/common"
-  ],
+  "workspaces": ["packages/utils", "packages/elements", "packages/stores"],
   "engines": {
     "npm": ">=7.0.0"
   }
