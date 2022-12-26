@@ -11,7 +11,7 @@ it("lazyLoad", async () => {
   });
   const subscriber = asyncReadable.subscribe(() => {});
 
-  expect(get(asyncReadable)).to.deep.equal({ status: "loading" });
+  expect(get(asyncReadable)).to.deep.equal({ status: "pending" });
   await sleep(20);
 
   expect(get(asyncReadable)).to.deep.equal({ status: "complete", value: "hi" });
@@ -26,7 +26,7 @@ it("asyncDerived", async () => {
   const d = asyncDerived([r, asyncReadable], ([n1, n2]) => n1 + n2);
   const subscriber = d.subscribe(() => {});
 
-  expect(get(d)).to.deep.equal({ status: "loading" });
+  expect(get(d)).to.deep.equal({ status: "pending" });
   await sleep(20);
 
   expect(get(d)).to.deep.equal({ status: "complete", value: 3 });

@@ -1,14 +1,14 @@
 import { readable, Readable, Unsubscriber } from "svelte/store";
 
 export type AsyncStatus<T> =
-  | { status: "loading" }
+  | { status: "pending" }
   | { status: "complete"; value: T }
   | { status: "error"; error: any };
 
 export type AsyncReadable<T> = Readable<AsyncStatus<T>>;
 
 export function lazyLoad<T>(load: () => Promise<T>): AsyncReadable<T> {
-  return readable<AsyncStatus<T>>({ status: "loading" }, (set) => {
+  return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
     load()
       .then((v) => {
         set({ status: "complete", value: v });
@@ -23,7 +23,7 @@ export function lazyLoadAndPoll<T>(
   load: () => Promise<T>,
   pollIntervalMs: number
 ): AsyncReadable<T> {
-  return readable<AsyncStatus<T>>({ status: "loading" }, (set) => {
+  return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
     let interval = undefined;
     async function l() {
       try {
@@ -42,21 +42,21 @@ export function lazyLoadAndPoll<T>(
   });
 }
 
-export function lazyLoadAndSubscribe<T>(
+export function lazyLoadAndListen<T>(
   load: () => Promise<T>,
-  subscribe: (update: (updater: (oldVal: T) => T) => void) => Unsubscriber
+  listen: (update: (updater: (oldVal: T) => T) => void) => Unsubscriber
 ): AsyncReadable<T> {
-  return readable<AsyncStatus<T>>({ status: "loading" }, (set) => {
+  return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
     let subscription: Unsubscriber | undefined;
     load()
       .then((v) => {
         set({ status: "complete", value: v });
-        if (subscribe) {
+        if (listen) {
           const update = (updater: (oldVal: T) => T) => {
             v = updater(v);
             set({ status: "complete", value: v });
           };
-          subscription = subscribe(update);
+          subscription = listen(update);
         }
       })
       .catch((e) => set({ status: "error", error: e }));

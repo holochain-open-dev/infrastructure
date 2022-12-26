@@ -29,7 +29,7 @@ export function asyncDerived<
       return firstError;
     }
     const firstLoading = values.find(
-      (v) => (v as AsyncStatus<any>).status === "loading"
+      (v) => (v as AsyncStatus<any>).status === "pending"
     );
     if (firstLoading) {
       return firstLoading;
