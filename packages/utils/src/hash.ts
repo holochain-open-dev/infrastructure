@@ -1,36 +1,13 @@
 import { encode } from "@msgpack/msgpack";
 import {
-  EntryHash,
-  AgentPubKey,
-  ActionHash,
   Record,
   Action,
   ActionType,
   Entry,
+  fakeAgentPubKey,
+  fakeActionHash,
+  fakeEntryHash,
 } from "@holochain/client";
-import { Base64 } from "js-base64";
-
-export function deserializeHash(hash: string): Uint8Array {
-  return Base64.toUint8Array(hash.slice(1));
-}
-
-export function serializeHash(hash: Uint8Array): string {
-  return `u${Base64.fromUint8Array(hash, true)}`;
-}
-
-/** From https://github.com/holochain/holochain/blob/develop/crates/holo_hash/src/hash_type/primitive.rs */
-
-export function fakeEntryHash(): EntryHash {
-  return new Uint8Array([0x84, 0x21, 0x24, ...randomByteArray(36)]);
-}
-
-export function fakeAgentPubKey(): AgentPubKey {
-  return new Uint8Array([0x84, 0x20, 0x24, ...randomByteArray(36)]);
-}
-
-export function fakeActionHash(): ActionHash {
-  return new Uint8Array([0x84, 0x29, 0x24, ...randomByteArray(36)]);
-}
 
 export function fakeCreateAction(): Action {
   return {

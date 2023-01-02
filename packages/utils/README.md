@@ -2,22 +2,6 @@
 
 Utilities to build Holochain web applications.
 
-## Hashes
-
-```js
-import { serializeHash, deserializeHash } from '@holochain-open-dev/utils';
-
-// From base64 string to byte array
-
-const base64hash = 'uhCEkBsnnW9JSVhGQx4AE2m0lSlWLrioEHP-7Uj4ZnbI0W-M';
-const bytesHash = deserializeHash(base64hash)
-
-// From to byte array base64 string
-
-const bytesHash = new UInt8Array([0,33,2,4,...]);
-const base64hash = serializeHash(bytesHash);
-```
-
 ## HoloHashMap 
 
 Dictionary of `HoloHash` to any JS object. 

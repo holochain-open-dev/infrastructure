@@ -2,15 +2,14 @@ import { css, html, LitElement, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import renderIcon from "@holo-host/identicon";
 import { classMap } from "lit/directives/class-map.js";
-import { deserializeHash, serializeHash } from "@holochain-open-dev/utils";
 import { ScopedElementsMixin } from "@open-wc/scoped-elements";
 import { SlTooltip } from "@scoped-elements/shoelace";
-import { HoloHash } from "@holochain/client";
+import { encodeHashToBase64, HoloHash } from "@holochain/client";
 import isEqual from "lodash-es/isEqual";
 import { hashProperty } from "./holo-hash-property";
 
 export class HoloIdenticon extends ScopedElementsMixin(LitElement) {
-  @property(hashProperty('hash'))
+  @property(hashProperty("hash"))
   hash!: HoloHash;
 
   /**
@@ -53,7 +52,7 @@ export class HoloIdenticon extends ScopedElementsMixin(LitElement) {
   }
 
   get strHash() {
-    return serializeHash(this.hash);
+    return encodeHashToBase64(this.hash);
   }
 
   updated(changedValues: PropertyValues) {
@@ -81,9 +80,9 @@ export class HoloIdenticon extends ScopedElementsMixin(LitElement) {
       width="1"
       height="1"
       class=${classMap({
-      square: this.shape === "square",
-      circle: this.shape === "circle",
-    })}
+        square: this.shape === "square",
+        circle: this.shape === "circle",
+      })}
     ></canvas>`;
   }
 
@@ -96,8 +95,8 @@ export class HoloIdenticon extends ScopedElementsMixin(LitElement) {
         id="tooltip"
         placement="top"
         .content=${this.justCopiedHash
-        ? "Copied!"
-        : `${this.strHash.substring(0, 6)}...`}
+          ? "Copied!"
+          : `${this.strHash.substring(0, 6)}...`}
         .trigger=${this.justCopiedHash ? "manual" : "hover focus"}
         hoist
       >

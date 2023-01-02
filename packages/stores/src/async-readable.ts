@@ -1,4 +1,4 @@
-import { readable, Readable, Unsubscriber } from "svelte/store";
+import { readable, Readable, Subscriber, Unsubscriber } from "svelte/store";
 
 export type AsyncStatus<T> =
   | { status: "pending" }
@@ -7,7 +7,21 @@ export type AsyncStatus<T> =
 
 export type AsyncReadable<T> = Readable<AsyncStatus<T>>;
 
-export function lazyLoad<T>(load: () => Promise<T>): AsyncReadable<T> {
+export function asyncReadable<T>(
+  load: (set: Subscriber<T>) => Promise<Unsubscriber | undefined>
+): AsyncReadable<T> {
+  return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
+    const asyncSet = (v) => set({ status: "complete", value: v });
+    let unsubscribe: Unsubscriber | undefined;
+    load(asyncSet)
+      .then((u) => (unsubscribe = u))
+      .catch((e) => set({ status: "error", error: e }));
+
+    return unsubscribe();
+  });
+}
+
+function lazyLoad<T>(load: () => Promise<T>): AsyncReadable<T> {
   return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
     load()
       .then((v) => {
@@ -19,7 +33,7 @@ export function lazyLoad<T>(load: () => Promise<T>): AsyncReadable<T> {
   });
 }
 
-export function lazyLoadAndPoll<T>(
+function lazyLoadAndPoll<T>(
   load: () => Promise<T>,
   pollIntervalMs: number
 ): AsyncReadable<T> {
@@ -42,7 +56,7 @@ export function lazyLoadAndPoll<T>(
   });
 }
 
-export function lazyLoadAndListen<T>(
+function lazyLoadAndListen<T>(
   load: () => Promise<T>,
   listen: (update: (updater: (oldVal: T) => T) => void) => Unsubscriber
 ): AsyncReadable<T> {

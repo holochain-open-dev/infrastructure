@@ -3,12 +3,11 @@ import { css, html, LitElement } from "lit";
 import { property, query } from "lit/decorators.js";
 import { IconButton } from "@scoped-elements/material-web";
 import { Snackbar } from "@scoped-elements/material-web";
-import { serializeHash } from "@holochain-open-dev/utils";
-import { HoloHash } from "@holochain/client";
+import { encodeHashToBase64, HoloHash } from "@holochain/client";
 import { hashProperty } from "./holo-hash-property";
 
 export class CopiableHash extends ScopedElementsMixin(LitElement) {
-  @property(hashProperty('hash'))
+  @property(hashProperty("hash"))
   hash!: HoloHash;
 
   @property({ type: Number })
@@ -18,7 +17,7 @@ export class CopiableHash extends ScopedElementsMixin(LitElement) {
   _copyNotification: Snackbar;
 
   get strHash() {
-    return serializeHash(this.hash);
+    return encodeHashToBase64(this.hash);
   }
 
   async copyHash() {
