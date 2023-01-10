@@ -51,7 +51,7 @@ export class HoloHashMap<T extends Uint8Array, U> {
   }
 
   entries(): Array<[T, U]> {
-    return Object.entries(this._values).map(([key, value]) => [
+    return Object.entries(this._values).map(([_key, value]) => [
       value.hash,
       value.value,
     ]);
@@ -71,6 +71,15 @@ export class HoloHashMap<T extends Uint8Array, U> {
     return new HoloHashMap(
       Object.values(values).map(({ hash, value }) => [hash, value])
     );
+  }
+
+  map<R>(mapFn: (value: U, key: T) => R): HoloHashMap<T, R> {
+    const mappedMap = new HoloHashMap<T, R>();
+
+    for (const [key, value] of this.entries()) {
+      mappedMap.put(key, mapFn(value, key));
+    }
+    return mappedMap;
   }
 
   private stringify(hash: Uint8Array): string {

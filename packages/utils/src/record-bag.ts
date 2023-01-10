@@ -1,11 +1,16 @@
-import { Action, ActionHash, Create, Delete, Record, Update } from "@holochain/client";
-import { decode } from "@msgpack/msgpack";
+import {
+  Action,
+  ActionHash,
+  Delete,
+  NewEntryAction,
+  Record,
+  Update,
+} from "@holochain/client";
 import uniqWith from "lodash-es/uniqWith";
 import isEqual from "lodash-es/isEqual";
 
 import { ActionHashMap, AgentPubKeyMap, EntryHashMap } from "./holo-hash-map";
 import { EntryRecord } from "./entry-record";
-import { timestampToMillis } from "./timestamp";
 
 export class RecordBag<T> {
   // Map of entry hash -> entry, already decoded
@@ -27,11 +32,27 @@ export class RecordBag<T> {
   // For each action, all the actions that delete it
   public deletes = new ActionHashMap<ActionHash[]>();
 
+  public get entriesByAuthor(): AgentPubKeyMap<T[]> {
+    return this.authorMap
+      .map((actionHashes) =>
+        actionHashes.map((hash) => this.actionMap.get(hash))
+      )
+      .map((actions) =>
+        actions
+          .map((action) =>
+            this.entryMap.get((action as NewEntryAction).entry_hash)
+          )
+          .filter((entry) => entry !== undefined)
+      );
+  }
+
   public get entryRecords() {
     return this.records.map((r) => new EntryRecord<T>(r));
   }
   public entryRecord(actionHash: ActionHash): EntryRecord<T> | undefined {
-    const record = this.records.find(r => isEqual(r.signed_action.hashed.hash, actionHash));
+    const record = this.records.find((r) =>
+      isEqual(r.signed_action.hashed.hash, actionHash)
+    );
     return record ? new EntryRecord(record) : undefined;
   }
 
@@ -79,14 +100,22 @@ export class RecordBag<T> {
       );
 
       if ((entryRecord.action as Update).original_action_address) {
-        const originalActionAddress = (entryRecord.action as Update).original_action_address;
+        const originalActionAddress = (entryRecord.action as Update)
+          .original_action_address;
         const currentUpdates = this.updates.get(originalActionAddress);
-        this.updates.put(originalActionAddress, uniqWith([...currentUpdates, entryRecord.actionHash], isEqual));
+        this.updates.put(
+          originalActionAddress,
+          uniqWith([...currentUpdates, entryRecord.actionHash], isEqual)
+        );
       }
       if ((entryRecord.action as Delete).deletes_address) {
-        const originalActionAddress = (entryRecord.action as Delete).deletes_address;
+        const originalActionAddress = (entryRecord.action as Delete)
+          .deletes_address;
         const currentDeletes = this.deletes.get(originalActionAddress);
-        this.deletes.put(originalActionAddress, uniqWith([...currentDeletes, entryRecord.actionHash], isEqual));
+        this.deletes.put(
+          originalActionAddress,
+          uniqWith([...currentDeletes, entryRecord.actionHash], isEqual)
+        );
       }
     }
   }

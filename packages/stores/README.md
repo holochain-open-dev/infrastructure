@@ -8,56 +8,41 @@ These are the additional utilities added by this package:
 
 ## AsyncReadable<T>
 
-An `AsyncReadable<T>` is a `Readable` store that integrates with `Promises`. It can have three states:
+An `AsyncReadable<T>` is a `Readable` store that executes the given `Promise` the first time a subscriber subscribes to the store. It can have three states:
 
 - `pending`: the promise is still pending.
 - `error`: there was an error in the execution of the promise.
 - `complete`: the promise was completed.
 
-### lazyLoad()
-
-`Readable` that will only execute the promise when the first subscriber subscribes.
-
 ```js
-import { lazyLoad } from '@holochain-open-dev/stores';
+import { asyncReadable } from '@holochain-open-dev/stores';
 
-const asyncReadable = lazyLoad(async () => fetch("https://some/url"));
+const someResult = asyncReadable(async set => {
+  const value = await fetch("https://some/url");
+  set(value);
+});
 
 // Use as a normal svelte store
-asyncReadable.subscribe(status => { console.log(status); });
+someResult.subscribe(status => { console.log(status); }); // Will first print `{ status: 'pending' }`, and later print `{ status: 'complete', value: ... }`
 ```
 
-### lazyLoadAndPoll
+Like normal `readable` stores, it returns an unsubscribe function that gets called when the last subscriber unsubscribes:
 
-`Readable` that will execute the promise when the first subscriber subscribes, and will re-execute it in a polling fashion as long as there is some subscriber.
-
-```js
-import { lazyLoadAndPoll } from '@holochain-open-dev/stores';
-
-const asyncReadable = lazyLoadAndPoll(async () => fetch("https://some/url"), 5000);
-
-// Use as a normal svelte store
-asyncReadable.subscribe(status => { console.log(status); });
-```
-
-### lazyLoadAndListen
-
-`Readable` that will execute the promise when the first subscriber subscribes, and will listen for updates.
-
-This is useful when there is a backend to frontend message that needs to be reacted to in the store.
 
 ```js
-import { lazyLoadAndListen } from '@holochain-open-dev/stores';
+import { asyncReadable } from '@holochain-open-dev/stores';
 
-const websocket = new WebSocket('https://some/ws/url'); 
+const someResult = asyncReadable(async set => {
+  const value = await fetch("https://some/url");
+  set(value);
 
-const asyncReadable = lazyLoadAndListen(
-  async () => fetch("https://someorigin/fetch/posts"), 
-  (update) => websocket.on('newPost', post => update(posts => posts.push(post)))
-);
+  const pollInterval = setInterval(() => {
+    const value = await fetch("https://some/url");
+    set(value);
+  });
 
-// Use as a normal svelte store
-asyncReadable.subscribe(status => { console.log(status); });
+  return () => clearInterval(pollInterval); // Will get executed when the last subscriber unsubscribes
+});
 ```
 
 ## asyncDerived
@@ -71,10 +56,10 @@ Takes an array of `Readable`s or `AsyncReadable`s and returns an `AsyncReadable`
 Example:
 
 ```js
-import { asyncDerived } from '@holochain-open-dev/stores';
+import { asyncDerived, asyncReadable } from '@holochain-open-dev/stores';
 
-const asyncReadable1 = lazyLoad(async () => fetch("https://some/url"));
-const asyncReadable2 = lazyLoad(async () => fetch("https://some/url2"));
+const asyncReadable1 = asyncReadable(async set => set(await fetch("https://some/url")));
+const asyncReadable2 = asyncReadable(async set => set(await fetch("https://some/url2")));
 
 const composedResult = asyncDerived([asyncReadable1, asyncReadable2], ([result1, result2]) => `Result 1: ${result1}, result 2: ${result2}`);
 ```

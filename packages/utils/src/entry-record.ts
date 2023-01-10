@@ -2,6 +2,11 @@ import { Record, Create } from "@holochain/client";
 import { decode } from "@msgpack/msgpack";
 import { timestampToMillis } from "./timestamp";
 
+export function decodeEntry<T>(record: Record): T | undefined {
+  const entry = (record.entry as any)?.Present?.entry;
+  return decode(entry) as T;
+}
+
 export class EntryRecord<T> {
   constructor(public record: Record) {}
 
@@ -13,12 +18,12 @@ export class EntryRecord<T> {
     const action = this.record.signed_action.hashed.content;
     return {
       ...action,
-      timestamp: timestampToMillis(action.timestamp)
+      timestamp: timestampToMillis(action.timestamp),
     };
   }
 
   get entry() {
-    return decode((this.record.entry as any).Present.entry) as T;
+    return decodeEntry<T>(this.record);
   }
 
   get entryHash() {

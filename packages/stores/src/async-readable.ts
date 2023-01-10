@@ -17,7 +17,7 @@ export function asyncReadable<T>(
       .then((u) => (unsubscribe = u))
       .catch((e) => set({ status: "error", error: e }));
 
-    return unsubscribe();
+    return () => unsubscribe && unsubscribe();
   });
 }
 
