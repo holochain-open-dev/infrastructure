@@ -4,11 +4,19 @@ import {
   CellId,
   DnaHash,
   EntryHash,
+  HoloHash,
 } from "@holochain/client";
 import flatMap from "lodash-es/flatMap";
 import pickBy from "lodash-es/pickBy";
 
-export class HoloHashMap<T extends Uint8Array, U> {
+export interface ReadableHoloHashMap<T extends HoloHash, U> {
+  get(key: T): U;
+  entries(): Array<[T, U]>;
+}
+
+export class HoloHashMap<T extends HoloHash, U>
+  implements ReadableHoloHashMap<T, U>
+{
   _values: Record<string, { hash: T; value: U }> = {};
 
   constructor(initialEntries?: Array<[T, U]>) {
@@ -178,5 +186,23 @@ export class CellMap<T> {
         .keys()
         .map((agentPubKey) => [dnaHash, agentPubKey] as CellId)
     );
+  }
+}
+
+export class LazyHoloHashMap<T extends HoloHash, U>
+  implements ReadableHoloHashMap<T, U>
+{
+  holoHashMap = new HoloHashMap<T, U>();
+  constructor(protected newValue: (hash: T) => U) {}
+
+  get(hash: T): U {
+    if (!this.holoHashMap.has(hash)) {
+      this.holoHashMap.put(hash, this.newValue(hash));
+    }
+    return this.holoHashMap.get(hash);
+  }
+
+  entries() {
+    return this.holoHashMap.entries();
   }
 }

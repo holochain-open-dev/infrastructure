@@ -4,7 +4,7 @@ import { asyncReadable, asyncDerived } from "../dist";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
 
-it("lazyLoad", async () => {
+it("asyncReadable", async () => {
   const asyncReadableStore = asyncReadable(async (set) => {
     await sleep(10);
     set("hi");

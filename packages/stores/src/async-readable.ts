@@ -8,11 +8,11 @@ export type AsyncStatus<T> =
 export type AsyncReadable<T> = Readable<AsyncStatus<T>>;
 
 export function asyncReadable<T>(
-  load: (set: Subscriber<T>) => Promise<Unsubscriber | undefined>
+  load: (set: Subscriber<T>) => Promise<Unsubscriber | void>
 ): AsyncReadable<T> {
   return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
     const asyncSet = (v) => set({ status: "complete", value: v });
-    let unsubscribe: Unsubscriber | undefined;
+    let unsubscribe: Unsubscriber | void;
     load(asyncSet)
       .then((u) => (unsubscribe = u))
       .catch((e) => set({ status: "error", error: e }));

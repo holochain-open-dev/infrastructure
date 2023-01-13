@@ -30,7 +30,7 @@ export async function isSignalFromCellWithRole(
   signal: AppSignal
 ): Promise<boolean> {
   const appInfo = await client.appInfo();
-  const role = roleNameForCellId(appInfo, signal.data.cellId);
+  const role = roleNameForCellId(appInfo, signal.cell_id);
 
   return roleName === role;
 }
