@@ -1,9 +1,24 @@
 import { expect } from "@esm-bundle/chai";
 import { get, readable } from "svelte/store";
-import { fakeActionHash, fakeEntryHash } from "@holochain/client";
-import { joinMap, asyncReadable } from "../dist";
+import { joinMap, asyncReadable } from "../dist-rollup";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
+
+class LazyHoloHashMap {
+  constructor(fn) {
+    this.fn = fn;
+    this.values = {};
+  }
+  get(hash) {
+    if (!this.values[hash.toString()]) {
+      this.values[hash.toString()] = this.fn(hash);
+    }
+    return this.values[hash.toString()];
+  }
+  entries() {
+    return Object.entries(this.values);
+  }
+}
 
 it("joinMap", async () => {
   const lazyStoreMap = new LazyHoloHashMap((hash) =>
@@ -13,7 +28,7 @@ it("joinMap", async () => {
     })
   );
 
-  const hashes = [fakeEntryHash(), fakeActionHash()];
+  const hashes = [new Uint8Array([0]), new Uint8Array([1])];
 
   for (const h of hashes) {
     lazyStoreMap.get(h);

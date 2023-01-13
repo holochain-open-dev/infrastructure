@@ -25,7 +25,7 @@
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^21.0.2",
+    "@rollup/plugin-commonjs": "18.0.0",
     "@types/lodash-es": "^4.17.6",
     "@web/dev-server": "^0.1.28",
     "@web/dev-server-rollup": "^0.3.15",
