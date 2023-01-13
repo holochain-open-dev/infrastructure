@@ -9,13 +9,15 @@ import {
 import flatMap from "lodash-es/flatMap";
 import pickBy from "lodash-es/pickBy";
 
-export interface ReadableHoloHashMap<T extends HoloHash, U> {
+export interface ReadOnlyHoloHashMap<T extends HoloHash, U> {
   get(key: T): U;
+  keys(): Array<T>;
+  values(): Array<U>;
   entries(): Array<[T, U]>;
 }
 
 export class HoloHashMap<T extends HoloHash, U>
-  implements ReadableHoloHashMap<T, U>
+  implements ReadOnlyHoloHashMap<T, U>
 {
   _values: Record<string, { hash: T; value: U }> = {};
 
@@ -190,7 +192,7 @@ export class CellMap<T> {
 }
 
 export class LazyHoloHashMap<T extends HoloHash, U>
-  implements ReadableHoloHashMap<T, U>
+  implements ReadOnlyHoloHashMap<T, U>
 {
   holoHashMap = new HoloHashMap<T, U>();
   constructor(protected newValue: (hash: T) => U) {}
@@ -200,6 +202,14 @@ export class LazyHoloHashMap<T extends HoloHash, U>
       this.holoHashMap.put(hash, this.newValue(hash));
     }
     return this.holoHashMap.get(hash);
+  }
+
+  keys() {
+    return this.holoHashMap.keys();
+  }
+
+  values() {
+    return this.holoHashMap.values();
   }
 
   entries() {

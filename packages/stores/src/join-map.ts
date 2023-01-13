@@ -3,19 +3,20 @@ import { HoloHash } from "@holochain/client";
 import { asyncDerived, join } from "./async-derived";
 import { AsyncReadable } from "./async-readable";
 
+type StoreValue<T> = T extends AsyncReadable<infer U> ? U : never;
+
 // Joins all the stores in a HoloHashMap of `AsyncReadables`
-export function joinMap<
-  H extends HoloHash,
-  S,
-  T extends AsyncReadable<S>,
-  M extends ReadOnlyHoloHashMap<H, T>
->(holoHashMap: M): AsyncReadable<ReadOnlyHoloHashMap<H, S>> {
+export function joinMap<H extends HoloHash, T extends AsyncReadable<any>>(
+  holoHashMap: ReadOnlyHoloHashMap<H, T>
+): AsyncReadable<ReadOnlyHoloHashMap<H, StoreValue<T>>> {
   const storeArray = holoHashMap
     .entries()
-    .map(([key, store]) => asyncDerived([store], (v) => [key, v] as [H, S]));
+    .map(([key, store]) =>
+      asyncDerived([store], (v) => [key, v] as [H, StoreValue<T>])
+    );
   const arrayStore = join(storeArray);
   return asyncDerived(
     [arrayStore],
-    ([entries]) => new HoloHashMap<H, S>(entries)
+    ([entries]) => new HoloHashMap<H, StoreValue<T>>(entries)
   );
 }
