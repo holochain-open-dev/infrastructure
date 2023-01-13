@@ -63,3 +63,82 @@ const asyncReadable2 = asyncReadable(async set => set(await fetch("https://some/
 
 const composedResult = asyncDerived([asyncReadable1, asyncReadable2], ([result1, result2]) => `Result 1: ${result1}, result 2: ${result2}`);
 ```
+
+## deriveStore
+
+Sometimes it's not enough to derive a value from an existing store. Sometimes you want to derive _another store_ from the value of the given store.
+
+Imagine a nested store:
+
+```ts
+import { writable } from '@holochain-open-dev/stores';
+const globalStore = writable({
+  featureStore: writable(1)
+});
+```
+
+How can I "unnest" `featureStore` from `globalStore`? With `deriveStore`!
+
+It works just like `derived`, but expects the function to return a `Readable` store.
+
+```ts
+import { writable, deriveStore } from '@holochain-open-dev/stores';
+const globalStore = writable({
+  featureStore: writable(1)
+});
+
+const unnestedStore = deriveStore([globalStore], v => v.featureStore);
+
+console.log(get(unnestedStore)) // Prints "1"
+```
+
+## asyncDeriveStore
+
+Works exactly as `deriveStore`, but receives an `AsyncReadable` instead of just a `Readable`.
+
+```ts
+import { LazyHoloHashMap } from '@holochain-open-dev/utils';
+import { asyncDeriveStore, asyncReadable } from '@holochain-open-dev/stores';
+
+// Imagine we create an `AsyncReadable` store that gets my public key whenever it is subscribed to for the first time
+const myPubKey = asyncReadable(() => callZome('get_my_pub_key'));
+
+// And we have a `HoloHashMap` of `AsyncReadable`s that fetch the profile for each public key
+const agentsProfiles = new LazyHoloHashMap((agent: AgentPubKey) => callZome('get_profile', agent));
+
+// And then we want to combine both stores: get the profile for my public key
+const myProfile = asyncDeriveStore([myPubKey], pubKey => agentsProfiles.get(pubKey));
+```
+
+## join
+
+Joins a list of `AsyncReadable`s to convert it into a single `AsyncReadable` of a list of the resolved values.
+
+```ts
+import { join, asyncReadable } from '@holochain-open-dev/stores';
+
+const asyncReadable1 = asyncReadable(async set => set(1));
+const asyncReadable2 = asyncReadable(async set => set(2));
+
+const joinedStores = join([asyncReadable1, asyncReadable2]);
+console.log(joinedStores); // Will print `{ status: 'complete', value: [1, 2] }`
+```
+
+## joinMap
+
+Exactly like `join` but for `HoloHashMap`s.
+
+Converts a map of `AsyncReadable`s into an `AsyncReadable` of a map of the resolved values.
+
+```ts
+import { HoloHashMap, fakeEntryHash, fakeActionHash } from '@holochain-open-dev/utils';
+import { joinMap } from '@holochain-open-dev/stores';
+
+const map = new HoloHashMap();
+
+map.put(fakeActionHash(), asyncReadable(async set => set(1)));
+map.put(fakeEntryHash(), asyncReadable(async set => set(1)));
+
+const mapStore = joinMap(map);
+console.log(mapStore); // Will print `{ status: 'complete', value: <HoloHashMap with these values: { [fakeActionHash()]: 1, [fakeEntryHash()]: 2] }> }`
+```
