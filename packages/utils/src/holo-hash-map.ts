@@ -228,7 +228,7 @@ export class LazyHoloHashMap<T extends HoloHash, U>
     const newMap = new HoloHashMap<T, U>();
 
     for (const key of keys) {
-      newMap.put(key, this.newValue(key));
+      newMap.put(key, this.get(key));
     }
     return newMap;
   }
