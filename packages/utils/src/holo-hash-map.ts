@@ -9,15 +9,16 @@ import {
 import flatMap from "lodash-es/flatMap";
 import pickBy from "lodash-es/pickBy";
 
-export interface ReadOnlyHoloHashMap<T extends HoloHash, U> {
+export interface ReadHoloHashMap<T extends HoloHash, U> {
   get(key: T): U;
   keys(): Array<T>;
   values(): Array<U>;
   entries(): Array<[T, U]>;
+  select(keys: T[]): ReadHoloHashMap<T, U>;
 }
 
 export class HoloHashMap<T extends HoloHash, U>
-  implements ReadOnlyHoloHashMap<T, U>
+  implements ReadHoloHashMap<T, U>
 {
   _values: Record<string, { hash: T; value: U }> = {};
 
@@ -65,6 +66,13 @@ export class HoloHashMap<T extends HoloHash, U>
       value.hash,
       value.value,
     ]);
+  }
+
+  // Create a new slice of this map that contains only the given keys
+  select(keys: T[]): HoloHashMap<T, U> {
+    return this.pick(
+      (key) => !!keys.find((k) => k.toString() === key.toString())
+    );
   }
 
   pick(filter: (key: T) => boolean): HoloHashMap<T, U> {
@@ -192,7 +200,7 @@ export class CellMap<T> {
 }
 
 export class LazyHoloHashMap<T extends HoloHash, U>
-  implements ReadOnlyHoloHashMap<T, U>
+  implements ReadHoloHashMap<T, U>
 {
   holoHashMap = new HoloHashMap<T, U>();
   constructor(protected newValue: (hash: T) => U) {}
@@ -214,5 +222,14 @@ export class LazyHoloHashMap<T extends HoloHash, U>
 
   entries() {
     return this.holoHashMap.entries();
+  }
+
+  select(keys: T[]): ReadHoloHashMap<T, U> {
+    const newMap = new HoloHashMap<T, U>();
+
+    for (const key of keys) {
+      newMap.put(key, this.newValue(key));
+    }
+    return newMap;
   }
 }

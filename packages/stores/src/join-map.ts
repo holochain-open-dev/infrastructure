@@ -1,4 +1,4 @@
-import { HoloHashMap, ReadOnlyHoloHashMap } from "@holochain-open-dev/utils";
+import { HoloHashMap, ReadHoloHashMap } from "@holochain-open-dev/utils";
 import { HoloHash } from "@holochain/client";
 import { asyncDerived, join } from "./async-derived";
 import { AsyncReadable } from "./async-readable";
@@ -7,8 +7,8 @@ type StoreValue<T> = T extends AsyncReadable<infer U> ? U : never;
 
 // Joins all the stores in a HoloHashMap of `AsyncReadables`
 export function joinMap<H extends HoloHash, T extends AsyncReadable<any>>(
-  holoHashMap: ReadOnlyHoloHashMap<H, T>
-): AsyncReadable<ReadOnlyHoloHashMap<H, StoreValue<T>>> {
+  holoHashMap: ReadHoloHashMap<H, T>
+): AsyncReadable<ReadHoloHashMap<H, StoreValue<T>>> {
   const storeArray = holoHashMap
     .entries()
     .map(([key, store]) =>
