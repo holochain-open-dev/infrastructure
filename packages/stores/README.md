@@ -45,6 +45,32 @@ const someResult = asyncReadable(async set => {
 });
 ```
 
+### lazyLoad
+
+Constructs an `AsyncReadable<T>` with the result of a promise, which it will execute only when the first subscriber subscribes.
+
+```ts
+import { lazyLoad } from '@holochain-open-dev/stores';
+
+const someResult = lazyLoad(async () => fetch("https://some/url"));
+
+// Use someResult as any other `AsyncReadable<T>`
+```
+
+### lazyLoadAndPoll
+
+Really similar to `lazyLoad`, but adds polling with the given poll interval to the promise.
+
+The value of the store will be replaced with the polling result, only if the polling is successful. If the polling throws an error, that error is discarded.
+
+```ts
+import { lazyLoadAndPoll } from '@holochain-open-dev/stores';
+
+const someResult = lazyLoadAndPoll(async () => fetch("https://some/url"), 1000); // Poll every one second
+
+// Use someResult as any other `AsyncReadable<T>`
+```
+
 ## asyncDerived
 
 Takes an array of `Readable`s or `AsyncReadable`s and returns an `AsyncReadable` by deriving only when the state of all the given stores is completed. This is the complete behaviour:
