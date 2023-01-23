@@ -1,5 +1,6 @@
 export * from "./hash";
 export * from "./holo-hash-map";
+export * from "./map-utils";
 export * from "./timestamp";
 export * from "./record-bag";
 export * from "./entry-record";

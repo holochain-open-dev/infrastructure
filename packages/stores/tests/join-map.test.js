@@ -1,22 +1,29 @@
 import { expect } from "@esm-bundle/chai";
 import { get, readable } from "svelte/store";
+import { fromUint8Array, toUint8Array } from "js-base64";
 import { joinMap, asyncReadable } from "../dist-rollup";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
 
-class LazyHoloHashMap {
+class LazyHoloHashMap extends Map {
   constructor(fn) {
+    super();
     this.fn = fn;
-    this.values = {};
   }
   get(hash) {
-    if (!this.values[hash.toString()]) {
-      this.values[hash.toString()] = this.fn(hash);
+    const strHash = fromUint8Array(hash);
+    if (!super.get(strHash)) {
+      this.set(strHash, this.fn(hash));
     }
-    return this.values[hash.toString()];
+    return super.get(strHash);
   }
+
   entries() {
-    return Object.entries(this.values);
+    return Array.from(super.entries())
+      .map(([h, v]) => {
+        return [toUint8Array(h), v];
+      })
+      [Symbol.iterator]();
   }
 }
 
@@ -33,6 +40,9 @@ it("joinMap", async () => {
   for (const h of hashes) {
     lazyStoreMap.get(h);
   }
+  for (const k of lazyStoreMap.entries()) {
+    console.log("hi", k);
+  }
 
   const j = joinMap(lazyStoreMap);
 
@@ -41,5 +51,6 @@ it("joinMap", async () => {
   expect(get(j)).to.deep.equal({ status: "pending" });
   await sleep(20);
 
-  expect(get(j).value.entries().length).to.deep.equal(2);
+  console.log(get(lazyStoreMap.get(hashes[1])));
+  expect(Array.from(get(j).value.entries()).length).to.deep.equal(2);
 });

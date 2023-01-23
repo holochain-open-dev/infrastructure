@@ -11,6 +11,7 @@ import isEqual from "lodash-es/isEqual";
 
 import { ActionHashMap, AgentPubKeyMap, EntryHashMap } from "./holo-hash-map";
 import { EntryRecord } from "./entry-record";
+import { mapValues } from "./map-utils";
 
 export class RecordBag<T> {
   // Map of entry hash -> entry, already decoded
@@ -33,17 +34,16 @@ export class RecordBag<T> {
   public deletes = new ActionHashMap<ActionHash[]>();
 
   public get entriesByAuthor(): AgentPubKeyMap<T[]> {
-    return this.authorMap
-      .map((actionHashes) =>
-        actionHashes.map((hash) => this.actionMap.get(hash))
-      )
-      .map((actions) =>
-        actions
-          .map((action) =>
-            this.entryMap.get((action as NewEntryAction).entry_hash)
-          )
-          .filter((entry) => entry !== undefined)
-      );
+    const temp = mapValues(this.authorMap, (actionHashes) =>
+      actionHashes.map((hash) => this.actionMap.get(hash))
+    );
+    return mapValues(temp, (actions) =>
+      actions
+        .map((action) =>
+          this.entryMap.get((action as NewEntryAction).entry_hash)
+        )
+        .filter((entry) => entry !== undefined)
+    );
   }
 
   public get entryRecords() {
@@ -67,12 +67,12 @@ export class RecordBag<T> {
       const entryRecord = new EntryRecord<T>(record);
 
       if (entryRecord.entryHash) {
-        this.entryMap.put(entryRecord.entryHash, entryRecord.entry);
+        this.entryMap.set(entryRecord.entryHash, entryRecord.entry);
 
         if (!this.entryActions.has(entryRecord.entryHash)) {
-          this.entryActions.put(entryRecord.entryHash, []);
+          this.entryActions.set(entryRecord.entryHash, []);
         }
-        this.entryActions.put(
+        this.entryActions.set(
           entryRecord.entryHash,
           uniqWith(
             [
@@ -83,12 +83,12 @@ export class RecordBag<T> {
           )
         );
       }
-      this.actionMap.put(entryRecord.actionHash, entryRecord.action);
+      this.actionMap.set(entryRecord.actionHash, entryRecord.action);
 
       if (!this.authorMap.has(entryRecord.action.author)) {
-        this.authorMap.put(entryRecord.action.author, []);
+        this.authorMap.set(entryRecord.action.author, []);
       }
-      this.authorMap.put(
+      this.authorMap.set(
         entryRecord.action.author,
         uniqWith(
           [
@@ -103,7 +103,7 @@ export class RecordBag<T> {
         const originalActionAddress = (entryRecord.action as Update)
           .original_action_address;
         const currentUpdates = this.updates.get(originalActionAddress);
-        this.updates.put(
+        this.updates.set(
           originalActionAddress,
           uniqWith([...currentUpdates, entryRecord.actionHash], isEqual)
         );
@@ -112,7 +112,7 @@ export class RecordBag<T> {
         const originalActionAddress = (entryRecord.action as Delete)
           .deletes_address;
         const currentDeletes = this.deletes.get(originalActionAddress);
-        this.deletes.put(
+        this.deletes.set(
           originalActionAddress,
           uniqWith([...currentDeletes, entryRecord.actionHash], isEqual)
         );

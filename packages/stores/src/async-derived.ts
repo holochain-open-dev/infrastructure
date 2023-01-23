@@ -29,20 +29,20 @@ export function asyncDerived<
 >(stores: S, derive: DeriveFn<S, T>): AsyncReadable<T> {
   return derived(stores, (values) => {
     const firstError = values.find(
-      (v) => (v as AsyncStatus<any>).status === "error"
+      (v) => v && (v as AsyncStatus<any>).status === "error"
     );
     if (firstError) {
       return firstError;
     }
     const firstLoading = values.find(
-      (v) => (v as AsyncStatus<any>).status === "pending"
+      (v) => v && (v as AsyncStatus<any>).status === "pending"
     );
     if (firstLoading) {
       return firstLoading;
     }
 
     const v = values.map((v) => {
-      if (v.status === "complete") return v.value;
+      if (v && v.status === "complete") return v.value;
       return v;
     });
 
@@ -78,14 +78,14 @@ export function asyncDeriveStore<
 ): AsyncReadable<T> {
   return derived(stores, (values, set) => {
     const firstError = values.find(
-      (v) => (v as AsyncStatus<any>).status === "error"
+      (v) => v && (v as AsyncStatus<any>).status === "error"
     );
     const firstLoading = values.find(
-      (v) => (v as AsyncStatus<any>).status === "pending"
+      (v) => v && (v as AsyncStatus<any>).status === "pending"
     );
 
     const v = values.map((v) => {
-      if (v.status === "complete") return v.value;
+      if (v && v.status === "complete") return v.value;
       return v;
     });
     if (firstError) {

@@ -18,21 +18,21 @@ const myAgentPubKey = appInfo.cell_info[0].cell_id[1];
 const map = new HoloHashMap<AgentPubKey, number>();
 
 // We can add entries to the dictionary
-map.put(myAgentPubKey, 1);
+map.set(myAgentPubKey, 1);
 
 // Get the value for an entry
-console.log(map.get(myAgentPubKey));    // Will print `1`
+console.log(map.get(myAgentPubKey));                // Will print `1`
 
 // Check if the key exists
-console.log(map.has(myAgentPubKey));    // Will print `true`
+console.log(map.has(myAgentPubKey));                // Will print `true`
 
-// Get collections for the entries
+// Get iterators for the entries
 
-console.log(map.keys());                // Will print an array with MYAGENTPUBKEY as the only member
-console.log(map.values());              // Will print `[1]`
-console.log(map.entries());             // Will print an array with `[MYAGENTPUBKEY, 1]` as the only member
+console.log(Array.from(map.keys()));                // Will print an array with MYAGENTPUBKEY as the only member
+console.log(Array.from(map.values()));              // Will print `[1]`
+console.log(Array.from(map.entries()));             // Will print an array with `[MYAGENTPUBKEY, 1]` as the only member
 
-console.log(map.delete(myAgentPubKey)); // Will delete this member
+map.delete(myAgentPubKey);                          // Will delete this member
 ```
 
 Some variants exist for this type:
@@ -44,7 +44,7 @@ Some variants exist for this type:
 
 ### LazyHoloHashMap
 
-This is an special kind of map, where there is no `put` function, only `get`. 
+This is an special kind of map, where there is no `set` function, only `get`. 
 
 Instead, a callback function is passed as the constructor. Then, whenever `get` is called, if it's the first time that the given hash is requested, it will call the callback and initialize the value of the hash with its result. If that hash was already initialized, it will just return that value.
 

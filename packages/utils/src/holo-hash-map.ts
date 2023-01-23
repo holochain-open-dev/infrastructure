@@ -2,108 +2,82 @@ import {
   ActionHash,
   AgentPubKey,
   CellId,
+  decodeHashFromBase64,
   DnaHash,
+  encodeHashToBase64,
   EntryHash,
   HoloHash,
 } from "@holochain/client";
 import flatMap from "lodash-es/flatMap";
-import pickBy from "lodash-es/pickBy";
 
-export interface ReadHoloHashMap<T extends HoloHash, U> {
-  get(key: T): U;
-  keys(): Array<T>;
-  values(): Array<U>;
-  entries(): Array<[T, U]>;
-  select(keys: T[]): ReadHoloHashMap<T, U>;
-}
+export class HoloHashMap<K extends HoloHash, V> implements Map<K, V> {
+  _map: Map<string, V>;
 
-export class HoloHashMap<T extends HoloHash, U>
-  implements ReadHoloHashMap<T, U>
-{
-  _values: Record<string, { hash: T; value: U }> = {};
-
-  constructor(initialEntries?: Array<[T, U]>) {
+  constructor(initialEntries?: Array<[K, V]>) {
+    this._map = new Map();
     if (initialEntries) {
-      for (const [cellId, value] of initialEntries) {
-        this.put(cellId, value);
+      for (const [key, value] of initialEntries) {
+        this.set(key, value);
       }
     }
   }
 
-  has(key: T): boolean {
-    return !!this._values[this.stringify(key)];
+  has(key: K) {
+    return this._map.has(encodeHashToBase64(key));
   }
 
-  get(key: T): U {
-    return this._values[this.stringify(key)]?.value;
+  get(key: K): V {
+    return this._map.get(encodeHashToBase64(key));
   }
 
-  put(key: T, value: U) {
-    this._values[this.stringify(key)] = {
-      hash: key,
-      value,
-    };
+  set(key: K, value: V) {
+    this._map.set(encodeHashToBase64(key), value);
+    return this;
   }
 
-  delete(key: T) {
-    const str = this.stringify(key);
-    if (this._values[str]) {
-      this._values[str] = undefined as any;
-      delete this._values[str];
-    }
+  delete(key: K) {
+    return this._map.delete(encodeHashToBase64(key));
   }
 
   keys() {
-    return Object.values(this._values).map((v) => v.hash);
+    return Array.from(this._map.keys())
+      .map((h) => decodeHashFromBase64(h) as K)
+      [Symbol.iterator]();
   }
 
-  values(): U[] {
-    return Object.values(this._values).map((v) => v.value);
+  values() {
+    return this._map.values();
   }
 
-  entries(): Array<[T, U]> {
-    return Object.entries(this._values).map(([_key, value]) => [
-      value.hash,
-      value.value,
-    ]);
+  entries() {
+    return Array.from(this._map.entries())
+      .map(([h, v]) => [decodeHashFromBase64(h), v] as [K, V])
+      [Symbol.iterator]();
   }
 
-  // Create a new slice of this map that contains only the given keys
-  select(keys: T[]): HoloHashMap<T, U> {
-    return this.pick(
-      (key) => !!keys.find((k) => k.toString() === key.toString())
-    );
+  clear() {
+    return this._map.clear();
   }
 
-  pick(filter: (key: T) => boolean): HoloHashMap<T, U> {
-    const values = pickBy(this._values, (s) => filter(s.hash));
-
-    return new HoloHashMap(
-      Object.values(values).map(({ hash, value }) => [hash, value])
-    );
+  forEach(
+    callbackfn: (value: V, key: K, map: Map<K, V>) => void,
+    thisArg?: any
+  ): void {
+    return this._map.forEach((value, key) => {
+      callbackfn(value, decodeHashFromBase64(key) as K, this);
+    }, thisArg);
   }
 
-  pickBy(filter: (value: U, key: T) => boolean): HoloHashMap<T, U> {
-    const values = pickBy(this._values, (s) => filter(s.value, s.hash));
-
-    return new HoloHashMap(
-      Object.values(values).map(({ hash, value }) => [hash, value])
-    );
+  get size() {
+    return this._map.size;
   }
 
-  map<R>(mapFn: (value: U, key: T) => R): HoloHashMap<T, R> {
-    const mappedMap = new HoloHashMap<T, R>();
-
-    for (const [key, value] of this.entries()) {
-      mappedMap.put(key, mapFn(value, key));
-    }
-    return mappedMap;
+  [Symbol.iterator](): IterableIterator<[K, V]> {
+    return this.entries();
   }
 
-  private stringify(hash: Uint8Array): string {
-    // We remove the first two bytes to be able to compare the hashes
-    // of different types (Entry and Agents) and be them return the same
-    return hash.toString();
+  get [Symbol.toStringTag](): string {
+    return this._map[Symbol.toStringTag];
   }
 }
 
@@ -120,7 +94,7 @@ export class CellMap<T> {
   constructor(initialEntries?: Array<[CellId, T]>) {
     if (initialEntries) {
       for (const [cellId, value] of initialEntries) {
-        this.put(cellId, value);
+        this.set(cellId, value);
       }
     }
   }
@@ -137,25 +111,25 @@ export class CellMap<T> {
 
   valuesForDna(dnaHash: DnaHash): Array<T> {
     const dnaMap = this.#cellMap.get(dnaHash);
-    return dnaMap ? dnaMap.values() : [];
+    return dnaMap ? Array.from(dnaMap.values()) : [];
   }
 
   agentsForDna(dnaHash: DnaHash): Array<AgentPubKey> {
     const dnaMap = this.#cellMap.get(dnaHash);
-    return dnaMap ? dnaMap.keys() : [];
+    return dnaMap ? Array.from(dnaMap.keys()) : [];
   }
 
-  put([dnaHash, agentPubKey]: CellId, value: T) {
+  set([dnaHash, agentPubKey]: CellId, value: T) {
     if (!this.#cellMap.get(dnaHash))
-      this.#cellMap.put(dnaHash, new HoloHashMap());
-    this.#cellMap.get(dnaHash).put(agentPubKey, value);
+      this.#cellMap.set(dnaHash, new HoloHashMap());
+    this.#cellMap.get(dnaHash).set(agentPubKey, value);
   }
 
   delete([dnaHash, agentPubKey]: CellId) {
     if (this.#cellMap.get(dnaHash)) {
       this.#cellMap.get(dnaHash).delete(agentPubKey);
 
-      if (this.#cellMap.get(dnaHash).keys().length === 0) {
+      if (Array.from(this.#cellMap.get(dnaHash).keys()).length === 0) {
         this.#cellMap.delete(dnaHash);
       }
     }
@@ -188,48 +162,43 @@ export class CellMap<T> {
   }
 
   cellIds(): Array<CellId> {
-    const dnaHashes = this.#cellMap.keys();
+    const dnaHashes = Array.from(this.#cellMap.keys());
 
     return flatMap(dnaHashes, (dnaHash) =>
-      this.#cellMap
-        .get(dnaHash)
-        .keys()
-        .map((agentPubKey) => [dnaHash, agentPubKey] as CellId)
+      Array.from(this.#cellMap.get(dnaHash).keys()).map(
+        (agentPubKey) => [dnaHash, agentPubKey] as CellId
+      )
     );
   }
 }
 
-export class LazyHoloHashMap<T extends HoloHash, U>
-  implements ReadHoloHashMap<T, U>
+// Subset of ReadonlyMap, with only the get function
+export interface GetonlyMap<K, V> {
+  get(key: K): V;
+}
+
+export class LazyMap<K, V> implements GetonlyMap<K, V> {
+  map = new Map<K, V>();
+  constructor(protected newValue: (hash: K) => V) {}
+
+  get(hash: K): V {
+    if (!this.map.has(hash)) {
+      this.map.set(hash, this.newValue(hash));
+    }
+    return this.map.get(hash);
+  }
+}
+
+export class LazyHoloHashMap<K extends HoloHash, V>
+  implements GetonlyMap<K, V>
 {
-  holoHashMap = new HoloHashMap<T, U>();
-  constructor(protected newValue: (hash: T) => U) {}
+  map = new HoloHashMap<K, V>();
+  constructor(protected newValue: (hash: K) => V) {}
 
-  get(hash: T): U {
-    if (!this.holoHashMap.has(hash)) {
-      this.holoHashMap.put(hash, this.newValue(hash));
+  get(hash: K): V {
+    if (!this.map.has(hash)) {
+      this.map.set(hash, this.newValue(hash));
     }
-    return this.holoHashMap.get(hash);
-  }
-
-  keys() {
-    return this.holoHashMap.keys();
-  }
-
-  values() {
-    return this.holoHashMap.values();
-  }
-
-  entries() {
-    return this.holoHashMap.entries();
-  }
-
-  select(keys: T[]): ReadHoloHashMap<T, U> {
-    const newMap = new HoloHashMap<T, U>();
-
-    for (const key of keys) {
-      newMap.put(key, this.get(key));
-    }
-    return newMap;
+    return this.map.get(hash);
   }
 }
