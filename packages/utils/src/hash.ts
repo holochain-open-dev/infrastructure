@@ -9,13 +9,13 @@ import {
   fakeEntryHash,
 } from "@holochain/client";
 
-export function fakeCreateAction(): Action {
+export async function fakeCreateAction(): Promise<Action> {
   return {
     type: ActionType.Create,
-    author: fakeAgentPubKey(),
+    author: await fakeAgentPubKey(),
     timestamp: Date.now() * 1000,
     action_seq: 10,
-    prev_action: fakeActionHash(),
+    prev_action: await fakeActionHash(),
     entry_type: {
       App: {
         entry_index: 0,
@@ -23,7 +23,7 @@ export function fakeCreateAction(): Action {
         zome_index: 0,
       },
     },
-    entry_hash: fakeEntryHash(),
+    entry_hash: await fakeEntryHash(),
   };
 }
 
@@ -34,10 +34,10 @@ export function fakeEntry(): Entry {
   };
 }
 
-export function fakeRecord(
+export async function fakeRecord(
   entry: Entry = fakeEntry(),
-  action: Action = fakeCreateAction()
-): Record {
+  action: Action,
+): Promise<Record> {
   return {
     entry: {
       Present: entry,
@@ -45,7 +45,7 @@ export function fakeRecord(
     signed_action: {
       hashed: {
         content: action,
-        hash: fakeActionHash(),
+        hash: await fakeActionHash(),
       },
       signature: randomByteArray(256),
     },
