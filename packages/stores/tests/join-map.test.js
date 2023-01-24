@@ -40,9 +40,6 @@ it("joinMap", async () => {
   for (const h of hashes) {
     lazyStoreMap.get(h);
   }
-  for (const k of lazyStoreMap.entries()) {
-    console.log("hi", k);
-  }
 
   const j = joinMap(lazyStoreMap);
 
@@ -51,6 +48,5 @@ it("joinMap", async () => {
   expect(get(j)).to.deep.equal({ status: "pending" });
   await sleep(20);
 
-  console.log(get(lazyStoreMap.get(hashes[1])));
   expect(Array.from(get(j).value.entries()).length).to.deep.equal(2);
 });

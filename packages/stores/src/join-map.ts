@@ -12,10 +12,8 @@ export function joinMap<H extends HoloHash, T extends AsyncReadable<any>>(
   const storeArray = Array.from(holoHashMap.entries()).map(([key, store]) =>
     asyncDerived([store], ([v]) => [key, v] as [H, StoreValue<T>])
   );
-  console.log(Array.from(holoHashMap.entries()));
   const arrayStore = join(storeArray);
   return asyncDerived([arrayStore], ([entries]) => {
-    console.log(entries);
     return new HoloHashMap<H, StoreValue<T>>(entries);
   });
 }
