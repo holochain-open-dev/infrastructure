@@ -4,18 +4,49 @@ import {
   Action,
   ActionType,
   Entry,
-  fakeAgentPubKey,
-  fakeActionHash,
-  fakeEntryHash,
+  EntryHash,
+  AgentPubKey,
+  ActionHash,
 } from "@holochain/client";
 
-export async function fakeCreateAction(): Promise<Action> {
+export function fakeEntryHash(): EntryHash {
+  const randomBytes = randomByteArray(36);
+  return new Uint8Array([0x84, 0x21, 0x24, ...randomBytes]);
+}
+
+/**
+ * Generate a valid agent key of a non-existing agent.
+ *
+ * @returns An {@link AgentPubKey}.
+ *
+ * @public
+ */
+export function fakeAgentPubKey(): AgentPubKey {
+  const randomBytes = randomByteArray(36);
+  return new Uint8Array([0x84, 0x20, 0x24, ...randomBytes]);
+}
+
+/**
+ * Generate a valid hash of a non-existing action.
+ *
+ * @returns An {@link ActionHash}.
+ *
+ * @public
+ */
+export function fakeActionHash(): ActionHash {
+  const randomBytes = randomByteArray(36);
+  return new Uint8Array([0x84, 0x29, 0x24, ...randomBytes]);
+}
+
+export function fakeCreateAction(
+  author: AgentPubKey = fakeAgentPubKey()
+): Action {
   return {
     type: ActionType.Create,
-    author: await fakeAgentPubKey(),
+    author,
     timestamp: Date.now() * 1000,
     action_seq: 10,
-    prev_action: await fakeActionHash(),
+    prev_action: fakeActionHash(),
     entry_type: {
       App: {
         entry_index: 0,
@@ -23,21 +54,21 @@ export async function fakeCreateAction(): Promise<Action> {
         zome_index: 0,
       },
     },
-    entry_hash: await fakeEntryHash(),
+    entry_hash: fakeEntryHash(),
   };
 }
 
-export function fakeEntry(): Entry {
+export function fakeEntry(entry: any = "some data"): Entry {
   return {
-    entry: encode("some data"),
+    entry: encode(entry),
     entry_type: "App",
   };
 }
 
-export async function fakeRecord(
+export function fakeRecord(
   entry: Entry = fakeEntry(),
-  action: Action,
-): Promise<Record> {
+  action: Action = fakeCreateAction()
+): Record {
   return {
     entry: {
       Present: entry,
@@ -45,7 +76,7 @@ export async function fakeRecord(
     signed_action: {
       hashed: {
         content: action,
-        hash: await fakeActionHash(),
+        hash: fakeActionHash(),
       },
       signature: randomByteArray(256),
     },

@@ -1,14 +1,12 @@
 {
   "name": "@holochain-open-dev/utils",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "description": "Common utilities to build Holochain web applications",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/holochain-open-dev/common.git"
