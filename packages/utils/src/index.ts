@@ -1,4 +1,5 @@
 export * from "./hash";
+export * from "./zome-mock";
 export * from "./holo-hash-map";
 export * from "./map-utils";
 export * from "./timestamp";

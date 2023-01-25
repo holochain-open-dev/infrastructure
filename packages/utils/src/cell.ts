@@ -3,6 +3,7 @@ import {
   AppInfo,
   AppSignal,
   CellId,
+  CellType,
   RoleName,
 } from "@holochain/client";
 
@@ -12,12 +13,12 @@ export function roleNameForCellId(
 ): RoleName | undefined {
   for (const [role, cells] of Object.entries(appInfo.cell_info)) {
     for (const c of cells) {
-      if ("Provisioned" in c) {
-        if (c["Provisioned"].cell_id.toString() === cellId.toString()) {
+      if (CellType.Provisioned in c) {
+        if (c[CellType.Provisioned].cell_id.toString() === cellId.toString()) {
           return role;
         }
-      } else if ("Cloned" in c) {
-        return c["Cloned"].clone_id ? c["Cloned"].clone_id : role;
+      } else if (CellType.Cloned in c) {
+        return c[CellType.Cloned].clone_id ? c[CellType.Cloned].clone_id : role;
       }
     }
   }
