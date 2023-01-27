@@ -42,7 +42,9 @@ export class DisplayError extends ScopedElementsMixin(LitElement) {
 
   renderTooltip() {
     return html`
-      <sl-tooltip .content=${this.error}> ${this.renderIcon()}</sl-tooltip>
+      <sl-tooltip hoist .content=${this.error}>
+        ${this.renderIcon()}</sl-tooltip
+      >
     `;
   }
 
