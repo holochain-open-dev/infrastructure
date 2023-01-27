@@ -20,12 +20,13 @@
       hash="uhCEkBsnnW9JSVhGQx4AE2m0lSlWLrioEHP-7Uj4ZnbI0W-M"
     ></holo-identicon>
     <select-avatar></select-avatar>
-
+    <display-error error="some full error"> </display-error>
+    <display-error error="a tooltip error" tooltip> </display-error>
     <script type="module">
-      import { html, render } from "lit";
-      import "../dist/definitions/copiable-hash";
-      import "../dist/definitions/holo-identicon";
-      import "../dist/definitions/select-avatar";
+      import "../src/definitions/copiable-hash";
+      import "../src/definitions/holo-identicon";
+      import "../src/definitions/select-avatar";
+      import "../src/definitions/display-error";
     </script>
   </body>
 </html>
