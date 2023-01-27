@@ -1,7 +1,7 @@
 import { ScopedElementsMixin } from "@open-wc/scoped-elements";
 import { Icon } from "@scoped-elements/material-web";
 import { SlTooltip } from "@scoped-elements/shoelace";
-import { html, LitElement } from "lit";
+import { css, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 import { sharedStyles } from "./shared-styles";
 
@@ -53,7 +53,15 @@ export class DisplayError extends ScopedElementsMixin(LitElement) {
     return this.renderFull();
   }
 
-  static styles = [sharedStyles];
+  static styles = [
+    sharedStyles,
+    css`
+      :host {
+        display: flex;
+        flex: 1;
+      }
+    `,
+  ];
 
   static get scopedElements() {
     return {
