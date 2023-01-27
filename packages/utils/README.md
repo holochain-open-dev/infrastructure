@@ -60,6 +60,7 @@ const lazyMap = new LazyHoloHashMap((agent: AgentPubKey) => callZome('get_profil
 console.log(lazyMap.get(pubKey)); // Will print a pending promise
 
 // After the request has finished...
+await lazyMap.get(pubKey);
 
 console.log(lazyMap.get(pubKey)); // Will print a completed promise with the value
 ```

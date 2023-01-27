@@ -113,7 +113,7 @@ const globalStore = writable({
   featureStore: writable(1)
 });
 
-const unnestedStore = deriveStore([globalStore], v => v.featureStore);
+const unnestedStore = deriveStore([globalStore], [v] => v.featureStore);
 
 console.log(get(unnestedStore)) // Prints "1"
 ```
@@ -133,7 +133,7 @@ const myPubKey = asyncReadable(() => callZome('get_my_pub_key'));
 const agentsProfiles = new LazyHoloHashMap((agent: AgentPubKey) => callZome('get_profile', agent));
 
 // And then we want to combine both stores: get the profile for my public key
-const myProfile = asyncDeriveStore([myPubKey], pubKey => agentsProfiles.get(pubKey));
+const myProfile = asyncDeriveStore([myPubKey], [pubKey] => agentsProfiles.get(pubKey));
 ```
 
 ## join
