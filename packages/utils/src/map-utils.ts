@@ -57,7 +57,7 @@ export function mapValues<K extends HoloHash, V, U>(
 }
 
 // Map the given LazyHoloHashMap's values with the given mapping function
-export function mapValuesLazy<K extends HoloHash, V, U>(
+export function mapLazyValues<K extends HoloHash, V, U>(
   map: LazyHoloHashMap<K, V>,
   mappingFn: (value: V, key: K) => U
 ): LazyHoloHashMap<K, U> {
