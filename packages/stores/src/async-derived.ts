@@ -1,11 +1,6 @@
 import { derived, Readable, Unsubscriber } from "svelte/store";
 import { AsyncReadable, AsyncStatus } from "./async-readable";
 
-type Stores =
-  | Readable<any>
-  | [Readable<any>, ...Array<Readable<any>>]
-  | Array<Readable<any>>;
-
 type StoreValue<T> = T extends AsyncReadable<infer U>
   ? U
   : T extends Readable<infer U>
