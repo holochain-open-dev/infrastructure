@@ -1,5 +1,10 @@
 import { HoloHash } from "@holochain/client";
-import { GetonlyMap, HoloHashMap } from "./holo-hash-map";
+import {
+  GetonlyMap,
+  HoloHashMap,
+  LazyHoloHashMap,
+  LazyMap,
+} from "./holo-hash-map";
 
 // Create a new slice of this map that contains only the given keys
 export function slice<K extends HoloHash, V>(
@@ -49,4 +54,15 @@ export function mapValues<K extends HoloHash, V, U>(
     mappedMap.set(key, mappingFn(value, key));
   }
   return mappedMap;
+}
+
+// Map the given LazyHoloHashMap's values with the given mapping function
+export function mapValuesLazy<K extends HoloHash, V, U>(
+  map: LazyHoloHashMap<K, V>,
+  mappingFn: (value: V, key: K) => U
+): LazyHoloHashMap<K, U> {
+  return new LazyHoloHashMap((key) => {
+    const value = map.get(key);
+    return mappingFn(value, key);
+  });
 }
