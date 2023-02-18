@@ -16,10 +16,14 @@ import {
 } from "@holochain/client";
 import Emittery, { UnsubscribeFunction } from "emittery";
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(() => r(null), ms));
+const sleep = (ms: number) =>
+  new Promise((r) => {
+    setTimeout(() => r(null), ms);
+  });
 
 export class ZomeMock implements AppAgentClient {
   emitter = new Emittery();
+
   constructor(
     protected roleName: string,
     protected zomeName: string,
@@ -62,23 +66,28 @@ export class ZomeMock implements AppAgentClient {
       },
     };
   }
+
   createCloneCell(_args: AppCreateCloneCellRequest): Promise<ClonedCell> {
     throw new Error("Method not implemented.");
   }
+
   enableCloneCell(
     _args: EnableCloneCellRequest
   ): Promise<EnableCloneCellResponse> {
     throw new Error("Method not implemented");
   }
+
   disableCloneCell(
     _args: DisableCloneCellRequest
   ): Promise<DisableCloneCellResponse> {
     throw new Error("Method not implemented");
   }
+
   async callZome(req: CallZomeRequest): Promise<any> {
     await sleep(this.latency);
     return (this as any)[req.fn_name](req.payload);
   }
+
   on<Name extends keyof AppAgentEvents>(
     eventName: Name | readonly Name[],
     listener: AppSignalCb

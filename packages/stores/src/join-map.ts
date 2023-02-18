@@ -1,8 +1,8 @@
 import { HoloHashMap } from "@holochain-open-dev/utils";
 import { HoloHash } from "@holochain/client";
-import { asyncDerived, join } from "./async-derived";
-import { AsyncReadable } from "./async-readable";
 import { derived, Readable } from "svelte/store";
+import { asyncDerived, join } from "./async-derived.js";
+import { AsyncReadable } from "./async-readable.js";
 
 type StoreValue<T> = T extends Readable<infer U> ? U : never;
 

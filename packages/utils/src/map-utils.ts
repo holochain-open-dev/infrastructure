@@ -1,10 +1,5 @@
 import { HoloHash } from "@holochain/client";
-import {
-  GetonlyMap,
-  HoloHashMap,
-  LazyHoloHashMap,
-  LazyMap,
-} from "./holo-hash-map";
+import { GetonlyMap, HoloHashMap, LazyHoloHashMap } from "./holo-hash-map.js";
 
 // Create a new slice of this map that contains only the given keys
 export function slice<K extends HoloHash, V>(

@@ -1,10 +1,9 @@
 import { ScopedElementsMixin } from "@open-wc/scoped-elements";
 import { css, html, LitElement } from "lit";
 import { property, query } from "lit/decorators.js";
-import { IconButton } from "@scoped-elements/material-web";
-import { Snackbar } from "@scoped-elements/material-web";
+import { MdStandardIconButton, Snackbar } from "@scoped-elements/material-web";
 import { encodeHashToBase64, HoloHash } from "@holochain/client";
-import { hashProperty } from "./holo-hash-property";
+import { hashProperty } from "./holo-hash-property.js";
 
 export class CopiableHash extends ScopedElementsMixin(LitElement) {
   @property(hashProperty("hash"))
@@ -35,11 +34,11 @@ export class CopiableHash extends ScopedElementsMixin(LitElement) {
         <span style="font-family: monospace;"
           >${this.strHash.substring(0, this.sliceLength)}...</span
         >
-        <mwc-icon-button
+        <md-standard-icon-button
           style="--mdc-icon-button-size	: 24px; --mdc-icon-size: 20px;"
           icon="content_copy"
           @click=${() => this.copyHash()}
-        ></mwc-icon-button>
+        ></md-standard-icon-button>
       </div>
     `;
   }
@@ -72,7 +71,7 @@ export class CopiableHash extends ScopedElementsMixin(LitElement) {
 
   static get scopedElements() {
     return {
-      "mwc-icon-button": IconButton,
+      "md-standard-icon-button": MdStandardIconButton,
       "mwc-snackbar": Snackbar,
     };
   }

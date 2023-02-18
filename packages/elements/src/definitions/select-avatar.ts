@@ -1,5 +1,5 @@
 import { customElement } from "lit/decorators.js";
-import { SelectAvatar } from "../select-avatar";
+import { SelectAvatar } from "../select-avatar.js";
 
 @customElement("select-avatar")
 class SA extends SelectAvatar {}

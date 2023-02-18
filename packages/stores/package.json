@@ -11,7 +11,8 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "npm run lint && tsc",
+    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "build:test": "npm run build && rollup -c",
     "build:watch": "tsc --watch --preserveWatchOutput",
     "test": "npm run build:test && web-test-runner \"tests/**/*.test.js\" --node-resolve",

@@ -1,6 +1,6 @@
 import { Record, Create } from "@holochain/client";
 import { decode } from "@msgpack/msgpack";
-import { timestampToMillis } from "./timestamp";
+import { timestampToMillis } from "./timestamp.js";
 
 export function decodeEntry<T>(record: Record): T | undefined {
   const entry = (record.entry as any)?.Present?.entry;

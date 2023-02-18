@@ -8,7 +8,7 @@ import {
   EntryHash,
   HoloHash,
 } from "@holochain/client";
-import flatMap from "lodash-es/flatMap";
+import flatMap from "lodash-es/flatMap.js";
 
 export class HoloHashMap<K extends HoloHash, V> implements Map<K, V> {
   _map: Map<string, V>;
@@ -179,6 +179,7 @@ export interface GetonlyMap<K, V> {
 
 export class LazyMap<K, V> implements GetonlyMap<K, V> {
   map = new Map<K, V>();
+
   constructor(protected newValue: (hash: K) => V) {}
 
   get(hash: K): V {
@@ -193,6 +194,7 @@ export class LazyHoloHashMap<K extends HoloHash, V>
   implements GetonlyMap<K, V>
 {
   map = new HoloHashMap<K, V>();
+
   constructor(protected newValue: (hash: K) => V) {}
 
   get(hash: K): V {

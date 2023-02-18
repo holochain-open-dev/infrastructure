@@ -1,10 +1,10 @@
 import { ScopedElementsMixin } from "@open-wc/scoped-elements";
-import { Fab } from "@scoped-elements/material-web";
+import { MdFab } from "@scoped-elements/material-web";
 import { SlAvatar } from "@scoped-elements/shoelace";
 import { css, html, LitElement } from "lit";
 import { property, query, state } from "lit/decorators.js";
 
-import { resizeAndExport } from "./image";
+import { resizeAndExport } from "./image.js";
 
 export class SelectAvatar extends ScopedElementsMixin(LitElement) {
   @property()
@@ -67,11 +67,11 @@ export class SelectAvatar extends ScopedElementsMixin(LitElement) {
       `;
     else
       return html` <div class="column" style="align-items: center;">
-        <mwc-fab
+        <md-fab
           icon="add"
           @click=${() => this._avatarFilePicker.click()}
           style="margin-bottom: 4px;"
-        ></mwc-fab>
+        ></md-fab>
         <span class="placeholder label">Avatar</span>
       </div>`;
   }
@@ -108,7 +108,7 @@ export class SelectAvatar extends ScopedElementsMixin(LitElement) {
 
   static get scopedElements() {
     return {
-      "mwc-fab": Fab,
+      "md-fab": MdFab,
       "sl-avatar": SlAvatar,
     };
   }

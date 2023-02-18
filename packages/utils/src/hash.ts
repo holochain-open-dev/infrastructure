@@ -3,6 +3,8 @@ import { encodeHashToBase64, HoloHash } from "@holochain/client";
 import blake from "blakejs";
 import { encode } from "@msgpack/msgpack";
 import { Base64 } from "js-base64";
+// @ts-ignore
+import sortObject from "sort-object";
 
 export enum HashType {
   AGENT,
@@ -54,7 +56,8 @@ export function isHash(hash: string): boolean {
 
 // From https://github.com/holochain/holochain/blob/dc0cb61d0603fa410ac5f024ed6ccfdfc29715b3/crates/holo_hash/src/encode.rs
 export function hash(content: any, type: HashType): HoloHash {
-  const bytesHash: Uint8Array = blake.blake2b(encode(content), null, 32);
+  const obj = typeof content === "object" ? sortObject(content) : content;
+  const bytesHash: Uint8Array = blake.blake2b(encode(obj), null, 32);
 
   const fullhash = new Uint8Array([
     ...Base64.toUint8Array(getPrefix(type)),
@@ -65,7 +68,7 @@ export function hash(content: any, type: HashType): HoloHash {
   return fullhash;
 }
 
-function locationBytes(bytesHash: HoloHash): Uint8Array {
+export function locationBytes(bytesHash: HoloHash): Uint8Array {
   const hash128: Uint8Array = blake.blake2b(bytesHash, null, 16);
 
   const out = [hash128[0], hash128[1], hash128[2], hash128[3]];

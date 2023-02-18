@@ -5,9 +5,12 @@ import { classMap } from "lit/directives/class-map.js";
 import { ScopedElementsMixin } from "@open-wc/scoped-elements";
 import { SlTooltip } from "@scoped-elements/shoelace";
 import { encodeHashToBase64, HoloHash } from "@holochain/client";
-import isEqual from "lodash-es/isEqual";
-import { hashProperty } from "./holo-hash-property";
+import isEqual from "lodash-es/isEqual.js";
+import { localized, msg } from "@lit/localize";
 
+import { hashProperty } from "./holo-hash-property.js";
+
+@localized()
 export class HoloIdenticon extends ScopedElementsMixin(LitElement) {
   @property(hashProperty("hash"))
   hash!: HoloHash;
@@ -95,7 +98,7 @@ export class HoloIdenticon extends ScopedElementsMixin(LitElement) {
         id="tooltip"
         placement="top"
         .content=${this.justCopiedHash
-          ? "Copied!"
+          ? msg("Copied!")
           : `${this.strHash.substring(0, 6)}...`}
         .trigger=${this.justCopiedHash ? "manual" : "hover focus"}
         hoist

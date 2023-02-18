@@ -6,12 +6,16 @@ import {
   Record,
   Update,
 } from "@holochain/client";
-import uniqWith from "lodash-es/uniqWith";
-import isEqual from "lodash-es/isEqual";
+import uniqWith from "lodash-es/uniqWith.js";
+import isEqual from "lodash-es/isEqual.js";
 
-import { ActionHashMap, AgentPubKeyMap, EntryHashMap } from "./holo-hash-map";
-import { EntryRecord } from "./entry-record";
-import { mapValues } from "./map-utils";
+import {
+  ActionHashMap,
+  AgentPubKeyMap,
+  EntryHashMap,
+} from "./holo-hash-map.js";
+import { EntryRecord } from "./entry-record.js";
+import { mapValues } from "./map-utils.js";
 
 export class RecordBag<T> {
   // Map of entry hash -> entry, already decoded
@@ -49,6 +53,7 @@ export class RecordBag<T> {
   public get entryRecords() {
     return this.records.map((r) => new EntryRecord<T>(r));
   }
+
   public entryRecord(actionHash: ActionHash): EntryRecord<T> | undefined {
     const record = this.records.find((r) =>
       isEqual(r.signed_action.hashed.hash, actionHash)
