@@ -4,6 +4,7 @@ import blake from "blakejs";
 import { encode } from "@msgpack/msgpack";
 import { Base64 } from "js-base64";
 import sortKeys from "sort-keys";
+import { isPlainObject } from "lodash-es";
 
 export enum HashType {
   AGENT,
@@ -55,7 +56,7 @@ export function isHash(hash: string): boolean {
 
 // From https://github.com/holochain/holochain/blob/dc0cb61d0603fa410ac5f024ed6ccfdfc29715b3/crates/holo_hash/src/encode.rs
 export function hash(content: any, type: HashType): HoloHash {
-  const obj = typeof content === "object" ? sortKeys(content) : content;
+  const obj = isPlainObject(content) ? sortKeys(content) : content;
   const bytesHash: Uint8Array = blake.blake2b(encode(obj), null, 32);
 
   const fullhash = new Uint8Array([
