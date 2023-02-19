@@ -1,16 +1,12 @@
-import { derived, Readable } from "svelte/store";
-import { AsyncReadable, AsyncStatus } from "./async-readable.js";
+import { derived, Readable, Subscriber } from "svelte/store";
+import { AsyncReadable, AsyncStatus, lazyLoad } from "./async-readable.js";
 
 type StoreValue<T> = T extends AsyncReadable<infer U>
   ? U
   : T extends Readable<infer U>
   ? U
   : never;
-type AsyncStoreValue<T> = T extends AsyncReadable<infer U>
-  ? U
-  : T extends Readable<infer U>
-  ? U
-  : never;
+type AsyncStoreValue<T> = T extends AsyncReadable<infer U> ? U : never;
 
 /** One or more values from `Readable` stores. */
 type StoresValues<T> = {
@@ -19,11 +15,11 @@ type StoresValues<T> = {
 const isPromise = (v) => typeof v === "object" && typeof v.then === "function";
 export function asyncDerived<T, S extends AsyncReadable<any>>(
   store: S,
-  derive: (value: AsyncStoreValue<S>) => T
+  derive: (value: AsyncStoreValue<S>) => Promise<T> | T
 ): AsyncReadable<T> {
   return derived(store, (value, set) => {
-    if (value.status === "error") set(value as AsyncStatus<T>);
-    else if (value.status === "pending") set(value as AsyncStatus<T>);
+    if (value.status === "error") set(value);
+    else if (value.status === "pending") set(value);
     else {
       const v = derive(value.value);
       if (isPromise(v)) {
@@ -44,7 +40,7 @@ export function asyncDerived<T, S extends AsyncReadable<any>>(
       } else {
         set({
           status: "complete",
-          value: v,
+          value: v as T,
         });
       }
     }
@@ -96,8 +92,8 @@ export function asyncDeriveStore<T, S extends AsyncReadable<any>>(
   ) => AsyncReadable<T> | Promise<AsyncReadable<T>>
 ): AsyncReadable<T> {
   return derived(store, (value, set) => {
-    if (value.status === "error") set(value as AsyncStatus<T>);
-    else if (value.status === "pending") set(value as AsyncStatus<T>);
+    if (value.status === "error") set(value);
+    else if (value.status === "pending") set(value);
     else {
       const v = deriveStoreFn(value.value);
       if (isPromise(v)) {
@@ -117,7 +113,9 @@ export function asyncDeriveStore<T, S extends AsyncReadable<any>>(
           if (unsubscribe) unsubscribe();
         };
       } else {
-        return (v as AsyncReadable<T>).subscribe(set);
+        return (v as AsyncReadable<T>).subscribe(
+          set as Subscriber<AsyncStatus<T>>
+        );
       }
     }
     return undefined;
