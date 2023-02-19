@@ -14,7 +14,9 @@ export function asyncReadable<T>(
     const asyncSet = (v) => set({ status: "complete", value: v });
     let unsubscribe: Unsubscriber | void;
     load(asyncSet)
-      .then((u) => (unsubscribe = u))
+      .then((u) => {
+        unsubscribe = u;
+      })
       .catch((e) => set({ status: "error", error: e }));
 
     return () => unsubscribe && unsubscribe();
@@ -38,7 +40,7 @@ export function lazyLoadAndPoll<T>(
   pollIntervalMs: number
 ): AsyncReadable<T> {
   return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
-    let interval = undefined;
+    let interval;
     async function l() {
       const v = await load();
       set({ status: "complete", value: v });

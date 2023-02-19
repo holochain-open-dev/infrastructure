@@ -13,7 +13,10 @@ it("asyncDeriveStore", async () => {
     await sleep(10);
     set(2);
   });
-  const d = asyncDeriveStore([asyncReadableStore1], () => asyncReadableStore2);
+  const d = asyncDeriveStore(
+    asyncReadableStore1,
+    async () => asyncReadableStore2
+  );
   const subscriber = d.subscribe(() => {});
 
   expect(get(d)).to.deep.equal({ status: "pending" });

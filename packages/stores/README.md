@@ -73,21 +73,16 @@ const someResult = lazyLoadAndPoll(async () => fetch("https://some/url"), 1000);
 
 ## asyncDerived
 
-Takes an array of `Readable`s or `AsyncReadable`s and returns an `AsyncReadable` by deriving only when the state of all the given stores is completed. This is the complete behaviour:
-
-- If any of the given `AsyncReadable` has an error, then return the error.
-- If any of the given `AsyncReadable` is still pending, then return `{ status: 'pending' }`.
-- If all of the given `AsyncReadable` have completed, then execute the given function with the completed values.
+Derives an `AsyncReadable` only when the state of the given store is completed.
 
 Example:
 
 ```js
 import { asyncDerived, asyncReadable } from '@holochain-open-dev/stores';
 
-const asyncReadable1 = asyncReadable(async set => set(await fetch("https://some/url")));
-const asyncReadable2 = asyncReadable(async set => set(await fetch("https://some/url2")));
+const asyncReadable = asyncReadable(async set => set(await fetch("https://some/url")));
 
-const composedResult = asyncDerived([asyncReadable1, asyncReadable2], ([result1, result2]) => `Result 1: ${result1}, result 2: ${result2}`);
+const composedResult = asyncDerived(asyncReadable, async (result) => fetch(`https://some/other/dependant/${result}`));
 ```
 
 ## deriveStore
@@ -113,7 +108,7 @@ const globalStore = writable({
   featureStore: writable(1)
 });
 
-const unnestedStore = deriveStore([globalStore], [v] => v.featureStore);
+const unnestedStore = deriveStore(globalStore, v => v.featureStore);
 
 console.log(get(unnestedStore)) // Prints "1"
 ```
@@ -127,13 +122,13 @@ import { LazyHoloHashMap } from '@holochain-open-dev/utils';
 import { asyncDeriveStore, asyncReadable } from '@holochain-open-dev/stores';
 
 // Imagine we create an `AsyncReadable` store that gets my public key whenever it is subscribed to for the first time
-const myPubKey = asyncReadable(() => callZome('get_my_pub_key'));
+const myPubKey = lazyLoad(() => callZome('get_my_pub_key'));
 
 // And we have a `HoloHashMap` of `AsyncReadable`s that fetch the profile for each public key
 const agentsProfiles = new LazyHoloHashMap((agent: AgentPubKey) => callZome('get_profile', agent));
 
 // And then we want to combine both stores: get the profile for my public key
-const myProfile = asyncDeriveStore([myPubKey], [pubKey] => agentsProfiles.get(pubKey));
+const myProfile = asyncDeriveStore(myPubKey, pubKey => agentsProfiles.get(pubKey));
 ```
 
 ## join

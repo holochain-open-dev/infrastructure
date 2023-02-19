@@ -16,9 +16,10 @@ export function joinMap<H extends HoloHash, T extends Readable<any>>(
     derived([store], ([v]) => [key, v] as [H, StoreValue<T>])
   );
   const arrayStore = derived(storeArray, (i) => i);
-  return derived([arrayStore], ([entries]) => {
-    return new HoloHashMap<H, StoreValue<T>>(entries);
-  });
+  return derived(
+    [arrayStore],
+    ([entries]) => new HoloHashMap<H, StoreValue<T>>(entries)
+  );
 }
 
 // Joins all the stores in a HoloHashMap of `AsyncReadables`
@@ -26,10 +27,11 @@ export function asyncJoinMap<H extends HoloHash, T extends AsyncReadable<any>>(
   holoHashMap: ReadonlyMap<H, T>
 ): AsyncReadable<ReadonlyMap<H, AsyncStoreValue<T>>> {
   const storeArray = Array.from(holoHashMap.entries()).map(([key, store]) =>
-    asyncDerived([store], ([v]) => [key, v] as [H, AsyncStoreValue<T>])
+    asyncDerived(store, (v) => [key, v] as [H, AsyncStoreValue<T>])
   );
   const arrayStore = join(storeArray);
-  return asyncDerived([arrayStore], ([entries]) => {
-    return new HoloHashMap<H, AsyncStoreValue<T>>(entries);
-  });
+  return asyncDerived(
+    arrayStore,
+    (entries) => new HoloHashMap<H, AsyncStoreValue<T>>(entries)
+  );
 }
