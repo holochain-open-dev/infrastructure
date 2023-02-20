@@ -4,7 +4,7 @@ import { PropertyDeclaration } from "lit";
 export function hashState() {
   return {
     hasChanged: (oldVal: HoloHash, newVal: HoloHash) =>
-      oldVal.toString() !== newVal.toString(),
+      oldVal?.toString() !== newVal?.toString(),
   };
 }
 
