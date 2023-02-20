@@ -1,7 +1,7 @@
 import { expect } from "@esm-bundle/chai";
 import { get, readable } from "svelte/store";
 import { fromUint8Array, toUint8Array } from "js-base64";
-import { asyncJoinMap, asyncReadable, joinMap } from "../dist-rollup";
+import { joinAsyncMap, asyncReadable, joinMap } from "../dist-rollup";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
 
@@ -41,7 +41,7 @@ it("asyncJoinMap", async () => {
     lazyStoreMap.get(h);
   }
 
-  const j = asyncJoinMap(lazyStoreMap);
+  const j = joinAsyncMap(lazyStoreMap);
 
   const subscriber = j.subscribe(() => {});
 

@@ -23,7 +23,7 @@ export function joinMap<H extends HoloHash, T extends Readable<any>>(
 }
 
 // Joins all the stores in a HoloHashMap of `AsyncReadables`
-export function asyncJoinMap<H extends HoloHash, T extends AsyncReadable<any>>(
+export function joinAsyncMap<H extends HoloHash, T extends AsyncReadable<any>>(
   holoHashMap: ReadonlyMap<H, T>
 ): AsyncReadable<ReadonlyMap<H, AsyncStoreValue<T>>> {
   const storeArray = Array.from(holoHashMap.entries()).map(([key, store]) =>
