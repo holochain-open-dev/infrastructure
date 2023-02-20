@@ -90,6 +90,13 @@
             },
             {
               "kind": "field",
+              "name": "headline",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
               "name": "error",
               "type": {
                 "text": "string"
@@ -338,7 +345,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./copiable-hash\""
+            "package": "\"./copiable-hash.js\""
           }
         },
         {
@@ -346,7 +353,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./shared-styles\""
+            "package": "\"./shared-styles.js\""
           }
         },
         {
@@ -354,7 +361,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./display-error\""
+            "package": "\"./display-error.js\""
           }
         },
         {
@@ -362,7 +369,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./holo-identicon\""
+            "package": "\"./holo-identicon.js\""
           }
         },
         {
@@ -370,7 +377,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./select-avatar\""
+            "package": "\"./select-avatar.js\""
           }
         },
         {
@@ -378,7 +385,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./holo-hash-property\""
+            "package": "\"./holo-hash-property.js\""
           }
         }
       ]

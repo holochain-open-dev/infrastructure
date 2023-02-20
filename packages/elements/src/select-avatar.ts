@@ -60,7 +60,9 @@ export class SelectAvatar extends ScopedElementsMixin(LitElement) {
           <span
             class="placeholder label"
             style="cursor: pointer;   text-decoration: underline;"
-            @click=${() => (this._avatar = undefined)}
+            @click=${() => {
+              this._avatar = undefined;
+            }}
             >Clear</span
           >
         </div>

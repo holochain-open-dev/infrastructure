@@ -3,7 +3,7 @@ import { MdIcon } from "@scoped-elements/material-web";
 import { SlTooltip } from "@scoped-elements/shoelace";
 import { css, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-import { sharedStyles } from "./shared-styles";
+import { sharedStyles } from "./shared-styles.js";
 
 export class DisplayError extends ScopedElementsMixin(LitElement) {
   @property({ attribute: "tooltip" })
@@ -48,7 +48,7 @@ export class DisplayError extends ScopedElementsMixin(LitElement) {
 
   renderTooltip() {
     return html`
-      <sl-tooltip hoist .content=${this.error}>
+      <sl-tooltip hoist .content=${this.headline ? this.headline : this.error}>
         ${this.renderIcon()}</sl-tooltip
       >
     `;
