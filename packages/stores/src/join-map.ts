@@ -8,7 +8,7 @@ type StoreValue<T> = T extends Readable<infer U> ? U : never;
 
 type AsyncStoreValue<T> = T extends AsyncReadable<infer U> ? U : never;
 
-// Joins all the stores in a HoloHashMap of `AsyncReadables`
+// Joins all the stores in a HoloHashMap of `Readables`
 export function joinMap<H extends HoloHash, T extends Readable<any>>(
   holoHashMap: ReadonlyMap<H, T>
 ): Readable<ReadonlyMap<H, StoreValue<T>>> {

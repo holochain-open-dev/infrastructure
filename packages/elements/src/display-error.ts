@@ -1,5 +1,5 @@
 import { ScopedElementsMixin } from "@open-wc/scoped-elements";
-import { Icon } from "@scoped-elements/material-web";
+import { MdIcon } from "@scoped-elements/material-web";
 import { SlTooltip } from "@scoped-elements/shoelace";
 import { css, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
@@ -8,6 +8,9 @@ import { sharedStyles } from "./shared-styles";
 export class DisplayError extends ScopedElementsMixin(LitElement) {
   @property({ attribute: "tooltip" })
   tooltip: boolean = false;
+
+  @property()
+  headline: string | undefined;
 
   @property()
   error!: string;
@@ -23,10 +26,10 @@ export class DisplayError extends ScopedElementsMixin(LitElement) {
 
   renderIcon() {
     return html`
-      <mwc-icon
-        style="color: red; --mdc-icon-size: ${this._iconSize}; height: ${this
+      <md-icon
+        style="color: red; --md-icon-size: ${this._iconSize}; height: ${this
           ._iconSize}; width: ${this._iconSize}; margin-bottom: 8px;"
-        >error_outlined</mwc-icon
+        >error_outlined</md-icon
       >
     `;
   }
@@ -34,9 +37,12 @@ export class DisplayError extends ScopedElementsMixin(LitElement) {
   renderFull() {
     return html` <div class="column center-content" style="flex: 1">
       ${this.renderIcon()}
-      <span style="width: 500px; text-align: center" class="placeholder"
-        >${this.error}
-      </span>
+      <div style="width: 500px; text-align: center" class="column">
+        ${this.headline
+          ? html` <span style="margin-bottom: 8px">${this.headline} </span>`
+          : html``}
+        <span class="placeholder">${this.error} </span>
+      </div>
     </div>`;
   }
 
@@ -65,7 +71,7 @@ export class DisplayError extends ScopedElementsMixin(LitElement) {
 
   static get scopedElements() {
     return {
-      "mwc-icon": Icon,
+      "md-icon": MdIcon,
       "sl-tooltip": SlTooltip,
     };
   }
