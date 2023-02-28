@@ -99,7 +99,7 @@ export function lazyLoadAndPoll<T>(
     }
     l()
       .then(() => {
-        interval = setInterval(() => l(), pollIntervalMs);
+        interval = setInterval(() => l().catch(() => {}), pollIntervalMs);
       })
       .catch((e) => {
         set({ status: "error", error: e });
