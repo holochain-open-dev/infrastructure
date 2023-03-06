@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/elements",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Common utilities and elements to build Holochain web applications",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
@@ -30,7 +30,7 @@
     "@lit/localize": "^0.11.4",
     "@open-wc/scoped-elements": "2.1.0",
     "@scoped-elements/material-web": "^0.1.1",
-    "@scoped-elements/shoelace": "^0.0.10",
+    "@scoped-elements/shoelace": "^0.1.0",
     "lit": "^2.6.1"
   },
   "devDependencies": {

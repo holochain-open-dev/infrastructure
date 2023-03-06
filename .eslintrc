@@ -17,6 +17,9 @@
     "no-empty-function": "off",
     "import/no-extraneous-dependencies": "off",
     "prefer-destructuring": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "lit-a11y/click-events-have-key-events": "off",
+    "operator-assignment": "off",
+    "no-lonely-if": "off"
   }
 }
