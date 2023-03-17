@@ -4,75 +4,6 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "src/copiable-hash.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "CopiableHash",
-          "members": [
-            {
-              "kind": "field",
-              "name": "hash",
-              "type": {
-                "text": "HoloHash"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "sliceLength",
-              "type": {
-                "text": "number"
-              },
-              "default": "8"
-            },
-            {
-              "kind": "field",
-              "name": "_copyNotification",
-              "type": {
-                "text": "Snackbar"
-              }
-            },
-            {
-              "kind": "field",
-              "name": "strHash"
-            },
-            {
-              "kind": "method",
-              "name": "copyHash"
-            },
-            {
-              "kind": "field",
-              "name": "scopedElements",
-              "static": true
-            }
-          ],
-          "mixins": [
-            {
-              "name": "ScopedElementsMixin",
-              "package": "@open-wc/scoped-elements"
-            }
-          ],
-          "superclass": {
-            "name": "LitElement",
-            "package": "lit"
-          },
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "CopiableHash",
-          "declaration": {
-            "name": "CopiableHash",
-            "module": "src/copiable-hash.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "src/display-error.ts",
       "declarations": [
         {
@@ -124,17 +55,6 @@
             {
               "kind": "method",
               "name": "renderTooltip"
-            },
-            {
-              "kind": "field",
-              "name": "scopedElements",
-              "static": true
-            }
-          ],
-          "mixins": [
-            {
-              "name": "ScopedElementsMixin",
-              "package": "@open-wc/scoped-elements"
             }
           ],
           "superclass": {
@@ -276,17 +196,6 @@
             {
               "kind": "method",
               "name": "renderCanvas"
-            },
-            {
-              "kind": "field",
-              "name": "scopedElements",
-              "static": true
-            }
-          ],
-          "mixins": [
-            {
-              "name": "ScopedElementsMixin",
-              "package": "@open-wc/scoped-elements"
             }
           ],
           "superclass": {
@@ -340,14 +249,6 @@
       "path": "src/index.ts",
       "declarations": [],
       "exports": [
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "package": "\"./copiable-hash.js\""
-          }
-        },
         {
           "kind": "js",
           "name": "*",
@@ -434,11 +335,6 @@
             {
               "kind": "method",
               "name": "renderAvatar"
-            },
-            {
-              "kind": "field",
-              "name": "scopedElements",
-              "static": true
             }
           ],
           "events": [
@@ -447,12 +343,6 @@
               "type": {
                 "text": "CustomEvent"
               }
-            }
-          ],
-          "mixins": [
-            {
-              "name": "ScopedElementsMixin",
-              "package": "@open-wc/scoped-elements"
             }
           ],
           "superclass": {
@@ -493,12 +383,6 @@
           }
         }
       ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/definitions/copiable-hash.ts",
-      "declarations": [],
-      "exports": []
     },
     {
       "kind": "javascript-module",

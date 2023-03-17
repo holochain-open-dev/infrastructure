@@ -1,11 +1,13 @@
-import { ScopedElementsMixin } from "@open-wc/scoped-elements";
-import { MdIcon } from "@scoped-elements/material-web";
-import { SlTooltip } from "@scoped-elements/shoelace";
 import { css, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
+import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
+import "@shoelace-style/shoelace/dist/components/icon/icon.js";
+// @ts-ignore
+import svg from "bootstrap-icons/icons/exclamation-circle.svg";
+
 import { sharedStyles } from "./shared-styles.js";
 
-export class DisplayError extends ScopedElementsMixin(LitElement) {
+export class DisplayError extends LitElement {
   @property({ attribute: "tooltip" })
   tooltip: boolean = false;
 
@@ -26,11 +28,11 @@ export class DisplayError extends ScopedElementsMixin(LitElement) {
 
   renderIcon() {
     return html`
-      <md-icon
-        style="color: red; --md-icon-size: ${this._iconSize}; height: ${this
+      <sl-icon
+        style="color: red; font-size: ${this._iconSize}; height: ${this
           ._iconSize}; width: ${this._iconSize}; margin-bottom: 8px;"
-        >error_outlined</md-icon
-      >
+        .src=${svg}
+      ></sl-icon>
     `;
   }
 
@@ -68,11 +70,4 @@ export class DisplayError extends ScopedElementsMixin(LitElement) {
       }
     `,
   ];
-
-  static get scopedElements() {
-    return {
-      "md-icon": MdIcon,
-      "sl-tooltip": SlTooltip,
-    };
-  }
 }

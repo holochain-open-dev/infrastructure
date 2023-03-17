@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/elements",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "description": "Common utilities and elements to build Holochain web applications",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
@@ -13,14 +13,11 @@
   },
   "exports": {
     ".": "./dist/index.js",
-    "./copiable-hash": "./dist/definitions/copiable-hash.js",
-    "./holo-identicon": "./dist/definitions/holo-identicon.js",
-    "./display-error": "./dist/definitions/display-error.js",
-    "./select-avatar": "./dist/definitions/select-avatar.js"
+    "./definitions/*": "./dist/definitions/*"
   },
   "scripts": {
     "start": "vite --open",
-    "build": "npm run lint && tsc && npm run analyze -- --exclude dist",
+    "build": "npm run lint && vite build && npm run analyze -- --exclude dist",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "analyze": "cem analyze --litelement"
   },
@@ -28,17 +25,18 @@
     "@holo-host/identicon": "^0.1.0",
     "@holochain/client": "^0.12.0",
     "@lit/localize": "^0.11.4",
-    "@open-wc/scoped-elements": "2.1.0",
-    "@scoped-elements/material-web": "^0.1.1",
-    "@scoped-elements/shoelace": "^0.1.0",
+    "@shoelace-style/shoelace": "^2.3.0",
     "lit": "^2.6.1"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.4.17",
+    "bootstrap-icons": "^1.10.3",
     "concurrently": "^7.0.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.9.0",
-    "vite-plugin-checker": "^0.5.5"
+    "vite": "^4.2.0",
+    "vite-plugin-checker": "^0.5.5",
+    "vite-plugin-dts": "^2.1.0"
   },
   "publishConfig": {
     "access": "public"

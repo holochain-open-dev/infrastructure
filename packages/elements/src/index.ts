@@ -1,4 +1,3 @@
-export * from "./copiable-hash.js";
 export * from "./shared-styles.js";
 export * from "./display-error.js";
 export * from "./holo-identicon.js";

@@ -1,12 +1,14 @@
-import { ScopedElementsMixin } from "@open-wc/scoped-elements";
-import { MdFab } from "@scoped-elements/material-web";
-import { SlAvatar } from "@scoped-elements/shoelace";
 import { css, html, LitElement } from "lit";
 import { property, query, state } from "lit/decorators.js";
+import "@shoelace-style/shoelace/dist/components/avatar/avatar.js";
+import "@shoelace-style/shoelace/dist/components/button/button.js";
+// @ts-ignore
+import svg from "bootstrap-icons/icons/plus.svg";
+import { msg } from "@lit/localize";
 
 import { resizeAndExport } from "./image.js";
 
-export class SelectAvatar extends ScopedElementsMixin(LitElement) {
+export class SelectAvatar extends LitElement {
   @property()
   shape: "circle" | "square" | "rounded" = "circle";
 
@@ -54,27 +56,32 @@ export class SelectAvatar extends ScopedElementsMixin(LitElement) {
             image="${this._avatar}"
             alt="Avatar"
             .shape=${this.shape}
-            style="margin-bottom: 4px; --size: 3.5rem;"
+            style="margin-bottom: 4px; --size: 3.125rem;"
             initials=""
           ></sl-avatar>
           <span
             class="placeholder label"
-            style="cursor: pointer;   text-decoration: underline;"
+            style="cursor: pointer; text-decoration: underline;"
             @click=${() => {
               this._avatar = undefined;
             }}
-            >Clear</span
+            >${msg("Clear")}</span
           >
         </div>
       `;
     else
       return html` <div class="column" style="align-items: center;">
-        <md-fab
-          icon="add"
+        <sl-button
+          variant="default"
+          size="large"
+          circle
           @click=${() => this._avatarFilePicker.click()}
           style="margin-bottom: 4px;"
-        ></md-fab>
-        <span class="placeholder label">Avatar</span>
+        >
+          <sl-icon .src=${svg} .label=${msg("Add avatar image")}></sl-icon>
+        </sl-button>
+
+        <span class="placeholder label">${msg("Avatar")}</span>
       </div>`;
   }
 
@@ -93,13 +100,9 @@ export class SelectAvatar extends ScopedElementsMixin(LitElement) {
       color: rgba(0, 0, 0, 0.7);
     }
     .label {
-      color: var(--mdc-text-field-label-ink-color, rgba(0, 0, 0, 0.6));
-      font-family: var(
-        --mdc-typography-caption-font-family,
-        var(--mdc-typography-font-family, Roboto, sans-serif)
-      );
-      font-size: var(--mdc-typography-caption-font-size, 0.79rem);
-      font-weight: var(--mdc-typography-caption-font-weight, 400);
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 0.79rem;
+      font-weight: 400;
     }
 
     .column {
@@ -107,11 +110,4 @@ export class SelectAvatar extends ScopedElementsMixin(LitElement) {
       flex-direction: column;
     }
   `;
-
-  static get scopedElements() {
-    return {
-      "md-fab": MdFab,
-      "sl-avatar": SlAvatar,
-    };
-  }
 }

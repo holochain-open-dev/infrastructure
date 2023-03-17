@@ -2,16 +2,15 @@ import { css, html, LitElement, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import renderIcon from "@holo-host/identicon";
 import { classMap } from "lit/directives/class-map.js";
-import { ScopedElementsMixin } from "@open-wc/scoped-elements";
-import { SlTooltip } from "@scoped-elements/shoelace";
 import { encodeHashToBase64, HoloHash } from "@holochain/client";
-import isEqual from "lodash-es/isEqual.js";
 import { localized, msg } from "@lit/localize";
+import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
+import SlTooltip from "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
 
 import { hashProperty } from "./holo-hash-property.js";
 
 @localized()
-export class HoloIdenticon extends ScopedElementsMixin(LitElement) {
+export class HoloIdenticon extends LitElement {
   @property(hashProperty("hash"))
   hash!: HoloHash;
 
@@ -63,7 +62,7 @@ export class HoloIdenticon extends ScopedElementsMixin(LitElement) {
 
     if (
       (changedValues.has("hash") &&
-        !isEqual(changedValues.get("hash"), this.hash)) ||
+        changedValues.get("hash")?.toString() !== this.hash?.toString()) ||
       changedValues.has("size") ||
       changedValues.has("value")
     ) {
@@ -106,12 +105,6 @@ export class HoloIdenticon extends ScopedElementsMixin(LitElement) {
         ${this.renderCanvas()}
       </sl-tooltip>
     </div>`;
-  }
-
-  static get scopedElements() {
-    return {
-      "sl-tooltip": SlTooltip,
-    };
   }
 
   static get styles() {

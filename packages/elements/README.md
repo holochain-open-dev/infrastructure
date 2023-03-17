@@ -2,28 +2,12 @@
 
 Common elements to build Holochain web applications.
 
-## CopiableHash
-
-Import it like this:
-
-```js
-import "@holochain-open-dev/elements/copiable-hash";
-```
-
-And then you can use it like this in your html:
-
-```html
-<copiable-hash
-  hash="uhCEkBsnnW9JSVhGQx4AE2m0lSlWLrioEHP-7Uj4ZnbI0W-M"
-></copiable-hash>
-```
-
 ## HoloIdenticon
 
 Import it like this:
 
 ```js
-import "@holochain-open-dev/elements/holo-identicon";
+import "@holochain-open-dev/elements/definitions/holo-identicon.js";
 ```
 
 And then you can use it like this in your html:
@@ -39,13 +23,13 @@ And then you can use it like this in your html:
 Import it like this:
 
 ```js
-import "@holochain-open-dev/elements/display-error";
+import "@holochain-open-dev/elements/definitions/display-error.js";
 ```
 
 And then you can use it like this in your html:
 
 ```html
-<display-error error="Error message"></display-error>
+<display-error headline="Error fetching data" error="500"></display-error>
 ```
 
 ## SelectAvatar
@@ -53,7 +37,7 @@ And then you can use it like this in your html:
 Import it like this:
 
 ```js
-import "@holochain-open-dev/elements/select-avatar";
+import "@holochain-open-dev/elements/definitions/select-avatar.js";
 ```
 
 And then you can use it like this in your html:
