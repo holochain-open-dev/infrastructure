@@ -7,6 +7,7 @@ import { mdiPlus } from "@mdi/js";
 
 import { resizeAndExport } from "../image.js";
 import { wrapPathInSvg } from "../icon.js";
+import { sharedStyles } from "../shared-styles.js";
 
 @customElement("select-avatar")
 export class SelectAvatar extends LitElement {
@@ -99,19 +100,5 @@ export class SelectAvatar extends LitElement {
       <div style="width: 80px; height: 80px;">${this.renderAvatar()}</div>`;
   }
 
-  static styles = css`
-    .placeholder {
-      color: rgba(0, 0, 0, 0.7);
-    }
-    .label {
-      color: rgba(0, 0, 0, 0.6);
-      font-size: 0.79rem;
-      font-weight: 400;
-    }
-
-    .column {
-      display: flex;
-      flex-direction: column;
-    }
-  `;
+  static styles = sharedStyles;
 }
