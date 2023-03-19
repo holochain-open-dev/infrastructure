@@ -1,12 +1,13 @@
 import { css, html, LitElement } from "lit";
-import { property } from "lit/decorators.js";
+import { property, customElement } from "lit/decorators.js";
 import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
 import "@shoelace-style/shoelace/dist/components/icon/icon.js";
-// @ts-ignore
-import svg from "bootstrap-icons/icons/exclamation-circle.svg";
+import { mdiAlertCircleOutline } from "@mdi/js";
 
-import { sharedStyles } from "./shared-styles.js";
+import { sharedStyles } from "../shared-styles.js";
+import { wrapPathInSvg } from "../icon.js";
 
+@customElement("display-error")
 export class DisplayError extends LitElement {
   @property({ attribute: "tooltip" })
   tooltip: boolean = false;
@@ -29,9 +30,9 @@ export class DisplayError extends LitElement {
   renderIcon() {
     return html`
       <sl-icon
-        style="color: red; font-size: ${this._iconSize}; height: ${this
-          ._iconSize}; width: ${this._iconSize}; margin-bottom: 8px;"
-        .src=${svg}
+        style="color: red; height: ${this._iconSize}; width: ${this
+          ._iconSize}; margin-bottom: 8px;"
+        src="${wrapPathInSvg(mdiAlertCircleOutline)}"
       ></sl-icon>
     `;
   }

@@ -1,13 +1,15 @@
 # @holochain-open-dev/elements
 
-Common elements to build Holochain web applications.
+Common elements and element related utilities to build Holochain web applications.
 
-## HoloIdenticon
+## Elements
+
+### HoloIdenticon
 
 Import it like this:
 
 ```js
-import "@holochain-open-dev/elements/definitions/holo-identicon.js";
+import "@holochain-open-dev/elements/elements/holo-identicon.js";
 ```
 
 And then you can use it like this in your html:
@@ -18,12 +20,12 @@ And then you can use it like this in your html:
 ></holo-identicon>
 ```
 
-## DisplayError
+### DisplayError
 
 Import it like this:
 
 ```js
-import "@holochain-open-dev/elements/definitions/display-error.js";
+import "@holochain-open-dev/elements/elements/display-error.js";
 ```
 
 And then you can use it like this in your html:
@@ -32,16 +34,38 @@ And then you can use it like this in your html:
 <display-error headline="Error fetching data" error="500"></display-error>
 ```
 
-## SelectAvatar
+### SelectAvatar
 
 Import it like this:
 
 ```js
-import "@holochain-open-dev/elements/definitions/select-avatar.js";
+import "@holochain-open-dev/elements/elements/select-avatar.js";
 ```
 
 And then you can use it like this in your html:
 
 ```html
 <select-avatar></select-avatar>
+```
+
+## Utils
+
+### wrapPathInSvg
+
+Function to convert paths from the [@mdi/js library](https://pictogrammers.com/library/mdi) to inline SVG sources.
+
+Example usage:
+
+```ts
+import { mdiAlertCircleOutline } from "@mdi/js";
+import { wrapPathInSvg } from '@holochain-open-dev/elements';
+
+function  renderIcon() {
+  return html`
+    <sl-icon
+      style="color: red; height: 64px; width: 64px;"
+      src="${wrapPathInSvg(mdiAlertCircleOutline)}"
+    ></sl-icon>
+  `;
+}
 ```

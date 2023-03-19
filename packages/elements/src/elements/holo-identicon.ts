@@ -1,5 +1,5 @@
 import { css, html, LitElement, PropertyValues } from "lit";
-import { property, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import renderIcon from "@holo-host/identicon";
 import { classMap } from "lit/directives/class-map.js";
 import { encodeHashToBase64, HoloHash } from "@holochain/client";
@@ -7,9 +7,10 @@ import { localized, msg } from "@lit/localize";
 import "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
 import SlTooltip from "@shoelace-style/shoelace/dist/components/tooltip/tooltip.js";
 
-import { hashProperty } from "./holo-hash-property.js";
+import { hashProperty } from "../holo-hash-property.js";
 
 @localized()
+@customElement("holo-identicon")
 export class HoloIdenticon extends LitElement {
   @property(hashProperty("hash"))
   hash!: HoloHash;

@@ -1,13 +1,14 @@
 import { css, html, LitElement } from "lit";
-import { property, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
+import { msg } from "@lit/localize";
 import "@shoelace-style/shoelace/dist/components/avatar/avatar.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
-// @ts-ignore
-import svg from "bootstrap-icons/icons/plus.svg";
-import { msg } from "@lit/localize";
+import { mdiPlus } from "@mdi/js";
 
-import { resizeAndExport } from "./image.js";
+import { resizeAndExport } from "../image.js";
+import { wrapPathInSvg } from "../icon.js";
 
+@customElement("select-avatar")
 export class SelectAvatar extends LitElement {
   @property()
   shape: "circle" | "square" | "rounded" = "circle";
@@ -78,7 +79,10 @@ export class SelectAvatar extends LitElement {
           @click=${() => this._avatarFilePicker.click()}
           style="margin-bottom: 4px;"
         >
-          <sl-icon .src=${svg} .label=${msg("Add avatar image")}></sl-icon>
+          <sl-icon
+            src="${wrapPathInSvg(mdiPlus)}"
+            .label=${msg("Add avatar image")}
+          ></sl-icon>
         </sl-button>
 
         <span class="placeholder label">${msg("Avatar")}</span>

@@ -4,7 +4,165 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "src/display-error.ts",
+      "path": "src/holo-hash-property.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "hashState"
+        },
+        {
+          "kind": "function",
+          "name": "hashProperty",
+          "return": {
+            "type": {
+              "text": "PropertyDeclaration<Object | null, unknown>"
+            }
+          },
+          "parameters": [
+            {
+              "name": "attributeName",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "hashState",
+          "declaration": {
+            "name": "hashState",
+            "module": "src/holo-hash-property.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "hashProperty",
+          "declaration": {
+            "name": "hashProperty",
+            "module": "src/holo-hash-property.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/icon.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "wrapPathInSvg",
+          "return": {
+            "type": {
+              "text": "string"
+            }
+          },
+          "parameters": [
+            {
+              "name": "path",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "wrapPathInSvg",
+          "declaration": {
+            "name": "wrapPathInSvg",
+            "module": "src/icon.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/image.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "resizeAndExport",
+          "parameters": [
+            {
+              "name": "img",
+              "type": {
+                "text": "HTMLImageElement"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "resizeAndExport",
+          "declaration": {
+            "name": "resizeAndExport",
+            "module": "src/image.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./shared-styles.js\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./holo-hash-property.js\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./icon.js\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/shared-styles.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "sharedStyles",
+          "default": "css`\n  .row {\n    display: flex;\n    flex-direction: row;\n  }\n  .column {\n    display: flex;\n    flex-direction: column;\n  }\n  .small-margin {\n    margin-top: 6px;\n  }\n  .big-margin {\n    margin-top: 23px;\n  }\n\n  .fill {\n    flex: 1;\n    height: 100%;\n  }\n\n  .title {\n    font-size: 20px;\n  }\n\n  .center-content {\n    align-items: center;\n    justify-content: center;\n  }\n\n  .placeholder {\n    color: rgba(0, 0, 0, 0.7);\n  }\n\n  .label {\n    color: var(--mdc-text-field-label-ink-color, rgba(0, 0, 0, 0.6));\n    font-family: var(\n      --mdc-typography-caption-font-family,\n      var(--mdc-typography-font-family, Roboto, sans-serif)\n    );\n    font-size: var(--mdc-typography-caption-font-size, 0.79rem);\n    font-weight: var(--mdc-typography-caption-font-weight, 400);\n  }\n\n  .flex-scrollable-parent {\n    position: relative;\n    display: flex;\n    flex: 1;\n  }\n\n  .flex-scrollable-container {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n  }\n\n  .flex-scrollable-x {\n    max-width: 100%;\n    overflow-x: auto;\n  }\n  .flex-scrollable-y {\n    max-height: 100%;\n    overflow-y: auto;\n  }\n`"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "sharedStyles",
+          "declaration": {
+            "name": "sharedStyles",
+            "module": "src/shared-styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/display-error.ts",
       "declarations": [
         {
           "kind": "class",
@@ -70,59 +228,14 @@
           "name": "DisplayError",
           "declaration": {
             "name": "DisplayError",
-            "module": "src/display-error.ts"
+            "module": "src/elements/display-error.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/holo-hash-property.ts",
-      "declarations": [
-        {
-          "kind": "function",
-          "name": "hashState"
-        },
-        {
-          "kind": "function",
-          "name": "hashProperty",
-          "return": {
-            "type": {
-              "text": "PropertyDeclaration<Object | null, unknown>"
-            }
-          },
-          "parameters": [
-            {
-              "name": "attributeName",
-              "type": {
-                "text": "string"
-              }
-            }
-          ]
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "hashState",
-          "declaration": {
-            "name": "hashState",
-            "module": "src/holo-hash-property.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "hashProperty",
-          "declaration": {
-            "name": "hashProperty",
-            "module": "src/holo-hash-property.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/holo-identicon.ts",
+      "path": "src/elements/holo-identicon.ts",
       "declarations": [
         {
           "kind": "class",
@@ -211,89 +324,14 @@
           "name": "HoloIdenticon",
           "declaration": {
             "name": "HoloIdenticon",
-            "module": "src/holo-identicon.ts"
+            "module": "src/elements/holo-identicon.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/image.ts",
-      "declarations": [
-        {
-          "kind": "function",
-          "name": "resizeAndExport",
-          "parameters": [
-            {
-              "name": "img",
-              "type": {
-                "text": "HTMLImageElement"
-              }
-            }
-          ]
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "resizeAndExport",
-          "declaration": {
-            "name": "resizeAndExport",
-            "module": "src/image.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/index.ts",
-      "declarations": [],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "package": "\"./shared-styles.js\""
-          }
-        },
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "package": "\"./display-error.js\""
-          }
-        },
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "package": "\"./holo-identicon.js\""
-          }
-        },
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "package": "\"./select-avatar.js\""
-          }
-        },
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "package": "\"./holo-hash-property.js\""
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/select-avatar.ts",
+      "path": "src/elements/select-avatar.ts",
       "declarations": [
         {
           "kind": "class",
@@ -358,49 +396,10 @@
           "name": "SelectAvatar",
           "declaration": {
             "name": "SelectAvatar",
-            "module": "src/select-avatar.ts"
+            "module": "src/elements/select-avatar.ts"
           }
         }
       ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/shared-styles.ts",
-      "declarations": [
-        {
-          "kind": "variable",
-          "name": "sharedStyles",
-          "default": "css`\n  .row {\n    display: flex;\n    flex-direction: row;\n  }\n  .column {\n    display: flex;\n    flex-direction: column;\n  }\n  .small-margin {\n    margin-top: 6px;\n  }\n  .big-margin {\n    margin-top: 23px;\n  }\n\n  .fill {\n    flex: 1;\n    height: 100%;\n  }\n\n  .title {\n    font-size: 20px;\n  }\n\n  .center-content {\n    align-items: center;\n    justify-content: center;\n  }\n\n  .placeholder {\n    color: rgba(0, 0, 0, 0.7);\n  }\n\n  .label {\n    color: var(--mdc-text-field-label-ink-color, rgba(0, 0, 0, 0.6));\n    font-family: var(\n      --mdc-typography-caption-font-family,\n      var(--mdc-typography-font-family, Roboto, sans-serif)\n    );\n    font-size: var(--mdc-typography-caption-font-size, 0.79rem);\n    font-weight: var(--mdc-typography-caption-font-weight, 400);\n  }\n\n  .flex-scrollable-parent {\n    position: relative;\n    display: flex;\n    flex: 1;\n  }\n\n  .flex-scrollable-container {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n  }\n\n  .flex-scrollable-x {\n    max-width: 100%;\n    overflow-x: auto;\n  }\n  .flex-scrollable-y {\n    max-height: 100%;\n    overflow-y: auto;\n  }\n`"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "sharedStyles",
-          "declaration": {
-            "name": "sharedStyles",
-            "module": "src/shared-styles.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/definitions/display-error.ts",
-      "declarations": [],
-      "exports": []
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/definitions/holo-identicon.ts",
-      "declarations": [],
-      "exports": []
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/definitions/select-avatar.ts",
-      "declarations": [],
-      "exports": []
     }
   ]
 }
