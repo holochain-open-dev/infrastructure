@@ -36,7 +36,7 @@ export class SelectAvatar extends LitElement implements FormField {
   _controller = new FormFieldController(this);
 
   reportValidity() {
-    const invalid = this.required && !this.value;
+    const invalid = this.required !== false && !this.value;
     if (invalid) {
       this._errorInput.setCustomValidity("Avatar is required");
       this._errorInput.reportValidity();
@@ -126,7 +126,7 @@ export class SelectAvatar extends LitElement implements FormField {
         />
         <span
           style="font-size: var(--sl-input-label-font-size-medium); margin-bottom: 4px"
-          >${msg("Avatar")}${this.required ? " *" : ""}</span
+          >${msg("Avatar")}${this.required !== false ? " *" : ""}</span
         >
         ${this.renderAvatar()}
       </div>`;

@@ -70,7 +70,7 @@ export class FormFieldController implements ReactiveController {
       !form.noValidate &&
       !disabled &&
       reportValidity &&
-      !reportValidity()
+      !this.host.reportValidity()
     ) {
       event.preventDefault();
       event.stopImmediatePropagation();

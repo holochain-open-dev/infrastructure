@@ -57,9 +57,8 @@ export const sharedStyles = [
       max-height: 100%;
       overflow-y: auto;
     }
-    :host,
-    .sl-theme-dark {
-      color: white;
+    :host {
+      color: var(--sl-color-neutral-1000);
     }
   `,
 ];

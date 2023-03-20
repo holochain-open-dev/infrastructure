@@ -1,4 +1,4 @@
-import { AppAgentClient } from "@holochain/client";
+import { AppAgentCallZomeRequest, AppAgentClient } from "@holochain/client";
 import { UnsubscribeFunction } from "emittery";
 import { isSignalFromCellWithRole } from "./cell.js";
 
@@ -20,5 +20,15 @@ export class ZomeClient<SIGNAL_PAYLOAD> {
         listener(signal.payload as SIGNAL_PAYLOAD);
       }
     });
+  }
+
+  protected callZome(fn_name: string, payload: any) {
+    const req: AppAgentCallZomeRequest = {
+      role_name: this.roleName,
+      zome_name: this.zomeName,
+      fn_name,
+      payload,
+    };
+    return this.client.callZome(req);
   }
 }
