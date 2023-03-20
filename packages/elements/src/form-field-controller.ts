@@ -1,15 +1,13 @@
 import { ReactiveController, ReactiveControllerHost } from "lit";
 
-export interface FormFieldControllerOptions {
+export interface FormField {
   /** A function that returns the form control's name, which will be submitted with the form data. */
-  name: () => string;
+  name: string;
   /** A function that returns the form control's current value. */
-  value: () => any;
+  value: any;
 
-  /** A function that returns the form containing the form control. */
-  form?: () => HTMLFormElement;
   /** A function that returns the form control's current disabled state. If disabled, the value won't be submitted. */
-  disabled?: () => boolean;
+  disabled: boolean;
   /**
    * A function that maps to the form control's reportValidity() function. When the control is invalid, this will
    * prevent submission and trigger the browser's constraint violation warning.
@@ -22,29 +20,15 @@ export interface FormFieldControllerOptions {
 export class FormFieldController implements ReactiveController {
   form?: HTMLFormElement;
 
-  options: FormFieldControllerOptions;
-
-  constructor(
-    protected host: ReactiveControllerHost & Element,
-    options: FormFieldControllerOptions
-  ) {
+  constructor(protected host: ReactiveControllerHost & Element & FormField) {
     this.host.addController(this);
-    this.options = {
-      ...{
-        form: () => this.host.closest("form"),
-        disabled: () => false,
-        reportValidity: () => true,
-        reset: () => {},
-      },
-      ...options,
-    };
     this.handleFormData = this.handleFormData.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleFormReset = this.handleFormReset.bind(this);
   }
 
   hostConnected() {
-    this.form = this.options.form!();
+    this.form = this.host.closest("form");
 
     if (this.form) {
       this.form.addEventListener("formdata", this.handleFormData);
@@ -63,9 +47,9 @@ export class FormFieldController implements ReactiveController {
   }
 
   handleFormData(event: FormDataEvent) {
-    const disabled = this.options.disabled!();
-    const name = this.options.name();
-    const value = this.options.value();
+    const disabled = this.host.disabled;
+    const name = this.host.name;
+    const value = this.host.value;
 
     if (!disabled && name && value !== undefined) {
       if (Array.isArray(value)) {
@@ -78,8 +62,8 @@ export class FormFieldController implements ReactiveController {
 
   handleFormSubmit(event: Event) {
     const form = this.form;
-    const disabled = this.options.disabled!();
-    const reportValidity = this.options.reportValidity;
+    const disabled = this.host.disabled;
+    const reportValidity = this.host.reportValidity;
 
     if (
       form &&
@@ -94,6 +78,6 @@ export class FormFieldController implements ReactiveController {
   }
 
   handleFormReset(_event: Event) {
-    this.options.reset!();
+    this.host.reset!();
   }
 }

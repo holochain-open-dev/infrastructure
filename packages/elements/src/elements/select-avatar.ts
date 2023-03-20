@@ -5,13 +5,13 @@ import "@shoelace-style/shoelace/dist/components/avatar/avatar.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
 import { mdiPlus } from "@mdi/js";
 
-import { FormFieldController } from "../form-field-controller.js";
+import { FormField, FormFieldController } from "../form-field-controller.js";
 import { resizeAndExport } from "../image.js";
 import { wrapPathInSvg } from "../icon.js";
 import { sharedStyles } from "../shared-styles.js";
 
 @customElement("select-avatar")
-export class SelectAvatar extends LitElement {
+export class SelectAvatar extends LitElement implements FormField {
   @property({ attribute: "name" })
   name: string = "avatar";
 
@@ -21,8 +21,11 @@ export class SelectAvatar extends LitElement {
   @property()
   shape: "circle" | "square" | "rounded" = "circle";
 
-  @state()
-  private _avatar: string | undefined;
+  @property()
+  value: string | undefined;
+
+  @property()
+  disabled: boolean = false;
 
   @query("#avatar-file-picker")
   private _avatarFilePicker!: HTMLInputElement;
@@ -30,19 +33,21 @@ export class SelectAvatar extends LitElement {
   @query("#error-input")
   private _errorInput!: HTMLInputElement;
 
-  _controller = new FormFieldController(this, {
-    name: () => this.name,
-    value: () => this._avatar,
-    reportValidity: () => {
-      const invalid = this.required && !this._avatar;
-      if (invalid) {
-        this._errorInput.setCustomValidity("Avatar is required");
-        this._errorInput.reportValidity();
-      }
+  _controller = new FormFieldController(this);
 
-      return !invalid;
-    },
-  });
+  reportValidity() {
+    const invalid = this.required && !this.value;
+    if (invalid) {
+      this._errorInput.setCustomValidity("Avatar is required");
+      this._errorInput.reportValidity();
+    }
+
+    return !invalid;
+  }
+
+  reset() {
+    this.value = undefined;
+  }
 
   onAvatarUploaded() {
     if (this._avatarFilePicker.files && this._avatarFilePicker.files[0]) {
@@ -51,7 +56,7 @@ export class SelectAvatar extends LitElement {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.onload = () => {
-          this._avatar = resizeAndExport(img);
+          this.value = resizeAndExport(img);
           this._avatarFilePicker.value = "";
         };
         img.src = e.target?.result as string;
@@ -70,23 +75,19 @@ export class SelectAvatar extends LitElement {
     }
   }
 
-  clear() {
-    this._avatar = undefined;
-  }
-
   renderAvatar() {
-    if (this._avatar)
+    if (this.value)
       return html`
         <div
           class="column"
           style="align-items: center; height: 50px"
           @click=${() => {
-            this._avatar = undefined;
+            this.value = undefined;
           }}
         >
           <sl-tooltip .content=${msg("Clear")}>
             <sl-avatar
-              image="${this._avatar}"
+              image="${this.value}"
               alt="Avatar"
               .shape=${this.shape}
               initials=""
@@ -97,6 +98,7 @@ export class SelectAvatar extends LitElement {
     else
       return html` <div class="column" style="align-items: center;">
         <sl-button
+          .disabled=${this.disabled}
           variant="default"
           size="large"
           circle

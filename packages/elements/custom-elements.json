@@ -19,14 +19,6 @@
               }
             },
             {
-              "kind": "field",
-              "name": "options",
-              "type": {
-                "text": "FormFieldControllerOptions"
-              },
-              "default": "{\n      ...{\n        form: () => this.host.closest(\"form\"),\n        disabled: () => false,\n        reportValidity: () => true,\n        reset: () => {},\n      },\n      ...options,\n    }"
-            },
-            {
               "kind": "method",
               "name": "hostConnected"
             },
@@ -485,11 +477,18 @@
             },
             {
               "kind": "field",
-              "name": "_avatar",
+              "name": "value",
               "type": {
                 "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
               },
-              "privacy": "private"
+              "default": "false"
             },
             {
               "kind": "field",
@@ -510,15 +509,19 @@
             {
               "kind": "field",
               "name": "_controller",
-              "default": "new FormFieldController(this, {\n    name: () => this.name,\n    value: () => this._avatar,\n    reportValidity: () => {\n      const invalid = this.required && !this._avatar;\n      if (invalid) {\n        this._errorInput.setCustomValidity(\"Avatar is required\");\n        this._errorInput.reportValidity();\n      }\n\n      return !invalid;\n    },\n  })"
+              "default": "new FormFieldController(this)"
+            },
+            {
+              "kind": "method",
+              "name": "reportValidity"
+            },
+            {
+              "kind": "method",
+              "name": "reset"
             },
             {
               "kind": "method",
               "name": "onAvatarUploaded"
-            },
-            {
-              "kind": "method",
-              "name": "clear"
             },
             {
               "kind": "method",
