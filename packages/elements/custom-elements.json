@@ -4,6 +4,88 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "src/form-field-controller.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "FormFieldController",
+          "members": [
+            {
+              "kind": "field",
+              "name": "form",
+              "type": {
+                "text": "HTMLFormElement | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "options",
+              "type": {
+                "text": "FormFieldControllerOptions"
+              },
+              "default": "{\n      ...{\n        form: () => this.host.closest(\"form\"),\n        disabled: () => false,\n        reportValidity: () => true,\n        reset: () => {},\n      },\n      ...options,\n    }"
+            },
+            {
+              "kind": "method",
+              "name": "hostConnected"
+            },
+            {
+              "kind": "method",
+              "name": "hostDisconnected"
+            },
+            {
+              "kind": "method",
+              "name": "handleFormData",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "FormDataEvent"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleFormSubmit",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "handleFormReset",
+              "parameters": [
+                {
+                  "name": "_event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "FormFieldController",
+          "declaration": {
+            "name": "FormFieldController",
+            "module": "src/form-field-controller.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/holo-hash-property.ts",
       "declarations": [
         {
@@ -126,6 +208,22 @@
           "name": "*",
           "declaration": {
             "name": "*",
+            "package": "\"./form-field-controller.js\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./on-submit.js\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
             "package": "\"./holo-hash-property.js\""
           }
         },
@@ -141,12 +239,35 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/on-submit.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "onSubmit"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "onSubmit",
+          "declaration": {
+            "name": "onSubmit",
+            "module": "src/on-submit.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/shared-styles.ts",
       "declarations": [
         {
           "kind": "variable",
           "name": "sharedStyles",
-          "default": "css`\n  .row {\n    display: flex;\n    flex-direction: row;\n  }\n  .column {\n    display: flex;\n    flex-direction: column;\n  }\n  .small-margin {\n    margin-top: 6px;\n  }\n  .big-margin {\n    margin-top: 23px;\n  }\n\n  .fill {\n    flex: 1;\n    height: 100%;\n  }\n\n  .title {\n    font-size: 20px;\n  }\n\n  .center-content {\n    align-items: center;\n    justify-content: center;\n  }\n\n  .placeholder {\n    color: rgba(0, 0, 0, 0.7);\n  }\n\n  .label {\n    color: var(--mdc-text-field-label-ink-color, rgba(0, 0, 0, 0.6));\n    font-family: var(\n      --mdc-typography-caption-font-family,\n      var(--mdc-typography-font-family, Roboto, sans-serif)\n    );\n    font-size: var(--mdc-typography-caption-font-size, 0.79rem);\n    font-weight: var(--mdc-typography-caption-font-weight, 400);\n  }\n\n  .flex-scrollable-parent {\n    position: relative;\n    display: flex;\n    flex: 1;\n  }\n\n  .flex-scrollable-container {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n  }\n\n  .flex-scrollable-x {\n    max-width: 100%;\n    overflow-x: auto;\n  }\n  .flex-scrollable-y {\n    max-height: 100%;\n    overflow-y: auto;\n  }\n`"
+          "type": {
+            "text": "array"
+          },
+          "default": "[\n  css`\n    .row {\n      display: flex;\n      flex-direction: row;\n    }\n    .column {\n      display: flex;\n      flex-direction: column;\n    }\n    .small-margin {\n      margin-top: 6px;\n    }\n    .big-margin {\n      margin-top: 23px;\n    }\n\n    .fill {\n      flex: 1;\n      height: 100%;\n    }\n\n    .title {\n      font-size: 20px;\n    }\n\n    .center-content {\n      align-items: center;\n      justify-content: center;\n    }\n\n    .placeholder {\n      color: var(--sl-color-gray-700);\n    }\n\n    .flex-scrollable-parent {\n      position: relative;\n      display: flex;\n      flex: 1;\n    }\n\n    .flex-scrollable-container {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n    }\n\n    .flex-scrollable-x {\n      max-width: 100%;\n      overflow-x: auto;\n    }\n    .flex-scrollable-y {\n      max-height: 100%;\n      overflow-y: auto;\n    }\n    :host,\n    .sl-theme-dark {\n      color: white;\n    }\n  `,\n]"
         }
       ],
       "exports": [
@@ -340,6 +461,22 @@
           "members": [
             {
               "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"avatar\""
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
               "name": "shape",
               "type": {
                 "text": "\"circle\" | \"square\" | \"rounded\""
@@ -361,6 +498,19 @@
                 "text": "HTMLInputElement"
               },
               "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_errorInput",
+              "type": {
+                "text": "HTMLInputElement"
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_controller",
+              "default": "new FormFieldController(this, {\n    name: () => this.name,\n    value: () => this._avatar,\n    reportValidity: () => {\n      const invalid = this.required && !this._avatar;\n      if (invalid) {\n        this._errorInput.setCustomValidity(\"Avatar is required\");\n        this._errorInput.reportValidity();\n      }\n\n      return !invalid;\n    },\n  })"
             },
             {
               "kind": "method",
