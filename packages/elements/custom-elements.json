@@ -226,6 +226,77 @@
             "name": "*",
             "package": "\"./icon.js\""
           }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./notify.js\""
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/notify.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "notify",
+          "parameters": [
+            {
+              "name": "message",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "variant",
+              "default": "\"primary\""
+            },
+            {
+              "name": "iconPath",
+              "default": "mdiInformationOutline",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "name": "duration",
+              "default": "3000"
+            }
+          ]
+        },
+        {
+          "kind": "function",
+          "name": "notifyError",
+          "parameters": [
+            {
+              "name": "message",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "notify",
+          "declaration": {
+            "name": "notify",
+            "module": "src/notify.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "notifyError",
+          "declaration": {
+            "name": "notifyError",
+            "module": "src/notify.ts"
+          }
         }
       ]
     },
