@@ -1,5 +1,5 @@
-import { mdiAlertOutline, mdiInformationOutline } from "@mdi/js";
-import { wrapPathInSvg } from "icon";
+import { mdiAlertCircleOutline, mdiInformationOutline } from "@mdi/js";
+import { wrapPathInSvg } from "./icon.js";
 
 // Always escape HTML for text arguments!
 function escapeHtml(html) {
@@ -30,5 +30,5 @@ export function notify(
 }
 
 export function notifyError(message: string) {
-  return notify(message, "danger", mdiAlertOutline);
+  return notify(message, "danger", mdiAlertCircleOutline);
 }
