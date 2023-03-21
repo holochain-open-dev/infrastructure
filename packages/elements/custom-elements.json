@@ -305,11 +305,32 @@
       "path": "src/on-submit.ts",
       "declarations": [
         {
+          "kind": "function",
+          "name": "serialize",
+          "parameters": [
+            {
+              "name": "form",
+              "type": {
+                "text": "HTMLFormElement"
+              }
+            }
+          ],
+          "description": "Serializes a form and returns a plain object. If a form control with the same name appears more than once, the\nproperty will be converted to an array."
+        },
+        {
           "kind": "variable",
           "name": "onSubmit"
         }
       ],
       "exports": [
+        {
+          "kind": "js",
+          "name": "serialize",
+          "declaration": {
+            "name": "serialize",
+            "module": "src/on-submit.ts"
+          }
+        },
         {
           "kind": "js",
           "name": "onSubmit",
