@@ -7,11 +7,19 @@ import {
   EntryHash,
   AgentPubKey,
   ActionHash,
+  RecordEntry,
+  DnaHash,
 } from "@holochain/client";
+import { hash, HashType } from "./hash.js";
 
 export function fakeEntryHash(): EntryHash {
   const randomBytes = randomByteArray(36);
   return new Uint8Array([0x84, 0x21, 0x24, ...randomBytes]);
+}
+
+export function fakeDnaHash(): DnaHash {
+  const randomBytes = randomByteArray(36);
+  return new Uint8Array([0x84, 0x2d, 0x24, ...randomBytes]);
 }
 
 /**
@@ -39,6 +47,7 @@ export function fakeActionHash(): ActionHash {
 }
 
 export function fakeCreateAction(
+  entry_hash: EntryHash = fakeEntryHash(),
   author: AgentPubKey = fakeAgentPubKey()
 ): Action {
   return {
@@ -54,7 +63,7 @@ export function fakeCreateAction(
         zome_index: 0,
       },
     },
-    entry_hash: fakeEntryHash(),
+    entry_hash,
   };
 }
 
@@ -65,18 +74,63 @@ export function fakeEntry(entry: any = "some data"): Entry {
   };
 }
 
-export function fakeRecord(
-  entry: Entry = fakeEntry(),
-  action: Action = fakeCreateAction()
-): Record {
+export function fakeDeleteEntry(
+  deletes_address: ActionHash = fakeActionHash(),
+  deletes_entry_address: EntryHash = fakeEntryHash(),
+  author: AgentPubKey = fakeAgentPubKey()
+): Action {
   return {
-    entry: {
-      Present: entry,
+    type: ActionType.Delete,
+    author,
+    timestamp: Date.now() * 1000,
+    action_seq: 10,
+    prev_action: fakeActionHash(),
+    deletes_address,
+    deletes_entry_address,
+  };
+}
+
+export function fakeUpdateEntry(
+  original_action_address: ActionHash = fakeActionHash(),
+  entry: Entry = fakeEntry(),
+  original_entry_address: EntryHash = fakeEntryHash(),
+  author: AgentPubKey = fakeAgentPubKey()
+): Action {
+  return {
+    type: ActionType.Update,
+    author,
+    timestamp: Date.now() * 1000,
+    action_seq: 10,
+    prev_action: fakeActionHash(),
+    original_entry_address,
+    original_action_address,
+    entry_hash: hash(entry, HashType.ENTRY),
+    entry_type: {
+      App: {
+        entry_index: 0,
+        visibility: { Public: null },
+        zome_index: 0,
+      },
     },
+  };
+}
+
+export function fakeRecord(action: Action, entry?: Entry | undefined): Record {
+  let recordEntry: RecordEntry = {
+    NotApplicable: null,
+  };
+  if (!entry) {
+    recordEntry = {
+      Present: entry,
+    };
+  }
+
+  return {
+    entry: recordEntry,
     signed_action: {
       hashed: {
         content: action,
-        hash: fakeActionHash(),
+        hash: hash(action, HashType.ACTION),
       },
       signature: randomByteArray(256),
     },
