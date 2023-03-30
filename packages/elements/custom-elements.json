@@ -474,7 +474,7 @@
             },
             {
               "kind": "field",
-              "name": "copyOnClick",
+              "name": "disableCopy",
               "type": {
                 "text": "boolean"
               },
@@ -483,7 +483,7 @@
             },
             {
               "kind": "field",
-              "name": "showOnHover",
+              "name": "disableTooltip",
               "type": {
                 "text": "boolean"
               },

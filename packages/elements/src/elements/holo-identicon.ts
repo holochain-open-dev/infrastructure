@@ -31,13 +31,13 @@ export class HoloIdenticon extends LitElement {
    * Copy AgentPubKey to clipboard on click
    */
   @property({ type: Boolean })
-  copyOnClick = false;
+  disableCopy = false;
 
   /**
    * Show tooltip on hover with truncated AgentPubKey
    */
   @property({ type: Boolean })
-  showOnHover = false;
+  disableTooltip = false;
 
   @query("#canvas")
   private _canvas!: HTMLCanvasElement;
@@ -105,14 +105,15 @@ export class HoloIdenticon extends LitElement {
     const content = html`
       <div
         @click=${() => {
-          if (this.copyOnClick) this.copyHash();
+          if (!this.disableCopy) this.copyHash();
         }}
         style="cursor: pointer; flex-grow: 0"
       >
           ${this.renderCanvas()}
       </div>`;
 
-    return this.showOnHover ? html`
+    return this.disableTooltip ? content :
+     html`
       <sl-tooltip
         id="tooltip"
         placement="top"
@@ -123,8 +124,7 @@ export class HoloIdenticon extends LitElement {
         hoist
       >
         ${content}
-      </sl-tooltip>` 
-      : content;
+      </sl-tooltip>`;
   }
 
   static get styles() {
