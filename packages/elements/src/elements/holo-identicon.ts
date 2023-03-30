@@ -27,6 +27,18 @@ export class HoloIdenticon extends LitElement {
   @property({ type: String })
   shape: "square" | "circle" = "circle";
 
+  /**
+   * Disables showing the tooltip for the hash
+   */
+  @property({ type: Boolean, attribute: "disable-tooltip" })
+  disableTooltip = false;
+
+  /**
+   * Disable copying of the hash on click
+   */
+  @property({ type: Boolean, attribute: "disable-copy" })
+  disableCopy = false;
+
   @query("#canvas")
   private _canvas!: HTMLCanvasElement;
 
@@ -39,6 +51,8 @@ export class HoloIdenticon extends LitElement {
   timeout: any;
 
   async copyHash() {
+    if (this.disableCopy) return;
+
     await navigator.clipboard.writeText(this.strHash);
 
     if (this.timeout) clearTimeout(this.timeout);
@@ -92,7 +106,7 @@ export class HoloIdenticon extends LitElement {
   render() {
     return html`<div
       @click=${() => this.copyHash()}
-      style="cursor: pointer; flex-grow: 0"
+      style="${this.disableCopy ? "" : "cursor: pointer;"} flex-grow: 0"
     >
       <sl-tooltip
         id="tooltip"
@@ -100,7 +114,9 @@ export class HoloIdenticon extends LitElement {
         .content=${this.justCopiedHash
           ? msg("Copied!")
           : `${this.strHash.substring(0, 6)}...`}
-        .trigger=${this.justCopiedHash ? "manual" : "hover focus"}
+        .trigger=${this.disableTooltip || this.justCopiedHash
+          ? "manual"
+          : "hover focus"}
         hoist
       >
         ${this.renderCanvas()}

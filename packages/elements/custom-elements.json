@@ -474,6 +474,24 @@
             },
             {
               "kind": "field",
+              "name": "disableTooltip",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables showing the tooltip for the hash"
+            },
+            {
+              "kind": "field",
+              "name": "disableCopy",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disable copying of the hash on click"
+            },
+            {
+              "kind": "field",
               "name": "_canvas",
               "type": {
                 "text": "HTMLCanvasElement"
