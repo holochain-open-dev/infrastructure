@@ -474,6 +474,24 @@
             },
             {
               "kind": "field",
+              "name": "copyOnClick",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Copy AgentPubKey to clipboard on click"
+            },
+            {
+              "kind": "field",
+              "name": "showOnHover",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Show tooltip on hover with truncated AgentPubKey"
+            },
+            {
+              "kind": "field",
               "name": "_canvas",
               "type": {
                 "text": "HTMLCanvasElement"

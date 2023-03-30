@@ -27,6 +27,18 @@ export class HoloIdenticon extends LitElement {
   @property({ type: String })
   shape: "square" | "circle" = "circle";
 
+  /**
+   * Copy AgentPubKey to clipboard on click
+   */
+  @property({ type: Boolean })
+  copyOnClick = false;
+
+  /**
+   * Show tooltip on hover with truncated AgentPubKey
+   */
+  @property({ type: Boolean })
+  showOnHover = false;
+
   @query("#canvas")
   private _canvas!: HTMLCanvasElement;
 
@@ -90,10 +102,17 @@ export class HoloIdenticon extends LitElement {
   }
 
   render() {
-    return html`<div
-      @click=${() => this.copyHash()}
-      style="cursor: pointer; flex-grow: 0"
-    >
+    const content = html`
+      <div
+        @click=${() => {
+          if (this.copyOnClick) this.copyHash();
+        }}
+        style="cursor: pointer; flex-grow: 0"
+      >
+          ${this.renderCanvas()}
+      </div>`;
+
+    return this.showOnHover ? html`
       <sl-tooltip
         id="tooltip"
         placement="top"
@@ -103,9 +122,9 @@ export class HoloIdenticon extends LitElement {
         .trigger=${this.justCopiedHash ? "manual" : "hover focus"}
         hoist
       >
-        ${this.renderCanvas()}
-      </sl-tooltip>
-    </div>`;
+        ${content}
+      </sl-tooltip>` 
+      : content;
   }
 
   static get styles() {
