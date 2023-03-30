@@ -113,9 +113,9 @@ export function asyncDeriveStore<T, S extends AsyncReadable<any>>(
           if (unsubscribe) unsubscribe();
         };
       } else {
-        return (v as AsyncReadable<T>).subscribe(
-          set as Subscriber<AsyncStatus<T>>
-        );
+        return (v as AsyncReadable<T>).subscribe((v) => {
+          set(v);
+        });
       }
     }
     return undefined;
