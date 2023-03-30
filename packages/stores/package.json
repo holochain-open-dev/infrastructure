@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/stores",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "Re-export of svelte/store, with additional utilities to build reusable holochain-open-dev modules",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
