@@ -1,5 +1,5 @@
-import { AsyncReadable, AsyncStatus } from "async-readable";
 import { writable } from "svelte/store";
+import { AsyncReadable, AsyncStatus } from "./async-readable.js";
 
 // Starts loading, and retries until the promise returns a correct value
 // If there is an error it is discarded
