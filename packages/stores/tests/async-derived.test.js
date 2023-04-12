@@ -20,7 +20,7 @@ it("asyncReadable", async () => {
   });
 });
 
-it("asyncDerived", async () => {
+it("asyncDerived join", async () => {
   const asyncReadableStore = asyncReadable(async (set) => {
     await sleep(10);
     set(1);

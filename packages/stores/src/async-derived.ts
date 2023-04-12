@@ -64,7 +64,7 @@ export function join<S extends Array<AsyncReadable<any> | Readable<any>>>(
     if (firstLoading) {
       return firstLoading;
     }
-
+    console.log("values", values);
     const v = values.map((v) => {
       if (v && v.status === "complete") return v.value;
       return v;

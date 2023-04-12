@@ -119,7 +119,7 @@ export function fakeRecord(action: Action, entry?: Entry | undefined): Record {
   let recordEntry: RecordEntry = {
     NotApplicable: null,
   };
-  if (!entry) {
+  if (entry) {
     recordEntry = {
       Present: entry,
     };

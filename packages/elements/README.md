@@ -9,7 +9,7 @@ Common elements and element related utilities to build Holochain web application
 Import it like this:
 
 ```js
-import "@holochain-open-dev/elements/elements/holo-identicon.js";
+import "@holochain-open-dev/elements/dist/elements/holo-identicon.js";
 ```
 
 And then you can use it like this in your html:
@@ -25,7 +25,7 @@ And then you can use it like this in your html:
 Import it like this:
 
 ```js
-import "@holochain-open-dev/elements/elements/display-error.js";
+import "@holochain-open-dev/elements/dist/elements/display-error.js";
 ```
 
 And then you can use it like this in your html:
@@ -39,7 +39,7 @@ And then you can use it like this in your html:
 Import it like this:
 
 ```js
-import "@holochain-open-dev/elements/elements/select-avatar.js";
+import "@holochain-open-dev/elements/dist/elements/select-avatar.js";
 ```
 
 And then you can use it like this in your html:
