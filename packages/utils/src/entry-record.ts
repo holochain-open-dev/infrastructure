@@ -30,3 +30,14 @@ export class EntryRecord<T> {
     return (this.record.signed_action.hashed.content as Create).entry_hash;
   }
 }
+
+export function decodeCountersignedEntry<T>(record: Record): T | undefined {
+  const entry = (record.entry as any)?.Present?.entry[1];
+  return decode(entry) as T;
+}
+
+export class CountersignedEntryRecord<T> extends EntryRecord<T> {
+  get entry(): T {
+    return decodeCountersignedEntry(super.record) as T;
+  }
+}
