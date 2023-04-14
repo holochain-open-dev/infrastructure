@@ -38,6 +38,6 @@ export function decodeCountersignedEntry<T>(record: Record): T | undefined {
 
 export class CountersignedEntryRecord<T> extends EntryRecord<T> {
   get entry(): T {
-    return decodeCountersignedEntry(super.record) as T;
+    return decodeCountersignedEntry(this.record) as T;
   }
 }
