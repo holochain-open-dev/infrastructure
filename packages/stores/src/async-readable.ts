@@ -90,10 +90,12 @@ export function lazyLoadAndPoll<T>(
   return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
     let interval;
     let currentValue;
+    let firstLoad = true;
     async function l() {
       const v = await load();
-      if (!isEqual(v, currentValue)) {
+      if (firstLoad || !isEqual(v, currentValue)) {
         currentValue = v;
+        firstLoad = false;
         set({ status: "complete", value: v });
       }
     }

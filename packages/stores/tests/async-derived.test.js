@@ -1,6 +1,11 @@
 import { expect } from "@esm-bundle/chai";
 import { get, readable } from "svelte/store";
-import { join, asyncReadable, asyncDerived } from "../dist-rollup";
+import {
+  join,
+  asyncReadable,
+  asyncDerived,
+  lazyLoadAndPoll,
+} from "../dist-rollup";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
 
@@ -51,4 +56,20 @@ it("asyncDerived with promise", async () => {
   await sleep(40);
 
   expect(get(d)).to.deep.equal({ status: "complete", value: 3 });
+});
+
+it("lazyLoadAndPoll with undefined", async () => {
+  const store = lazyLoadAndPoll(async () => {
+    await sleep(10);
+    return undefined;
+  });
+  const subscriber = store.subscribe(() => {});
+
+  expect(get(store)).to.deep.equal({ status: "pending" });
+  await sleep(20);
+
+  expect(get(store)).to.deep.equal({
+    status: "complete",
+    value: undefined,
+  });
 });
