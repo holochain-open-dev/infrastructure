@@ -60,5 +60,16 @@ export const sharedStyles = [
     :host {
       color: var(--sl-color-neutral-1000);
     }
+
+    sl-card {
+      display: flex;
+    }
+    sl-card::part(base) {
+      flex: 1;
+    }
+    sl-card::part(body) {
+      display: flex;
+      flex: 1;
+    }
   `,
 ];
