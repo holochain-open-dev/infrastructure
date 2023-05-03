@@ -1,6 +1,6 @@
-import { expect } from "@esm-bundle/chai";
+import { expect, it } from "vitest";
 import { get, readable } from "svelte/store";
-import { asyncReadable, lazyLoad, asyncDeriveStore } from "../dist-rollup";
+import { asyncReadable, lazyLoad, asyncDeriveStore } from "../src";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
 

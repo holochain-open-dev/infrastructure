@@ -1,6 +1,6 @@
-import { expect } from "@esm-bundle/chai";
+import { expect, it } from "vitest";
 import { get, readable } from "svelte/store";
-import { deriveStore } from "../dist-rollup";
+import { deriveStore } from "../src";
 
 it("deriveStore", async () => {
   const readableStore1 = readable(1);

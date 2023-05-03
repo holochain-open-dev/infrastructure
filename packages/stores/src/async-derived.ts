@@ -121,3 +121,11 @@ export function asyncDeriveStore<T, S extends AsyncReadable<any>>(
     return undefined;
   });
 }
+
+// Derives the given store, and returns the value of the original joined with the derived value
+export function asyncDeriveAndJoin<T, U>(
+  store: AsyncReadable<T>,
+  fn: (arg: T) => AsyncReadable<U>
+): AsyncReadable<[T, U]> {
+  return asyncDeriveStore(store, (v) => asyncDerived(fn(v), (u) => [v, u]));
+}

@@ -71,5 +71,8 @@ export const sharedStyles = [
       display: flex;
       flex: 1;
     }
+    sl-drawer::part(body) {
+      display: flex;
+    }
   `,
 ];

@@ -21,6 +21,7 @@
     "no-param-reassign": "off",
     "lit-a11y/click-events-have-key-events": "off",
     "operator-assignment": "off",
-    "no-lonely-if": "off"
+    "no-lonely-if": "off",
+    "no-redeclare": "off"
   }
 }
