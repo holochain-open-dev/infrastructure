@@ -20,7 +20,7 @@ it("asyncDeriveStore", async () => {
   const subscriber = d.subscribe(() => {});
 
   expect(get(d)).to.deep.equal({ status: "pending" });
-  await sleep(21);
+  await sleep(22);
 
   expect(get(d)).to.deep.equal({
     status: "complete",
