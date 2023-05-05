@@ -21,7 +21,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@holochain/client": "^0.14.0",
+    "@holochain/client": "^0.14.1",
     "@msgpack/msgpack": "^2.7.2",
     "blakejs": "^1.2.1",
     "emittery": "^1.0.1",
