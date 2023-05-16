@@ -27,13 +27,24 @@ export class FormFieldController implements ReactiveController {
     this.handleFormReset = this.handleFormReset.bind(this);
   }
 
+  closestElement(selector: string) {
+    function __closestFrom(el: any): any {
+      if (!el || el === document || el === window) return null;
+      if (el.assignedSlot) el = el.assignedSlot;
+      const found = el.closest(selector);
+      return found ? found : __closestFrom(el.getRootNode().host);
+    }
+    return __closestFrom(this.host);
+  }
+
   hostConnected() {
-    this.form = this.host.closest("form");
+    this.form = this.closestElement("form");
 
     if (this.form) {
       this.form.addEventListener("formdata", this.handleFormData);
       this.form.addEventListener("submit", this.handleFormSubmit);
       this.form.addEventListener("reset", this.handleFormReset);
+      this.form.dispatchEvent(new CustomEvent("update-form"));
     }
   }
 

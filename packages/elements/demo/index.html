@@ -21,17 +21,70 @@
     </display-error>
     <display-error error="some full error"> </display-error>
     <display-error error="a tooltip error" tooltip> </display-error>
+
+    <form-test></form-test>
+
     <script type="module">
+      import { LitElement, html } from "lit";
+      import { repeat } from "lit/directives/repeat.js";
       import "@shoelace-style/shoelace/dist/themes/dark.css";
       import "@shoelace-style/shoelace/dist/components/alert/alert.js";
       import "@shoelace-style/shoelace/dist/components/icon/icon.js";
+      import "@shoelace-style/shoelace/dist/components/input/input.js";
       import "../src/elements/holo-identicon.ts";
       import "../src/elements/select-avatar.ts";
       import "../src/elements/display-error.ts";
+      import { onSubmit } from "../src/on-submit.ts";
 
       import { notifyError } from "../src/notify.ts";
 
       notifyError("eeeee");
+
+      customElements.define(
+        "form-field",
+        class extends LitElement {
+          constructor() {
+            super();
+            this.loaded = 0;
+          }
+
+          submit(f) {
+            console.log(f);
+          }
+
+          render() {
+            return html`
+              ${repeat(
+                Array(this.loaded),
+                (i) => i,
+                (i) => html`<select-avatar name="he" required></select-avatar>`
+              )}
+            `;
+          }
+        }
+      );
+
+      customElements.define(
+        "form-test",
+        class extends LitElement {
+          constructor() {
+            super();
+          }
+
+          submit(f) {
+            console.log(f);
+          }
+
+          render() {
+            return html`
+              <form id="form" ${onSubmit((f) => this.submit(f))}>
+                <form-field></form-field>
+                <input type="submit" />
+              </form>
+            `;
+          }
+        }
+      );
     </script>
   </body>
 </html>

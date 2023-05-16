@@ -32,18 +32,55 @@ export function serialize(form: HTMLFormElement) {
 }
 
 class OnSubmitDirective extends Directive {
+  listener: (e: SubmitEvent) => any | undefined;
+
+  initialized = false;
+
   update(part: AttributePart, props: unknown[]) {
-    setTimeout(() => {
-      (part.element as HTMLFormElement).addEventListener(
-        "submit",
-        (e: SubmitEvent) => {
+    if (!this.initialized) {
+      this.initialized = true;
+      const form = part.element as HTMLFormElement;
+      form.addEventListener("update-form", (e) => {
+        if (this.listener) {
+          (part.element as HTMLFormElement).removeEventListener(
+            "submit",
+            this.listener
+          );
+        }
+        this.listener = (e: SubmitEvent) => {
           e.preventDefault();
           const formData = serialize(part.element as HTMLFormElement) as Record<
             string,
             string
           >;
           (props[0] as (formData: any) => void)(formData);
-        }
+        };
+
+        (part.element as HTMLFormElement).addEventListener(
+          "submit",
+          this.listener
+        );
+      });
+    }
+    setTimeout(() => {
+      if (this.listener) {
+        (part.element as HTMLFormElement).removeEventListener(
+          "submit",
+          this.listener
+        );
+      }
+      this.listener = (e: SubmitEvent) => {
+        e.preventDefault();
+        const formData = serialize(part.element as HTMLFormElement) as Record<
+          string,
+          string
+        >;
+        (props[0] as (formData: any) => void)(formData);
+      };
+
+      (part.element as HTMLFormElement).addEventListener(
+        "submit",
+        this.listener
       );
     }, 100);
   }

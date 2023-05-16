@@ -20,6 +20,18 @@
             },
             {
               "kind": "method",
+              "name": "closestElement",
+              "parameters": [
+                {
+                  "name": "selector",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
               "name": "hostConnected"
             },
             {
@@ -351,7 +363,7 @@
           "type": {
             "text": "array"
           },
-          "default": "[\n  css`\n    .row {\n      display: flex;\n      flex-direction: row;\n    }\n    .column {\n      display: flex;\n      flex-direction: column;\n    }\n    .small-margin {\n      margin-top: 6px;\n    }\n    .big-margin {\n      margin-top: 23px;\n    }\n\n    .fill {\n      flex: 1;\n      height: 100%;\n    }\n\n    .title {\n      font-size: 20px;\n    }\n\n    .center-content {\n      align-items: center;\n      justify-content: center;\n    }\n\n    .placeholder {\n      color: var(--sl-color-gray-700);\n    }\n\n    .flex-scrollable-parent {\n      position: relative;\n      display: flex;\n      flex: 1;\n    }\n\n    .flex-scrollable-container {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n    }\n\n    .flex-scrollable-x {\n      max-width: 100%;\n      overflow-x: auto;\n    }\n    .flex-scrollable-y {\n      max-height: 100%;\n      overflow-y: auto;\n    }\n    :host {\n      color: var(--sl-color-neutral-1000);\n    }\n\n    sl-card {\n      display: flex;\n    }\n    sl-card::part(base) {\n      flex: 1;\n    }\n    sl-card::part(body) {\n      display: flex;\n      flex: 1;\n    }\n  `,\n]"
+          "default": "[\n  css`\n    .row {\n      display: flex;\n      flex-direction: row;\n    }\n    .column {\n      display: flex;\n      flex-direction: column;\n    }\n    .small-margin {\n      margin-top: 6px;\n    }\n    .big-margin {\n      margin-top: 23px;\n    }\n\n    .fill {\n      flex: 1;\n      height: 100%;\n    }\n\n    .title {\n      font-size: 20px;\n    }\n\n    .center-content {\n      align-items: center;\n      justify-content: center;\n    }\n\n    .placeholder {\n      color: var(--sl-color-gray-700);\n    }\n\n    .flex-scrollable-parent {\n      position: relative;\n      display: flex;\n      flex: 1;\n    }\n\n    .flex-scrollable-container {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n    }\n\n    .flex-scrollable-x {\n      max-width: 100%;\n      overflow-x: auto;\n    }\n    .flex-scrollable-y {\n      max-height: 100%;\n      overflow-y: auto;\n    }\n    :host {\n      color: var(--sl-color-neutral-1000);\n    }\n\n    sl-card {\n      display: flex;\n    }\n    sl-card::part(base) {\n      flex: 1;\n    }\n    sl-card::part(body) {\n      display: flex;\n      flex: 1;\n    }\n    sl-drawer::part(body) {\n      display: flex;\n    }\n  `,\n]"
         }
       ],
       "exports": [
