@@ -9,3 +9,5 @@ export * from "./record-bag.js";
 export * from "./entry-record.js";
 export * from "./cell.js";
 export * from "./entry-state.js";
+export * from "./hrl.js";
+export * from "./role-name.js";
