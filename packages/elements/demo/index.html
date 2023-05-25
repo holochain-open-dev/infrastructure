@@ -35,7 +35,7 @@
       import "../src/elements/holo-identicon.ts";
       import "../src/elements/select-avatar.ts";
       import "../src/elements/display-error.ts";
-      import "../src/elements/sl-quill.ts";
+      import "../src/elements/sl-textarea-prosemirror.ts";
       import { onSubmit } from "../src/on-submit.ts";
 
       import { notifyError } from "../src/notify.ts";
@@ -73,6 +73,10 @@
             super();
           }
 
+          firstUpdated() {
+            this.shadowRoot.getElementById("form").reset();
+          }
+
           submit(f) {
             console.log(f);
           }
@@ -86,14 +90,16 @@
                   help-text="helptext"
                   placeholder="placeholder"
                   label="Label"
+                  .defaultValue=${"Default"}
                 ></sl-textarea>
-                <sl-quill
+                <sl-textarea-prosemirror
                   placeholder="placeholder"
                   help-text="helptext"
                   label="Label"
+                  .defaultValue=${"Default"}
                   required
                   name="hi"
-                ></sl-quill>
+                ></sl-textarea-prosemirror>
                 <input type="submit" />
               </form>
             `;

@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/elements",
-  "version": "0.5.4",
+  "version": "0.5.6",
   "description": "Common utilities and elements to build Holochain web applications",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
@@ -26,9 +26,12 @@
     "@holochain/client": "^0.14.1",
     "@lit/localize": "^0.11.4",
     "@mdi/js": "^7.1.96",
-    "@scoped-elements/quill": "^0.1.2",
     "@shoelace-style/shoelace": "^2.3.0",
-    "lit": "^2.6.1"
+    "lit": "^2.6.1",
+    "prosemirror-commands": "^1.5.2",
+    "prosemirror-keymap": "^1.2.2",
+    "prosemirror-state": "^1.4.3",
+    "prosemirror-view": "^1.31.3"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.4.17",

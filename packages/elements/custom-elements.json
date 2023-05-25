@@ -678,7 +678,7 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/elements/sl-quill.ts",
+      "path": "src/elements/sl-textarea-prosemirror.ts",
       "declarations": [
         {
           "kind": "function",
@@ -703,12 +703,12 @@
         {
           "kind": "variable",
           "name": "styles",
-          "default": "css`\n  :host {\n    box-sizing: border-box;\n  }\n\n  :host *,\n  :host *::before,\n  :host *::after {\n    box-sizing: inherit;\n  }\n\n  [hidden] {\n    display: none !important;\n  }\n\n  :host {\n    display: block;\n  }\n  .form-control .form-control__label {\n    display: none;\n  }\n\n  .form-control .form-control__help-text {\n    display: none;\n  }\n\n  /* Label */\n  .form-control--has-label .form-control__label {\n    display: inline-block;\n    color: var(--sl-input-label-color);\n    margin-bottom: var(--sl-spacing-3x-small);\n  }\n\n  .form-control--has-label.form-control--small .form-control__label {\n    font-size: var(--sl-input-label-font-size-small);\n  }\n\n  .form-control--has-label.form-control--medium .form-control__label {\n    font-size: var(--sl-input-label-font-size-medium);\n  }\n\n  .form-control--has-label.form-control--large .form-control__label {\n    font-size: var(--sl-input-label-font-size-large);\n  }\n\n  :host([required]) .form-control--has-label .form-control__label::after {\n    content: var(--sl-input-required-content);\n    margin-inline-start: var(--sl-input-required-content-offset);\n    color: var(--sl-input-required-content-color);\n  }\n\n  /* Help text */\n  .form-control--has-help-text .form-control__help-text {\n    display: block;\n    color: var(--sl-input-help-text-color);\n    margin-top: var(--sl-spacing-3x-small);\n  }\n\n  .form-control--has-help-text.form-control--small .form-control__help-text {\n    font-size: var(--sl-input-help-text-font-size-small);\n  }\n\n  .form-control--has-help-text.form-control--medium .form-control__help-text {\n    font-size: var(--sl-input-help-text-font-size-medium);\n  }\n\n  .form-control--has-help-text.form-control--large .form-control__help-text {\n    font-size: var(--sl-input-help-text-font-size-large);\n  }\n\n  .form-control--has-help-text.form-control--radio-group\n    .form-control__help-text {\n    margin-top: var(--sl-spacing-2x-small);\n  }\n\n  .textarea {\n    display: flex;\n    align-items: center;\n    position: relative;\n    width: 100%;\n    font-family: var(--sl-input-font-family);\n    font-weight: var(--sl-input-font-weight);\n    line-height: var(--sl-line-height-normal);\n    letter-spacing: var(--sl-input-letter-spacing);\n    vertical-align: middle;\n    transition: var(--sl-transition-fast) color,\n      var(--sl-transition-fast) border, var(--sl-transition-fast) box-shadow,\n      var(--sl-transition-fast) background-color;\n    cursor: text;\n  }\n\n  /* Standard textareas */\n  .textarea--standard {\n    background-color: var(--sl-input-background-color);\n    border: solid var(--sl-input-border-width) var(--sl-input-border-color);\n  }\n\n  .textarea--standard:hover:not(.textarea--disabled) {\n    background-color: var(--sl-input-background-color-hover);\n    border-color: var(--sl-input-border-color-hover);\n  }\n  .textarea--standard:hover:not(.textarea--disabled) .textarea__control {\n    color: var(--sl-input-color-hover);\n  }\n\n  .textarea--standard.textarea--focused:not(.textarea--disabled) {\n    background-color: var(--sl-input-background-color-focus);\n    border-color: var(--sl-input-border-color-focus);\n    color: var(--sl-input-color-focus);\n    box-shadow: 0 0 0 var(--sl-focus-ring-width)\n      var(--sl-input-focus-ring-color);\n  }\n\n  .textarea--standard.textarea--focused:not(.textarea--disabled)\n    .textarea__control {\n    color: var(--sl-input-color-focus);\n  }\n\n  .textarea--standard.textarea--disabled {\n    background-color: var(--sl-input-background-color-disabled);\n    border-color: var(--sl-input-border-color-disabled);\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .textarea--standard.textarea--disabled .textarea__control {\n    color: var(--sl-input-color-disabled);\n  }\n\n  .textarea--standard.textarea--disabled .textarea__control::placeholder {\n    color: var(--sl-input-placeholder-color-disabled);\n  }\n\n  /* Filled textareas */\n  .textarea--filled {\n    border: none;\n    background-color: var(--sl-input-filled-background-color);\n    color: var(--sl-input-color);\n  }\n\n  .textarea--filled:hover:not(.textarea--disabled) {\n    background-color: var(--sl-input-filled-background-color-hover);\n  }\n\n  .textarea--filled.textarea--focused:not(.textarea--disabled) {\n    background-color: var(--sl-input-filled-background-color-focus);\n    outline: var(--sl-focus-ring);\n    outline-offset: var(--sl-focus-ring-offset);\n  }\n\n  .textarea--filled.textarea--disabled {\n    background-color: var(--sl-input-filled-background-color-disabled);\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .textarea__control {\n    flex: 1 1 auto;\n    font-family: inherit;\n    font-size: inherit;\n    font-weight: inherit;\n    line-height: 1.4;\n    color: var(--sl-input-color);\n    border: none;\n    background: none;\n    box-shadow: none;\n    cursor: inherit;\n    -webkit-appearance: none;\n  }\n\n  .textarea__control::-webkit-search-decoration,\n  .textarea__control::-webkit-search-cancel-button,\n  .textarea__control::-webkit-search-results-button,\n  .textarea__control::-webkit-search-results-decoration {\n    -webkit-appearance: none;\n  }\n\n  .textarea__control::placeholder {\n    color: var(--sl-input-placeholder-color);\n    user-select: none;\n  }\n\n  .textarea__control:focus {\n    outline: none;\n  }\n\n  /*\n   * Size modifiers\n   */\n\n  .textarea--small {\n    border-radius: var(--sl-input-border-radius-small);\n    font-size: var(--sl-input-font-size-small);\n  }\n\n  .textarea--small .textarea__control {\n  }\n\n  .textarea--medium {\n    border-radius: var(--sl-input-border-radius-medium);\n    font-size: var(--sl-input-font-size-medium);\n  }\n\n  .textarea--medium .textarea__control {\n  }\n\n  .textarea--large {\n    border-radius: var(--sl-input-border-radius-large);\n    font-size: var(--sl-input-font-size-large);\n  }\n\n  .textarea--large .textarea__control {\n  }\n\n  /*\n   * Resize types\n   */\n\n  .textarea--resize-none .textarea__control {\n    resize: none;\n  }\n\n  .textarea--resize-vertical .textarea__control {\n    resize: vertical;\n  }\n\n  .textarea--resize-auto .textarea__control {\n    height: auto;\n    resize: none;\n    overflow-y: hidden;\n  }\n\n  quill-snow::part(editor) {\n    font-size: var(--sl-input-font-size-medium);\n  }\n  quill-snow {\n    height: 105px;\n  }\n`"
+          "default": "css`\n  :host {\n    box-sizing: border-box;\n  }\n\n  :host *,\n  :host *::before,\n  :host *::after {\n    box-sizing: inherit;\n  }\n\n  [hidden] {\n    display: none !important;\n  }\n\n  :host {\n    display: block;\n  }\n  .form-control .form-control__label {\n    display: none;\n  }\n\n  .form-control .form-control__help-text {\n    display: none;\n  }\n\n  /* Label */\n  .form-control--has-label .form-control__label {\n    display: inline-block;\n    color: var(--sl-input-label-color);\n    margin-bottom: var(--sl-spacing-3x-small);\n  }\n\n  .form-control--has-label.form-control--small .form-control__label {\n    font-size: var(--sl-input-label-font-size-small);\n  }\n\n  .form-control--has-label.form-control--medium .form-control__label {\n    font-size: var(--sl-input-label-font-size-medium);\n  }\n\n  .form-control--has-label.form-control--large .form-control__label {\n    font-size: var(--sl-input-label-font-size-large);\n  }\n\n  :host([required]) .form-control--has-label .form-control__label::after {\n    content: var(--sl-input-required-content);\n    margin-inline-start: var(--sl-input-required-content-offset);\n    color: var(--sl-input-required-content-color);\n  }\n\n  /* Help text */\n  .form-control--has-help-text .form-control__help-text {\n    display: block;\n    color: var(--sl-input-help-text-color);\n    margin-top: var(--sl-spacing-3x-small);\n  }\n\n  .form-control--has-help-text.form-control--small .form-control__help-text {\n    font-size: var(--sl-input-help-text-font-size-small);\n  }\n\n  .form-control--has-help-text.form-control--medium .form-control__help-text {\n    font-size: var(--sl-input-help-text-font-size-medium);\n  }\n\n  .form-control--has-help-text.form-control--large .form-control__help-text {\n    font-size: var(--sl-input-help-text-font-size-large);\n  }\n\n  .form-control--has-help-text.form-control--radio-group\n    .form-control__help-text {\n    margin-top: var(--sl-spacing-2x-small);\n  }\n\n  .textarea {\n    display: flex;\n    align-items: center;\n    position: relative;\n    width: 100%;\n    font-family: var(--sl-input-font-family);\n    font-weight: var(--sl-input-font-weight);\n    line-height: var(--sl-line-height-normal);\n    letter-spacing: var(--sl-input-letter-spacing);\n    vertical-align: middle;\n    transition: var(--sl-transition-fast) color,\n      var(--sl-transition-fast) border, var(--sl-transition-fast) box-shadow,\n      var(--sl-transition-fast) background-color;\n    cursor: text;\n  }\n\n  /* Standard textareas */\n  .textarea--standard {\n    background-color: var(--sl-input-background-color);\n    border: solid var(--sl-input-border-width) var(--sl-input-border-color);\n  }\n\n  .textarea--standard:hover:not(.textarea--disabled) {\n    background-color: var(--sl-input-background-color-hover);\n    border-color: var(--sl-input-border-color-hover);\n  }\n  .textarea--standard:hover:not(.textarea--disabled) .textarea__control {\n    color: var(--sl-input-color-hover);\n  }\n\n  .textarea--standard.textarea--focused:not(.textarea--disabled) {\n    background-color: var(--sl-input-background-color-focus);\n    border-color: var(--sl-input-border-color-focus);\n    color: var(--sl-input-color-focus);\n    box-shadow: 0 0 0 var(--sl-focus-ring-width)\n      var(--sl-input-focus-ring-color);\n  }\n\n  .textarea--standard.textarea--focused:not(.textarea--disabled)\n    .textarea__control {\n    color: var(--sl-input-color-focus);\n  }\n\n  .textarea--standard.textarea--disabled {\n    background-color: var(--sl-input-background-color-disabled);\n    border-color: var(--sl-input-border-color-disabled);\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .textarea--standard.textarea--disabled .textarea__control {\n    color: var(--sl-input-color-disabled);\n  }\n\n  .textarea--standard.textarea--disabled .textarea__control::placeholder {\n    color: var(--sl-input-placeholder-color-disabled);\n  }\n\n  /* Filled textareas */\n  .textarea--filled {\n    border: none;\n    background-color: var(--sl-input-filled-background-color);\n    color: var(--sl-input-color);\n  }\n\n  .textarea--filled:hover:not(.textarea--disabled) {\n    background-color: var(--sl-input-filled-background-color-hover);\n  }\n\n  .textarea--filled.textarea--focused:not(.textarea--disabled) {\n    background-color: var(--sl-input-filled-background-color-focus);\n    outline: var(--sl-focus-ring);\n    outline-offset: var(--sl-focus-ring-offset);\n  }\n\n  .textarea--filled.textarea--disabled {\n    background-color: var(--sl-input-filled-background-color-disabled);\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .textarea__control {\n    flex: 1 1 auto;\n    font-family: inherit;\n    font-size: inherit;\n    font-weight: inherit;\n    line-height: 1.4;\n    color: var(--sl-input-color);\n    border: none;\n    background: none;\n    box-shadow: none;\n    cursor: inherit;\n    -webkit-appearance: none;\n  }\n\n  .textarea__control::-webkit-search-decoration,\n  .textarea__control::-webkit-search-cancel-button,\n  .textarea__control::-webkit-search-results-button,\n  .textarea__control::-webkit-search-results-decoration {\n    -webkit-appearance: none;\n  }\n\n  .textarea__control::placeholder {\n    color: var(--sl-input-placeholder-color);\n    user-select: none;\n  }\n\n  .textarea__control:focus {\n    outline: none;\n  }\n\n  /*\n   * Size modifiers\n   */\n\n  .textarea--small {\n    border-radius: var(--sl-input-border-radius-small);\n    font-size: var(--sl-input-font-size-small);\n  }\n\n  .textarea--small .textarea__control {\n    padding: 0.5em var(--sl-input-spacing-small);\n  }\n\n  .textarea--medium {\n    border-radius: var(--sl-input-border-radius-medium);\n    font-size: var(--sl-input-font-size-medium);\n  }\n\n  .textarea--medium .textarea__control {\n    padding: 0.5em var(--sl-input-spacing-medium);\n  }\n\n  .textarea--large {\n    border-radius: var(--sl-input-border-radius-large);\n    font-size: var(--sl-input-font-size-large);\n  }\n\n  .textarea--large .textarea__control {\n    padding: 0.5em var(--sl-input-spacing-large);\n  }\n\n  /*\n   * Resize types\n   */\n\n  .textarea--resize-none .textarea__control {\n    resize: none;\n  }\n\n  .textarea--resize-vertical .textarea__control {\n    resize: vertical;\n  }\n\n  .textarea--resize-auto .textarea__control {\n    height: auto;\n    resize: none;\n    overflow-y: hidden;\n  }\n\n  p {\n    margin: 0 !important;\n    font-size: var(--sl-input-font-size-medium);\n  }\n  .textarea__control {\n    height: 105px;\n    overflow-y: auto;\n  }\n  .ProseMirror {\n    outline: none;\n    word-wrap: break-word;\n    white-space: pre-wrap;\n    white-space: break-spaces;\n  }\n`"
         },
         {
           "kind": "class",
           "description": "",
-          "name": "SlQuill",
+          "name": "SlTextareaProsemirror",
           "members": [
             {
               "kind": "field",
@@ -728,7 +728,7 @@
               "kind": "field",
               "name": "input",
               "type": {
-                "text": "QuillSnow"
+                "text": "any"
               }
             },
             {
@@ -943,6 +943,24 @@
               "description": "The default value of the form control. Primarily used for resetting the form control."
             },
             {
+              "kind": "field",
+              "name": "state",
+              "type": {
+                "text": "EditorState"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "view",
+              "type": {
+                "text": "EditorView"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "editorStateConfig"
+            },
+            {
               "kind": "method",
               "name": "emit",
               "parameters": [
@@ -1049,40 +1067,6 @@
             },
             {
               "kind": "method",
-              "name": "setRangeText",
-              "parameters": [
-                {
-                  "name": "replacement",
-                  "type": {
-                    "text": "string"
-                  }
-                },
-                {
-                  "name": "start",
-                  "optional": true,
-                  "type": {
-                    "text": "number"
-                  }
-                },
-                {
-                  "name": "end",
-                  "optional": true,
-                  "type": {
-                    "text": "number"
-                  }
-                },
-                {
-                  "name": "selectMode",
-                  "optional": true,
-                  "type": {
-                    "text": "\"select\" | \"start\" | \"end\" | \"preserve\""
-                  }
-                }
-              ],
-              "description": "Replaces a range of text with a new string."
-            },
-            {
-              "kind": "method",
               "name": "getForm",
               "return": {
                 "type": {
@@ -1095,6 +1079,10 @@
               "kind": "method",
               "name": "reportValidity",
               "description": "Checks for validity and shows the browser's validation message if the control is invalid."
+            },
+            {
+              "kind": "method",
+              "name": "reset"
             },
             {
               "kind": "field",
@@ -1126,7 +1114,7 @@
           "name": "watch",
           "declaration": {
             "name": "watch",
-            "module": "src/elements/sl-quill.ts"
+            "module": "src/elements/sl-textarea-prosemirror.ts"
           }
         },
         {
@@ -1134,15 +1122,15 @@
           "name": "styles",
           "declaration": {
             "name": "styles",
-            "module": "src/elements/sl-quill.ts"
+            "module": "src/elements/sl-textarea-prosemirror.ts"
           }
         },
         {
           "kind": "js",
-          "name": "SlQuill",
+          "name": "SlTextareaProsemirror",
           "declaration": {
-            "name": "SlQuill",
-            "module": "src/elements/sl-quill.ts"
+            "name": "SlTextareaProsemirror",
+            "module": "src/elements/sl-textarea-prosemirror.ts"
           }
         }
       ]

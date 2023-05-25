@@ -1,11 +1,27 @@
 import { CSSResultGroup, html, LitElement, css } from "lit";
 import { localized, msg } from "@lit/localize";
 import { customElement, property, query, state } from "lit/decorators.js";
-import "@scoped-elements/quill";
-import { QuillSnow } from "@scoped-elements/quill";
 import { classMap } from "lit/directives/class-map.js";
+import { EditorState } from "prosemirror-state";
+import { Schema, DOMParser, NodeSpec } from "prosemirror-model";
+import { EditorView } from "prosemirror-view";
+import { baseKeymap } from "prosemirror-commands";
+import { keymap } from "prosemirror-keymap";
 
 import { FormField, FormFieldController } from "../form-field-controller.js";
+
+const schema = new Schema({
+  nodes: {
+    doc: { content: "paragraph+" },
+    paragraph: {
+      content: "text*",
+      toDOM(node) {
+        return ["p", 0];
+      },
+    },
+    text: {},
+  },
+});
 
 type UpdateHandler = (prev?: unknown, next?: unknown) => void;
 
@@ -272,6 +288,7 @@ export const styles = css`
   }
 
   .textarea--small .textarea__control {
+    padding: 0.5em var(--sl-input-spacing-small);
   }
 
   .textarea--medium {
@@ -280,6 +297,7 @@ export const styles = css`
   }
 
   .textarea--medium .textarea__control {
+    padding: 0.5em var(--sl-input-spacing-medium);
   }
 
   .textarea--large {
@@ -288,6 +306,7 @@ export const styles = css`
   }
 
   .textarea--large .textarea__control {
+    padding: 0.5em var(--sl-input-spacing-large);
   }
 
   /*
@@ -308,16 +327,24 @@ export const styles = css`
     overflow-y: hidden;
   }
 
-  quill-snow::part(editor) {
+  p {
+    margin: 0 !important;
     font-size: var(--sl-input-font-size-medium);
   }
-  quill-snow {
+  .textarea__control {
     height: 105px;
+    overflow-y: auto;
+  }
+  .ProseMirror {
+    outline: none;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    white-space: break-spaces;
   }
 `;
 @localized()
-@customElement("sl-quill")
-export class SlQuill extends LitElement implements FormField {
+@customElement("sl-textarea-prosemirror")
+export class SlTextareaProsemirror extends LitElement implements FormField {
   static styles: CSSResultGroup = styles;
 
   private readonly formControlController = new FormFieldController(this);
@@ -325,7 +352,7 @@ export class SlQuill extends LitElement implements FormField {
 
   private resizeObserver: ResizeObserver;
 
-  @query("#input") input: QuillSnow;
+  @query("#input") input: any;
 
   @state() private hasFocus = false;
 
@@ -335,16 +362,31 @@ export class SlQuill extends LitElement implements FormField {
   @property() name = "";
 
   get value() {
-    const quill = this.input?.quill;
-    if (!quill) return "";
+    if (!this.view?.state) return "";
 
-    const text = this.input.quill.getText();
-
-    return text.slice(0, text.length - 1);
+    const state = this.view.state.doc.content.toJSON();
+    return state.map((p) => (p.content ? p.content[0].text : "")).join("\n");
   }
 
   set value(v: string) {
-    this.input.quill.setText(v);
+    const paragraphs = v.split("\n").map((t) => ({
+      type: "paragraph",
+      content: [{ type: "text", text: t }],
+    }));
+    const state = {
+      doc: {
+        content: paragraphs,
+        type: "doc",
+      },
+      selection: {
+        type: "text",
+        anchor: 0,
+        head: 0,
+      },
+    };
+    this.view.updateState(
+      EditorState.fromJSON(this.editorStateConfig(), state)
+    );
   }
 
   /** The textarea's size. */
@@ -459,6 +501,33 @@ export class SlQuill extends LitElement implements FormField {
     });
   }
 
+  state: EditorState;
+
+  view: EditorView;
+
+  editorStateConfig() {
+    return {
+      schema,
+      plugins: [keymap(baseKeymap)],
+    };
+  }
+
+  firstUpdated() {
+    this.state = EditorState.create(this.editorStateConfig());
+    this.view = new EditorView(this.input, {
+      state: this.state,
+      handleDOMEvents: {
+        change: () => this.handleChange(),
+        input: () => this.handleInput(),
+        focus: () => this.handleFocus(),
+        blur: () => this.handleBlur(),
+        click: (_, e) => e.stopPropagation(),
+      },
+    });
+
+    this.addEventListener("click", () => this.focus());
+  }
+
   emit(eventName: string) {
     this.dispatchEvent(new CustomEvent(eventName));
   }
@@ -516,7 +585,7 @@ export class SlQuill extends LitElement implements FormField {
 
   /** Sets focus on the textarea. */
   focus(options?: any) {
-    this.input.quill.focus(options);
+    this.view.focus();
   }
 
   /** Removes focus from the textarea. */
@@ -555,18 +624,6 @@ export class SlQuill extends LitElement implements FormField {
     );
   }
 
-  /** Replaces a range of text with a new string. */
-  setRangeText(
-    replacement: string,
-    start?: number,
-    end?: number,
-    selectMode?: "select" | "start" | "end" | "preserve"
-  ) {
-    this.input.quill.setRangeText(replacement, start, end, selectMode);
-
-    this.setTextareaHeight();
-  }
-
   /** Checks for validity but does not show a validation message. Returns `true` when valid and `false` when invalid. */
 
   /** Gets the associated form, if one exists. */
@@ -583,6 +640,12 @@ export class SlQuill extends LitElement implements FormField {
     }
 
     return !invalid;
+  }
+
+  reset() {
+    setTimeout(() => {
+      this.value = this.defaultValue;
+    });
   }
 
   @query("#error-input")
@@ -638,13 +701,10 @@ export class SlQuill extends LitElement implements FormField {
               id="error-input"
               style="position: absolute; z-index: -1; height: 100%; width: 100%"
             />
-            <quill-snow
+            <div
               part="textarea"
               id="input"
               class="textarea__control"
-              .options=${{
-                placeholder: this.placeholder,
-              }}
               title=${
                 this
                   .title /* An empty title prevents browser validation tooltips from appearing on hover */
@@ -654,11 +714,7 @@ export class SlQuill extends LitElement implements FormField {
               ?required=${this.required}
               ?autofocus=${this.autofocus}
               aria-describedby="help-text"
-              @change=${this.handleChange}
-              @input=${this.handleInput}
-              @focus=${this.handleFocus}
-              @blur=${this.handleBlur}
-            ></quill-snow>
+            ></div>
           </div>
         </div>
 
