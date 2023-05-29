@@ -153,6 +153,23 @@
               }
             }
           ]
+        },
+        {
+          "kind": "function",
+          "name": "wrapPathInSvgWithoutPrefix",
+          "return": {
+            "type": {
+              "text": "string"
+            }
+          },
+          "parameters": [
+            {
+              "name": "path",
+              "type": {
+                "text": "string"
+              }
+            }
+          ]
         }
       ],
       "exports": [
@@ -161,6 +178,14 @@
           "name": "wrapPathInSvg",
           "declaration": {
             "name": "wrapPathInSvg",
+            "module": "src/icon.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "wrapPathInSvgWithoutPrefix",
+          "declaration": {
+            "name": "wrapPathInSvgWithoutPrefix",
             "module": "src/icon.ts"
           }
         }
