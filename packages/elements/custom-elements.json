@@ -639,6 +639,20 @@
             },
             {
               "kind": "field",
+              "name": "defaultValue",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string"
+              }
+            },
+            {
+              "kind": "field",
               "name": "_avatarFilePicker",
               "type": {
                 "text": "HTMLInputElement"

@@ -27,6 +27,12 @@ export class SelectAvatar extends LitElement implements FormField {
   @property()
   disabled: boolean = false;
 
+  @property()
+  defaultValue: string | undefined;
+
+  @property()
+  label: string = msg("Avatar");
+
   @query("#avatar-file-picker")
   private _avatarFilePicker!: HTMLInputElement;
 
@@ -46,7 +52,7 @@ export class SelectAvatar extends LitElement implements FormField {
   }
 
   reset() {
-    this.value = undefined;
+    this.value = this.defaultValue;
   }
 
   onAvatarUploaded() {
@@ -124,10 +130,14 @@ export class SelectAvatar extends LitElement implements FormField {
           id="error-input"
           style="position: absolute; z-index: -1; left: 50%; top: 30px; height: 0; width: 0"
         />
-        <span
-          style="font-size: var(--sl-input-label-font-size-medium); margin-bottom: 4px"
-          >${msg("Avatar")}${this.required !== false ? " *" : ""}</span
-        >
+        ${this.label !== ""
+          ? html`
+              <span
+                style="font-size: var(--sl-input-label-font-size-medium); margin-bottom: 4px"
+                >${this.label}${this.required !== false ? " *" : ""}</span
+              >
+            `
+          : html``}
         ${this.renderAvatar()}
       </div>`;
   }
