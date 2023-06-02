@@ -28,7 +28,7 @@ export class ZomeMock implements AppAgentClient {
     protected roleName: string,
     protected zomeName: string,
     public myPubKey: AgentPubKey = decodeHashFromBase64(
-      "uhCAk6oBoqygFqkDreZ0V0bH4R9cTN1OkcEG78OLxVptLWOI"
+      "uhCAk13OZ84d5HFum5PZYcl61kHHMfL2EJ4yNbHwSp4vn6QeOdFii"
     ),
     protected latency: number = 500
   ) {}

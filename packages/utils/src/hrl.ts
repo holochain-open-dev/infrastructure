@@ -21,7 +21,7 @@ export function joinHrlString(array: Array<string | Hrl>): string {
 }
 
 // Will match hrls inside strings of the style of "asd hrl://uhCAkHjbsLWchmJp7nOWH2wWlnfWz2yhtGYv4IS4MJXxrmydonqWy/uhCAkHjbsLWchmJp7nOWH2wWlnfWz2yhtGYv4IS4MJXxrmydonqWy"
-const HRL_SEARCH_REGEX = /hrl:\/\/\w{53}\/\w{53}/gm;
+const HRL_SEARCH_REGEX = /hrl:\/\/[a-zA-Z0-9_=-]{53}\/[a-zA-Z0-9_=-]{53}/gm;
 
 // Splits the given string by the internal Hrls
 export function splitHrlString(s: string): Array<string | Hrl> {

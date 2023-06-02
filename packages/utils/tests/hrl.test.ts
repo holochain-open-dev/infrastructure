@@ -3,7 +3,7 @@ import { joinHrlString, splitHrlString } from "../src/index.js";
 
 test("test hrl", async () => {
   const s =
-    "asdf hrl://uhC0klPO5uidBIXO4dN5lZFIz7alMe6VxDYYk2RMMiVa1ahM3Xhjr/uhCAkHjbsLWchmJp7nOWH2wWlnfWz2yhtGYv4IS4MJXxrmydonqWy ";
+    "asdf hrl://uhC0klPO5uidBIXO4dN5lZFIz7alMe6VxDYYk2RMMiVa1ahM3Xhjr/uhCAkWXw-U9f4e6AQUrgIFTi0POajFLN1R1ZgthLyK_Uu6MB50hmE ";
 
   const a = splitHrlString(s);
 
