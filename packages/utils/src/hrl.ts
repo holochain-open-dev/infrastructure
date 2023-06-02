@@ -9,6 +9,22 @@ import {
 
 export type Hrl = [DnaHash, ActionHash | EntryHash | AgentPubKey];
 
+// Converts a string of the form "hrl://DNA_HASH/ENTRY_HASH" in to an Hrl
+export function parseHrl(s: string): Hrl {
+  if (!s.startsWith("hrl://"))
+    throw new Error(`Given string ${s} is not an hrl`);
+
+  const split1 = s.split("://");
+  const split2 = split1[1].split("/");
+
+  return [decodeHashFromBase64(split2[0]), decodeHashFromBase64(split2[1])];
+}
+
+// Converts the hrl to a string of the form "hrl://DNA_HASH/ENTRY_HASH"
+export function hrlToString(hrl: Hrl): string {
+  return `hrl://${encodeHashToBase64(hrl[0])}/${encodeHashToBase64(hrl[1])}`;
+}
+
 // Joins the given array to a string, serializing the hrls to the form "hrl://[DNAHASH]/[DHTHASH]"
 export function joinHrlString(array: Array<string | Hrl>): string {
   return array.reduce((acc: string, next: string | Hrl) => {
