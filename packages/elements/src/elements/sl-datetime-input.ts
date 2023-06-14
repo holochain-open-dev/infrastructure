@@ -1,10 +1,11 @@
 import { localized } from "@lit/localize";
 import { SlInput } from "@shoelace-style/shoelace";
-import { FormField, FormFieldController } from "../form-field-controller";
 import { html, LitElement } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
-import { sharedStyles } from "../shared-styles";
-import { formatDateForInput } from "../date-utils";
+
+import { FormField, FormFieldController } from "../form-field-controller.js";
+import { sharedStyles } from "../shared-styles.js";
+import { formatDateForInput } from "../date-utils.js";
 
 @localized()
 @customElement("sl-datetime-input")

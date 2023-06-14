@@ -4,6 +4,39 @@
   "modules": [
     {
       "kind": "javascript-module",
+      "path": "src/date-utils.ts",
+      "declarations": [
+        {
+          "kind": "function",
+          "name": "formatDateForInput",
+          "return": {
+            "type": {
+              "text": "string"
+            }
+          },
+          "parameters": [
+            {
+              "name": "date",
+              "type": {
+                "text": "Date"
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "formatDateForInput",
+          "declaration": {
+            "name": "formatDateForInput",
+            "module": "src/date-utils.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/form-field-controller.ts",
       "declarations": [
         {
@@ -270,6 +303,14 @@
           "declaration": {
             "name": "*",
             "package": "\"./notify.js\""
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./date-utils.js\""
           }
         }
       ]
@@ -711,6 +752,131 @@
           "declaration": {
             "name": "SelectAvatar",
             "module": "src/elements/select-avatar.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/elements/sl-datetime-input.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "SlDatetimeInput",
+          "members": [
+            {
+              "kind": "field",
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "defaultValue",
+              "type": {
+                "text": "Date | number | string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "min",
+              "type": {
+                "text": "Date | number | string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "max",
+              "type": {
+                "text": "Date | number | string | undefined"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "dateField",
+              "type": {
+                "text": "SlInput"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "timeField",
+              "type": {
+                "text": "SlInput"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_controller",
+              "default": "new FormFieldController(this)"
+            },
+            {
+              "kind": "method",
+              "name": "toDate",
+              "parameters": [
+                {
+                  "name": "d",
+                  "type": {
+                    "text": "Date | string | number"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "reportValidity"
+            },
+            {
+              "kind": "method",
+              "name": "reset"
+            },
+            {
+              "kind": "field",
+              "name": "value",
+              "type": {
+                "text": "string | undefined"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "SlDatetimeInput",
+          "declaration": {
+            "name": "SlDatetimeInput",
+            "module": "src/elements/sl-datetime-input.ts"
           }
         }
       ]
