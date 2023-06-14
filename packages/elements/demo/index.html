@@ -35,8 +35,10 @@
       import "../src/elements/holo-identicon.ts";
       import "../src/elements/select-avatar.ts";
       import "../src/elements/display-error.ts";
+      import "../src/elements/sl-datetime-input.ts";
       import "../src/elements/sl-textarea-prosemirror.ts";
       import { onSubmit } from "../src/on-submit.ts";
+      import { formatDateForInput } from "../src/date-utils.ts";
 
       import { notifyError } from "../src/notify.ts";
 
@@ -78,28 +80,24 @@
           }
 
           submit(f) {
-            console.log(f);
+            console.log(f.timestamp);
           }
 
           render() {
             return html`
               <form id="form" ${onSubmit((f) => this.submit(f))}>
-                <sl-textarea
-                  name="l"
-                  required
-                  help-text="helptext"
-                  placeholder="placeholder"
-                  label="Label"
-                  .defaultValue=${"Default"}
-                ></sl-textarea>
-                <sl-textarea-prosemirror
-                  placeholder="placeholder"
-                  help-text="helptext"
-                  label="Label"
-                  .defaultValue=${"Default"}
-                  required
-                  name="hi"
-                ></sl-textarea-prosemirror>
+                <sl-datetime-input
+                  label="hi"
+                  name="timestamp"
+                  .min=${Date.now()}
+                  .max=${Date.now() + 60000}
+                  .defaultValue=${Date.now()}
+                ></sl-datetime-input>
+                <sl-input
+                  name="timestamp2"
+                  .defaultValue=${formatDateForInput(new Date())}
+                  type="datetime-local"
+                ></sl-input>
                 <input type="submit" />
               </form>
             `;

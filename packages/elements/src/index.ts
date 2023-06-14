@@ -4,3 +4,4 @@ export * from "./on-submit.js";
 export * from "./holo-hash-property.js";
 export * from "./icon.js";
 export * from "./notify.js";
+export * from "./date-utils.js";
