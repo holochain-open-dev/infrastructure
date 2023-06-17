@@ -17,7 +17,7 @@ export class SlDatetimeInput extends LitElement implements FormField {
   name: string | undefined;
 
   @property()
-  defaultValue: Date | number | string | undefined;
+  defaultValue: Date | number | string | undefined = new Date();
 
   @property({ type: Boolean, attribute: "required" })
   required = false;
@@ -113,7 +113,7 @@ export class SlDatetimeInput extends LitElement implements FormField {
           type="date"
           .label=${this.required ? `${this.label}*` : this.label}
           .disabled=${this.disabled}
-          style="margin-right: 16px;"
+          style="margin-right: 8px; flex: 1"
         ></sl-input>
 
         <sl-input id="time" type="time" .disabled=${this.disabled}></sl-input>

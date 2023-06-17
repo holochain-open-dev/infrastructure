@@ -16,7 +16,7 @@ export class DisplayError extends LitElement {
   headline: string | undefined;
 
   @property()
-  error!: string;
+  error!: any;
 
   @property({ attribute: "icon-size" })
   iconSize: string | undefined;
@@ -44,7 +44,11 @@ export class DisplayError extends LitElement {
         ${this.headline
           ? html` <span style="margin-bottom: 8px">${this.headline} </span>`
           : html``}
-        <span class="placeholder">${this.error} </span>
+        <span class="placeholder"
+          >${typeof this.error === "object" && "message" in this.error
+            ? this.error.message
+            : this.error}
+        </span>
       </div>
     </div>`;
   }

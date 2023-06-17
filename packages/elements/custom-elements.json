@@ -471,7 +471,7 @@
               "kind": "field",
               "name": "error",
               "type": {
-                "text": "string"
+                "text": "any"
               }
             },
             {
@@ -784,7 +784,8 @@
               "name": "defaultValue",
               "type": {
                 "text": "Date | number | string | undefined"
-              }
+              },
+              "default": "new Date()"
             },
             {
               "kind": "field",

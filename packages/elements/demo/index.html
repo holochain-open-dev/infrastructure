@@ -88,10 +88,8 @@
               <form id="form" ${onSubmit((f) => this.submit(f))}>
                 <sl-datetime-input
                   label="hi"
+                  required
                   name="timestamp"
-                  .min=${Date.now()}
-                  .max=${Date.now() + 60000}
-                  .defaultValue=${Date.now()}
                 ></sl-datetime-input>
                 <sl-input
                   name="timestamp2"
