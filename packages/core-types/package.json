@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "type": "module",
-  "files": ["dist/**/*"],
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "build": "npm run lint && tsc"
@@ -20,6 +22,7 @@
     "@holochain/client": "^0.16.0"
   },
   "devDependencies": {
+    "@types/libsodium-wrappers": "^0.7.10",
     "@types/node": "^16.11.10",
     "@types/ws": "^8.2.0",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
@@ -31,7 +34,10 @@
     "typescript": "^4.5.5"
   },
   "eslintConfig": {
-    "extends": ["@open-wc/eslint-config", "eslint-config-prettier"]
+    "extends": [
+      "@open-wc/eslint-config",
+      "eslint-config-prettier"
+    ]
   },
   "prettier": {
     "singleQuote": true,

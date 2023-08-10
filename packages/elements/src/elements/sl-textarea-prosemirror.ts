@@ -3,7 +3,7 @@ import { localized, msg } from "@lit/localize";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { EditorState } from "prosemirror-state";
-import { Schema, DOMParser, NodeSpec } from "prosemirror-model";
+import { Schema } from "prosemirror-model";
 import { EditorView } from "prosemirror-view";
 import { baseKeymap } from "prosemirror-commands";
 import { keymap } from "prosemirror-keymap";
