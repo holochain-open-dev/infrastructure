@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/utils",
-  "version": "0.14.2",
+  "version": "0.15.0",
   "description": "Common utilities to build Holochain web applications",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
@@ -21,7 +21,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@holochain/client": "^0.14.1",
+    "@holochain/client": "^0.16.0",
     "@msgpack/msgpack": "^2.7.2",
     "blakejs": "^1.2.1",
     "emittery": "^1.0.1",

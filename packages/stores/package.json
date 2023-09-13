@@ -17,8 +17,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@holochain-open-dev/utils": "^0.14.0",
-    "@holochain/client": "^0.14.1",
+    "@holochain-open-dev/utils": "^0.15.0",
+    "@holochain/client": "^0.16.0",
     "lit": "^2.6.1",
     "lit-svelte-stores": "^0.2.1",
     "svelte": "^3.53.1"
