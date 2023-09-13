@@ -1,4 +1,4 @@
-import { derived } from "svelte/store";
+import { derived } from "./derived.js";
 import { AsyncReadable, AsyncStatus } from "./async-readable.js";
 
 // Returns the value of the first store that completes

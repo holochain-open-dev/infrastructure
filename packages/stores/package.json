@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/stores",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "description": "Re-export of svelte/store, with additional utilities to build reusable holochain-open-dev modules",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
@@ -11,6 +11,7 @@
     ".": "./dist/index.js"
   },
   "scripts": {
+    "start": "vite --open",
     "build": "npm run lint && tsc",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "test": "vitest run"
@@ -18,23 +19,18 @@
   "dependencies": {
     "@holochain-open-dev/utils": "^0.14.0",
     "@holochain/client": "^0.14.1",
+    "lit": "^2.6.1",
     "lit-svelte-stores": "^0.2.1",
     "svelte": "^3.53.1"
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.3.4-fix.0",
-    "@rollup/plugin-commonjs": "18.0.0",
-    "@rollup/plugin-replace": "^5.0.2",
-    "@rollup/plugin-typescript": "^11.0.0",
     "@types/lodash-es": "^4.17.6",
-    "@web/dev-server": "^0.1.35",
-    "@web/dev-server-rollup": "^0.3.21",
-    "@web/test-runner": "^0.15.0",
     "concurrently": "^7.0.0",
     "rimraf": "^3.0.2",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-globals": "^1.4.0",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "vite": "^4.1.1",
+    "vitest": "^0.28.5"
   },
   "publishConfig": {
     "access": "public"

@@ -1,7 +1,8 @@
 import { expect, it } from "vitest";
 import { get, readable } from "svelte/store";
 import { fromUint8Array, toUint8Array } from "js-base64";
-import { joinAsyncMap, asyncReadable, joinMap } from "../src";
+import { joinAsyncMap, asyncReadable, joinMap, mapAndJoin } from "../src";
+import { HoloHashMap } from "@holochain-open-dev/utils";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
 
@@ -42,6 +43,30 @@ it("asyncJoinMap", async () => {
   }
 
   const j = joinAsyncMap(lazyStoreMap);
+
+  const subscriber = j.subscribe(() => {});
+
+  expect(get(j)).to.deep.equal({ status: "pending" });
+  await sleep(20);
+
+  expect(Array.from(get(j).value.entries()).length).to.deep.equal(2);
+});
+
+it("mapAndJoin", async () => {
+  const lazyStoreMap = new LazyHoloHashMap((hash) =>
+    asyncReadable(async (set) => {
+      await sleep(10);
+      set(hash);
+    })
+  );
+
+  const hashes = [new Uint8Array([0]), new Uint8Array([1])];
+
+  const map = new HoloHashMap();
+  map.set(hashes[0], "0");
+  map.set(hashes[1], "1");
+
+  const j = mapAndJoin(map, (h) => lazyStoreMap.get(h));
 
   const subscriber = j.subscribe(() => {});
 

@@ -29,10 +29,7 @@
     "sort-keys": "^5.0.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "18.0.0",
     "@types/lodash-es": "^4.17.6",
-    "@web/dev-server": "^0.1.28",
-    "@web/dev-server-rollup": "^0.3.15",
     "concurrently": "^7.0.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.3",

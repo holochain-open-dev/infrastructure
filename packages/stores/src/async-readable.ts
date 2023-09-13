@@ -112,7 +112,9 @@ export function lazyLoadAndPoll<T>(
   });
 }
 
-// Returns an already completed AsyncReadable with the given value
+/**
+ * Returns an already completed AsyncReadable with the given value
+ */
 export function completed<T>(v: T): AsyncReadable<T> {
   return readable<AsyncStatus<T>>({
     status: "complete",
@@ -120,7 +122,9 @@ export function completed<T>(v: T): AsyncReadable<T> {
   });
 }
 
-// Takes a store and subscribes to it, causing it to always be active
+/**
+ * Takes a store and subscribes to it, causing it to always be active
+ */
 export function alwaysSubscribed<T>(readable: Readable<T>): Readable<T> {
   readable.subscribe(() => {});
 

@@ -131,7 +131,7 @@ const agentsProfiles = new LazyHoloHashMap((agent: AgentPubKey) => callZome('get
 const myProfile = asyncDeriveStore(myPubKey, pubKey => agentsProfiles.get(pubKey));
 ```
 
-## join
+## joinAsync
 
 Joins a list of `AsyncReadable`s to convert it into a single `AsyncReadable` of a list of the resolved values.
 
@@ -141,25 +141,56 @@ import { join, asyncReadable } from '@holochain-open-dev/stores';
 const asyncReadable1 = asyncReadable(async set => set(1));
 const asyncReadable2 = asyncReadable(async set => set(2));
 
-const joinedStores = join([asyncReadable1, asyncReadable2]);
+const joinedStores = joinAsync([asyncReadable1, asyncReadable2]);
 console.log(joinedStores); // Will print `{ status: 'complete', value: [1, 2] }`
 ```
 
-## joinMap
+## joinAsyncMap
 
-Exactly like `join` but for `HoloHashMap`s.
+Exactly like `joinAsync` but for `HoloHashMap`s.
 
 Converts a map of `AsyncReadable`s into an `AsyncReadable` of a map of the resolved values.
 
 ```ts
 import { HoloHashMap, fakeEntryHash, fakeActionHash } from '@holochain-open-dev/utils';
-import { joinMap } from '@holochain-open-dev/stores';
+import { joinAsyncMap } from '@holochain-open-dev/stores';
 
 const map = new HoloHashMap();
 
 map.put(fakeActionHash(), asyncReadable(async set => set(1)));
 map.put(fakeEntryHash(), asyncReadable(async set => set(1)));
 
-const mapStore = joinMap(map);
+const mapStore = joinAsyncMap(map);
 console.log(mapStore); // Will print `{ status: 'complete', value: <HoloHashMap with these values: { [fakeActionHash()]: 1, [fakeEntryHash()]: 2] }> }`
+```
+
+## pipe
+
+Takes an AsyncReadable store and derives it with the given functions
+Each step may return an `AsyncReadable`, `Readable`, `Promise` or just a raw value.
+
+Very useful for chaining tasks that have dependencies between their values together.
+
+```js
+import { lazyLoad, pipe } from '@holochain-open-dev/stores';
+
+const asyncReadableStore = lazyLoad(async () => {
+  await sleep(1);
+  return 1;
+});
+const pipeStore = pipe(
+  asyncReadableStore,
+  (n1) =>
+    lazyLoad(async () => {  // Step with `AsyncReadable`
+      await sleep(1);
+      return n1 + 1;
+    }),
+  (n2) => readable(n2 + 1), // Step with `Readable`
+  async (n3) => {           // Step with `Promise`
+    await sleep(1);
+    return n3 + 1;
+  },
+  (n4) => n4 + 1            // Step with raw value
+);
+pipeStore.subscribe(value => console.log(value)); // Use like any other store, will print "5" after 3 milliseconds
 ```

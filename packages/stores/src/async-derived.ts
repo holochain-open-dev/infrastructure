@@ -1,5 +1,6 @@
-import { derived, Readable, Subscriber } from "svelte/store";
-import { AsyncReadable, AsyncStatus, lazyLoad } from "./async-readable.js";
+import { Readable } from "svelte/store";
+import { derived } from "./derived.js";
+import { AsyncReadable, AsyncStatus } from "./async-readable.js";
 
 type StoreValue<T> = T extends AsyncReadable<infer U>
   ? U
@@ -8,10 +9,6 @@ type StoreValue<T> = T extends AsyncReadable<infer U>
   : never;
 type AsyncStoreValue<T> = T extends AsyncReadable<infer U> ? U : never;
 
-/** One or more values from `Readable` stores. */
-type StoresValues<T> = {
-  [K in keyof T]: StoreValue<T[K]>;
-};
 const isPromise = (v) => typeof v === "object" && typeof v.then === "function";
 export function asyncDerived<T, S extends AsyncReadable<any>>(
   store: S,
@@ -47,32 +44,47 @@ export function asyncDerived<T, S extends AsyncReadable<any>>(
   });
 }
 
-// Joins all the given `AsyncReadables` into a single `AsyncReadable`
-export function join<S extends Array<AsyncReadable<any> | Readable<any>>>(
-  stores: S
-): AsyncReadable<StoresValues<S>> {
-  return derived(stores, (values) => {
+/// Joins all the given `AsyncReadables` into a single `AsyncReadable`
+export function joinAsync<T>(stores: [AsyncReadable<T>]): AsyncReadable<[T]>;
+export function joinAsync<T, U>(
+  stores: [AsyncReadable<T>, AsyncReadable<U>]
+): AsyncReadable<[T, U]>;
+export function joinAsync<T, U, V>(
+  stores: [AsyncReadable<T>, AsyncReadable<U>, AsyncReadable<V>]
+): AsyncReadable<[T, U, V]>;
+export function joinAsync<T, U, V, W>(
+  stores: [
+    AsyncReadable<T>,
+    AsyncReadable<U>,
+    AsyncReadable<V>,
+    AsyncReadable<W>
+  ]
+): AsyncReadable<[T, U, V, W]>;
+export function joinAsync<T>(
+  stores: Array<AsyncReadable<T>>
+): AsyncReadable<Array<T>>;
+export function joinAsync<T>(
+  stores: Array<AsyncReadable<T>>
+): AsyncReadable<Array<T>> {
+  return derived(stores, (values): AsyncStatus<T[]> => {
     const firstError = values.find(
       (v) => v && (v as AsyncStatus<any>).status === "error"
     );
     if (firstError) {
-      return firstError;
+      return firstError as AsyncStatus<T[]>;
     }
     const firstLoading = values.find(
       (v) => v && (v as AsyncStatus<any>).status === "pending"
     );
     if (firstLoading) {
-      return firstLoading;
+      return firstLoading as AsyncStatus<T[]>;
     }
 
-    const v = values.map((v) => {
-      if (v && v.status === "complete") return v.value;
-      return v;
-    });
+    const v = values.map((v) => (v as any).value as T);
     return {
       status: "complete",
       value: v,
-    };
+    } as AsyncStatus<T[]>;
   });
 }
 

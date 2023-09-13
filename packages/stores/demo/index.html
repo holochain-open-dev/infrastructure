@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        background: black;
+      }
+    </style>
+    <link rel="stylesheet" href="" />
+  </head>
+  <body class="sl-theme-dark">
+    <debug-store></debug-store>
+
+    <script type="module">
+      import { LitElement, html } from "lit";
+      import { pipe, lazyLoad } from "../src";
+      import "../src/elements/debug-store.ts";
+
+      const sleep = (ms) =>
+        new Promise((resolve) => setTimeout(() => resolve(), ms));
+
+      const s1 = lazyLoad(async () => {
+        await sleep(1000);
+
+        return 2;
+      });
+
+      const s2 = lazyLoad(async () => {
+        await sleep(1000);
+
+        return 2;
+      });
+
+      const store = pipe(joinAsync([s1, s2]), ([n1, n2]) => n1 + n2);
+
+      document.querySelector("debug-store").store = store;
+    </script>
+  </body>
+</html>

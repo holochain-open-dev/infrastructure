@@ -1,5 +1,7 @@
-export * from "svelte/store";
+export { get, Readable, readable, writable, Writable } from "svelte/store";
 export * from "lit-svelte-stores";
+
+export * from "./derived.js";
 
 export * from "./async-derived.js";
 export * from "./retry-until-success.js";
