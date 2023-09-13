@@ -194,3 +194,69 @@ const pipeStore = pipe(
 );
 pipeStore.subscribe(value => console.log(value)); // Use like any other store, will print "5" after 3 milliseconds
 ```
+
+
+## debugStore
+
+It can be hard to debug what's happening with complex pipes. `window.__debugStore` is available at any time, so that if something weird is happening in your application, you can open your browser and type:
+
+```js
+window.__debugStore(myStore);
+```
+
+This will scan the values of the given store and all its dependencies it's derived from, and print all their values in a tree in the console.
+
+For example, given the code:
+
+```js
+import { pipe, lazyLoad, joinAsync } from "../src";
+
+const sleep = (ms) =>
+  new Promise((resolve) => setTimeout(() => resolve(), ms));
+
+const s1 = lazyLoad(async () => {
+  await sleep(1000);
+
+  return 2;
+});
+
+const s2 = lazyLoad(async () => {
+  await sleep(1000);
+
+  return 2;
+});
+
+window.store = pipe(joinAsync([s1, s2]), async ([n1, n2]) => {
+  await sleep(1000);
+  return n1 + n2;
+});
+
+window.store.subscribe(() => {});
+```
+
+If you run `window.__debugStore(window.store)`, it will print:
+
+```
+{"status":"pending"}
+└── {"status":"pending"}
+    ├── {"status":"pending"}
+    └── {"status":"pending"}
+```
+
+After a second:
+
+```
+{"status":"pending"}
+└── {"status":"complete","value":[2,2]}
+    ├── {"status":"complete","value":2}
+    └── {"status":"complete","value":2}
+```
+
+And after another second:
+
+```
+{"status":"complete","value":4}
+└── {"status":"complete","value":[2,2]}
+    ├── {"status":"complete","value":2}
+    └── {"status":"complete","value":2}
+```

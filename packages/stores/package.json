@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/stores",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Re-export of svelte/store, with additional utilities to build reusable holochain-open-dev modules",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
@@ -13,13 +13,13 @@
   "scripts": {
     "start": "vite --open",
     "build": "npm run lint && tsc",
-    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
+    "lint": "eslint --ext .ts . --ignore-path .gitignore",
     "test": "vitest run"
   },
   "dependencies": {
     "@holochain-open-dev/utils": "^0.15.0",
     "@holochain/client": "^0.16.0",
-    "lit": "^2.6.1",
+    "console-log-tree": "^1.2.1",
     "lit-svelte-stores": "^0.2.1",
     "svelte": "^3.53.1"
   },

@@ -2,20 +2,15 @@
 <html lang="en-GB">
   <head>
     <meta charset="utf-8" />
-    <style>
-      body {
-        background: black;
-      }
-    </style>
+    <style></style>
     <link rel="stylesheet" href="" />
   </head>
-  <body class="sl-theme-dark">
+  <body>
     <debug-store></debug-store>
 
     <script type="module">
       import { LitElement, html } from "lit";
-      import { pipe, lazyLoad } from "../src";
-      import "../src/elements/debug-store.ts";
+      import { pipe, lazyLoad, joinAsync } from "../src";
 
       const sleep = (ms) =>
         new Promise((resolve) => setTimeout(() => resolve(), ms));
@@ -32,9 +27,14 @@
         return 2;
       });
 
-      const store = pipe(joinAsync([s1, s2]), ([n1, n2]) => n1 + n2);
+      const store = pipe(joinAsync([s1, s2]), async ([n1, n2]) => {
+        await sleep(1000);
+        return n1 + n2;
+      });
 
-      document.querySelector("debug-store").store = store;
+      store.subscribe(() => {});
+
+      window.__debugStore(store);
     </script>
   </body>
 </html>
