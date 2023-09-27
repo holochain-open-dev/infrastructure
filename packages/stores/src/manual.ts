@@ -1,7 +1,9 @@
 import { writable } from "svelte/store";
 import { AsyncReadable, AsyncStatus } from "./async-readable.js";
 
-// Builds an AsyncReadable that will be reloaded when the `reload` function gets called
+/**
+ * Builds an AsyncReadable that will be reloaded when the `reload` function gets called
+ */
 export function manualReloadStore<T>(
   fn: () => Promise<T>
 ): AsyncReadable<T> & { reload: () => Promise<void> } {

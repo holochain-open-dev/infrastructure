@@ -1,8 +1,10 @@
 import { derived } from "./derived.js";
 import { AsyncReadable, AsyncStatus } from "./async-readable.js";
 
-// Returns the value of the first store that completes
-// After the first value is received, the value of this store won't change
+/**
+ * Returns the value of the first store that completes
+ * After the first value is received, the value of this store won't change
+ */
 export function race<T>(stores: Array<AsyncReadable<T>>): AsyncReadable<T> {
   let found: T | undefined;
   return derived(stores, (values) => {

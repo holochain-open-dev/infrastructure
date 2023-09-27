@@ -10,6 +10,20 @@ type StoreValue<T> = T extends AsyncReadable<infer U>
 type AsyncStoreValue<T> = T extends AsyncReadable<infer U> ? U : never;
 
 const isPromise = (v) => typeof v === "object" && typeof v.then === "function";
+
+/**
+ * Derives an `AsyncReadable` only when the state of the given store is completed.
+ *
+ * Example:
+ *
+ * ```js
+ * import { asyncDerived, asyncReadable } from '@holochain-open-dev/stores';
+ *
+ * const asyncReadable = asyncReadable(async set => set(await fetch("https://some/url")));
+ *
+ * const composedResult = asyncDerived(asyncReadable, async (result) => fetch(`https://some/other/dependant/${result}`));
+ * ```
+ */
 export function asyncDerived<T, S extends AsyncReadable<any>>(
   store: S,
   derive: (value: AsyncStoreValue<S>) => Promise<T> | T

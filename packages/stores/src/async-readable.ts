@@ -33,7 +33,9 @@ export function asyncReadable<T>(
   load: (set: Subscriber<T>) => Promise<Unsubscriber | void>
 ): AsyncReadable<T> {
   return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
-    const asyncSet = (v) => set({ status: "complete", value: v });
+    const asyncSet = (v) => {
+      set({ status: "complete", value: v });
+    };
     let unsubscribe: Unsubscriber | void;
     load(asyncSet)
       .then((u) => {
@@ -41,7 +43,10 @@ export function asyncReadable<T>(
       })
       .catch((e) => set({ status: "error", error: e }));
 
-    return () => unsubscribe && unsubscribe();
+    return () => {
+      set({ status: "pending" });
+      if (unsubscribe) unsubscribe();
+    };
   });
 }
 
@@ -64,7 +69,9 @@ export function lazyLoad<T>(load: () => Promise<T>): AsyncReadable<T> {
       })
       .catch((e) => set({ status: "error", error: e }));
 
-    return () => {};
+    return () => {
+      set({ status: "pending" });
+    };
   });
 }
 
@@ -107,6 +114,7 @@ export function lazyLoadAndPoll<T>(
         set({ status: "error", error: e });
       });
     return () => {
+      set({ status: "pending" });
       if (interval) clearInterval(interval);
     };
   });

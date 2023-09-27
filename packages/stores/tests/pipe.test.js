@@ -58,7 +58,7 @@ it("pipe with readable", async () => {
   });
 });
 
-it.only("pipe with asyncReadable", async () => {
+it("pipe with asyncReadable", async () => {
   const asyncReadableStore = asyncReadable(async (set) => {
     await sleep(10);
     set("hi");
