@@ -1,5 +1,5 @@
 export { get, readable, writable } from "svelte/store";
-export type { Readable, Writable } from "svelte/store";
+export type { Readable, Writable, Unsubscriber } from "svelte/store";
 export * from "lit-svelte-stores";
 
 export * from "./derived.js";
