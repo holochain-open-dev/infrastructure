@@ -58,7 +58,9 @@ export function asyncDerived<T, S extends AsyncReadable<any>>(
   });
 }
 
-/// Joins all the given `AsyncReadables` into a single `AsyncReadable`
+/**
+ *  Joins an array of `AsyncReadables` into a single `AsyncReadable` of the array of values
+ */
 export function joinAsync<T>(stores: [AsyncReadable<T>]): AsyncReadable<[T]>;
 export function joinAsync<T, U>(
   stores: [AsyncReadable<T>, AsyncReadable<U>]
@@ -74,6 +76,75 @@ export function joinAsync<T, U, V, W>(
     AsyncReadable<W>
   ]
 ): AsyncReadable<[T, U, V, W]>;
+export function joinAsync<T, U, V, W, X>(
+  stores: [
+    AsyncReadable<T>,
+    AsyncReadable<U>,
+    AsyncReadable<V>,
+    AsyncReadable<W>,
+    AsyncReadable<X>
+  ]
+): AsyncReadable<[T, U, V, W, X]>;
+export function joinAsync<T, U, V, W, X, Y>(
+  stores: [
+    AsyncReadable<T>,
+    AsyncReadable<U>,
+    AsyncReadable<V>,
+    AsyncReadable<W>,
+    AsyncReadable<X>,
+    AsyncReadable<Y>
+  ]
+): AsyncReadable<[T, U, V, W, X, Y]>;
+export function joinAsync<T, U, V, W, X, Y, Z>(
+  stores: [
+    AsyncReadable<T>,
+    AsyncReadable<U>,
+    AsyncReadable<V>,
+    AsyncReadable<W>,
+    AsyncReadable<X>,
+    AsyncReadable<Y>,
+    AsyncReadable<Z>
+  ]
+): AsyncReadable<[T, U, V, W, X, Y, Z]>;
+export function joinAsync<T, U, V, W, X, Y, Z, A>(
+  stores: [
+    AsyncReadable<T>,
+    AsyncReadable<U>,
+    AsyncReadable<V>,
+    AsyncReadable<W>,
+    AsyncReadable<X>,
+    AsyncReadable<Y>,
+    AsyncReadable<Z>,
+    AsyncReadable<A>
+  ]
+): AsyncReadable<[T, U, V, W, X, Y, Z, A]>;
+export function joinAsync<T, U, V, W, X, Y, Z, A, B>(
+  stores: [
+    AsyncReadable<T>,
+    AsyncReadable<U>,
+    AsyncReadable<V>,
+    AsyncReadable<W>,
+    AsyncReadable<X>,
+    AsyncReadable<Y>,
+    AsyncReadable<Z>,
+    AsyncReadable<A>,
+    AsyncReadable<B>
+  ]
+): AsyncReadable<[T, U, V, W, X, Y, Z, A, B]>;
+export function joinAsync<T, U, V, W, X, Y, Z, A, B, C>(
+  stores: [
+    AsyncReadable<T>,
+    AsyncReadable<U>,
+    AsyncReadable<V>,
+    AsyncReadable<W>,
+    AsyncReadable<X>,
+    AsyncReadable<Y>,
+    AsyncReadable<Z>,
+    AsyncReadable<A>,
+    AsyncReadable<B>,
+    AsyncReadable<C>
+  ]
+): AsyncReadable<[T, U, V, W, X, Y, Z, A, B, C]>;
 export function joinAsync<T>(
   stores: Array<AsyncReadable<T>>
 ): AsyncReadable<Array<T>>;
