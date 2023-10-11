@@ -2,6 +2,7 @@ import {
   AgentPubKey,
   AppAgentClient,
   AppAgentEvents,
+  AppAgentNetworkInfoRequest,
   AppCreateCloneCellRequest,
   AppInfo,
   AppSignalCb,
@@ -13,6 +14,7 @@ import {
   DisableCloneCellResponse,
   EnableCloneCellRequest,
   EnableCloneCellResponse,
+  NetworkInfoResponse,
 } from "@holochain/client";
 import Emittery, { UnsubscribeFunction } from "emittery";
 
@@ -80,6 +82,10 @@ export class ZomeMock implements AppAgentClient {
   disableCloneCell(
     _args: DisableCloneCellRequest
   ): Promise<DisableCloneCellResponse> {
+    throw new Error("Method not implemented");
+  }
+
+  networkInfo(_args: AppAgentNetworkInfoRequest): Promise<NetworkInfoResponse> {
     throw new Error("Method not implemented");
   }
 
