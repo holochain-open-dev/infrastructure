@@ -8,54 +8,25 @@ import {
   AgentPubKey,
   ActionHash,
   RecordEntry,
-  DnaHash,
+  fakeEntryHash,
+  fakeAgentPubKey,
+  fakeActionHash,
+  randomByteArray,
 } from "@holochain/client";
 import { hash, HashType } from "./hash.js";
 
-export function fakeEntryHash(): EntryHash {
-  const randomBytes = randomByteArray(36);
-  return new Uint8Array([0x84, 0x21, 0x24, ...randomBytes]);
-}
-
-export function fakeDnaHash(): DnaHash {
-  const randomBytes = randomByteArray(36);
-  return new Uint8Array([0x84, 0x2d, 0x24, ...randomBytes]);
-}
-
-/**
- * Generate a valid agent key of a non-existing agent.
- *
- * @returns An {@link AgentPubKey}.
- *
- * @public
- */
-export function fakeAgentPubKey(): AgentPubKey {
-  const randomBytes = randomByteArray(36);
-  return new Uint8Array([0x84, 0x20, 0x24, ...randomBytes]);
-}
-
-/**
- * Generate a valid hash of a non-existing action.
- *
- * @returns An {@link ActionHash}.
- *
- * @public
- */
-export function fakeActionHash(): ActionHash {
-  const randomBytes = randomByteArray(36);
-  return new Uint8Array([0x84, 0x29, 0x24, ...randomBytes]);
-}
-
-export function fakeCreateAction(
-  entry_hash: EntryHash = fakeEntryHash(),
-  author: AgentPubKey = fakeAgentPubKey()
-): Action {
+export async function fakeCreateAction(
+  entry_hash?: EntryHash,
+  author?: AgentPubKey
+): Promise<Action> {
+  if (!entry_hash) entry_hash = await fakeEntryHash();
+  if (!author) author = await fakeAgentPubKey();
   return {
     type: ActionType.Create,
     author,
     timestamp: Date.now() * 1000,
     action_seq: 10,
-    prev_action: fakeActionHash(),
+    prev_action: await fakeActionHash(),
     entry_type: {
       App: {
         entry_index: 0,
@@ -74,34 +45,41 @@ export function fakeEntry(entry: any = "some data"): Entry {
   };
 }
 
-export function fakeDeleteEntry(
-  deletes_address: ActionHash = fakeActionHash(),
-  deletes_entry_address: EntryHash = fakeEntryHash(),
-  author: AgentPubKey = fakeAgentPubKey()
-): Action {
+export async function fakeDeleteEntry(
+  deletes_address?: ActionHash,
+  deletes_entry_address?: EntryHash,
+  author?: AgentPubKey
+): Promise<Action> {
+  if (!deletes_address) deletes_address = await fakeActionHash();
+  if (!deletes_entry_address) deletes_entry_address = await fakeEntryHash();
+  if (!author) author = await fakeAgentPubKey();
   return {
     type: ActionType.Delete,
     author,
     timestamp: Date.now() * 1000,
     action_seq: 10,
-    prev_action: fakeActionHash(),
+    prev_action: await fakeActionHash(),
     deletes_address,
     deletes_entry_address,
   };
 }
 
-export function fakeUpdateEntry(
-  original_action_address: ActionHash = fakeActionHash(),
-  entry: Entry = fakeEntry(),
-  original_entry_address: EntryHash = fakeEntryHash(),
-  author: AgentPubKey = fakeAgentPubKey()
-): Action {
+export async function fakeUpdateEntry(
+  original_action_address?: ActionHash,
+  original_entry_address?: EntryHash,
+  author?: AgentPubKey,
+  entry: Entry = fakeEntry()
+): Promise<Action> {
+  if (!original_action_address)
+    original_action_address = await fakeActionHash();
+  if (!original_entry_address) original_entry_address = await fakeEntryHash();
+  if (!author) author = await fakeAgentPubKey();
   return {
     type: ActionType.Update,
     author,
     timestamp: Date.now() * 1000,
     action_seq: 10,
-    prev_action: fakeActionHash(),
+    prev_action: await fakeActionHash(),
     original_entry_address,
     original_action_address,
     entry_hash: hash(entry, HashType.ENTRY),
@@ -115,7 +93,10 @@ export function fakeUpdateEntry(
   };
 }
 
-export function fakeRecord(action: Action, entry?: Entry | undefined): Record {
+export async function fakeRecord(
+  action: Action,
+  entry?: Entry | undefined
+): Promise<Record> {
   let recordEntry: RecordEntry = {
     NotApplicable: null,
   };
@@ -132,16 +113,7 @@ export function fakeRecord(action: Action, entry?: Entry | undefined): Record {
         content: action,
         hash: hash(action, HashType.ACTION),
       },
-      signature: randomByteArray(256),
+      signature: await randomByteArray(256),
     },
   };
-}
-
-function randomByteArray(n: number): Uint8Array {
-  const QUOTA = 65536;
-  const a = new Uint8Array(n);
-  for (let i = 0; i < n; i += QUOTA) {
-    crypto.getRandomValues(a.subarray(i, i + Math.min(n - i, QUOTA)));
-  }
-  return a;
 }
