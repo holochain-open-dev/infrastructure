@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="Description" content="Put your description here." />
+    <base href="/" />
+
+    <script type="module">
+      import "reveal.js/dist/reveal.css";
+      import "reveal.js/dist/theme/black.css";
+      import "reveal.js/plugin/highlight/monokai.css";
+      import "@mythosthesia/reveal-course-preset/styles.css";
+    </script>
+
+    <title>@holochain-open-dev/stores</title>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>@holochain-open-dev/stores</h1>
+          <h2>Reactive stores to build hApps</h2>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Desirable features of a peer-to-peer network
+
+            - Scalable
+              - No consensus on the state of the system, peers can change state without having all the other peers agree
+            - Data availability
+              - Resilient to network partitions
+            - Consistency
+              - Data never reaches an irreconcilable state
+            - Resilient to bad actors
+              - If some node is not behaving according to the rules of the game, they can be easily identified and protected against
+            - Security and Privacy
+          </fragment>
+        </section>
+      </div>
+    </div>
+    <script type="module">
+      import Reveal from "reveal.js";
+      import { plugins, config } from "@mythosthesia/reveal-course-preset";
+
+      let deck = new Reveal();
+      deck.initialize(config);
+    </script>
+  </body>
+</html>

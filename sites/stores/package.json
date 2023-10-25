@@ -1,0 +1,23 @@
+{
+  "name": "stores-site",
+  "description": "Webcomponent slides-sl following open-wc recommendations",
+  "license": "MIT",
+  "author": "guillem.cordoba@gmail.com",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rimraf dist && vite build",
+    "start": "vite --open"
+  },
+  "dependencies": {
+    "@mythosthesia/reveal-course-preset": "^0.1.5",
+    "reveal.js": "=4.3.1",
+    "typed-js": "^0.2.3"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.4",
+    "deepmerge": "^4.2.2",
+    "rimraf": "^3.0.2",
+    "vite": "^4.4.9"
+  }
+}

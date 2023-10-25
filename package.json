@@ -5,7 +5,8 @@
     "packages/utils",
     "packages/core-types",
     "packages/elements",
-    "packages/stores"
+    "packages/stores",
+    "sites/*"
   ],
   "engines": {
     "npm": ">=7.0.0"
