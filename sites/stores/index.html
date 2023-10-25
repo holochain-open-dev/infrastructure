@@ -18,12 +18,86 @@
 
     <title>@holochain-open-dev/stores</title>
   </head>
-  <body>
+  <body class="playground-theme-monokai">
     <div class="reveal">
       <div class="slides">
         <section>
           <h1>@holochain-open-dev/stores</h1>
           <h2>Reactive stores to build hApps</h2>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## Readable stores
+
+            - Simple object that holds a value
+            - You can subscribe to it to get notified whenever that value changes
+          </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+export function subscribeAndLog&lt;T>(store: Readable&lt;T>) {
+  const unsubscribe = store.subscribe(value => console.log(value)); // Will log all the values 
+                                                                    // that the store gets
+  // After some other code has executed...
+
+  unsubscribe(); // Unsubscribes from the store, from this point on new
+                 // values from the store won't get logged
+}
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Exercise
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { Readable } from '@holochain-open-dev/stores';
+
+// Given a store that yields incrementing values, subscribes to it,
+// waits until its value is 10 and then resolves the promise,
+// and finally unsubscribes from the store
+export async function waitUntilCountIs10(counter: Readable<number>): Promise<void> {
+  return new Promise((resolve) => {
+    // Remove the following line and add your own code to fix this function
+    resolve();
+  });
+}
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { readable, get } from 'svelte/store';
+              import { assert } from './assert.js';
+              import { waitUntilCountIs10 } from './index.js';
+              export function test() {
+                return new Promise((resolve, reject) => {
+                  const store = readable(0, set => {
+                    let count = 0;
+                    const interval = setInterval(()=> {
+                      count++;
+                      if (count === 11) reject(new Error("The store hasn't been unsubscribed from after its value is 10"));
+                      set(count)
+                    }, 100);
+
+                    return () => {
+                      clearInterval(interval);
+                    }
+                  });
+                 waitUntilCountIs10(store).then(()=> {
+                    try {
+                      assert.equal(get(store), 10, "After executing the function, the value of the store is not 10");
+                    } catch (e) {
+                      reject(e);
+                    }
+                    setTimeout(()=> resolve(undefined), 300);
+                  });
+                });
+              }
+            </script>
+          </playground-exercise>
         </section>
 
         <section>
@@ -44,12 +118,21 @@
         </section>
       </div>
     </div>
+
+    <script type="module">
+      import "playground-elements/themes/monokai.css";
+      import "playground-exercise";
+    </script>
+
     <script type="module">
       import Reveal from "reveal.js";
       import { plugins, config } from "@mythosthesia/reveal-course-preset";
 
       let deck = new Reveal();
-      deck.initialize(config);
+      deck.initialize({
+        ...config,
+        keyboard: false,
+      });
     </script>
   </body>
 </html>
