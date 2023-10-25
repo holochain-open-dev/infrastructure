@@ -198,7 +198,13 @@ pipeStore.subscribe(value => console.log(value)); // Use like any other store, w
 
 ## debugStore
 
-It can be hard to debug what's happening with complex pipes. `window.__debugStore` is available at any time, so that if something weird is happening in your application, you can open your browser and type:
+It can be hard to debug what's happening with complex pipes. `window.__debugStore` is available if you add this import anywhere in your app:
+
+```js
+import '@holochain-open-dev/stores/dist/debug-store.js';
+```
+
+so that if something weird is happening in your application, you can open your browser and type:
 
 ```js
 window.__debugStore(myStore);

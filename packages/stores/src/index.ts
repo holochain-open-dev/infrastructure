@@ -3,7 +3,6 @@ export type { Readable, Writable, Unsubscriber } from "svelte/store";
 export * from "lit-svelte-stores";
 
 export * from "./derived.js";
-export * from "./debug-store.js";
 
 export * from "./async-derived.js";
 export * from "./retry-until-success.js";

@@ -69,7 +69,7 @@ export async function waitUntilCountIs10(counter: Readable<number>): Promise<voi
 }
             </script>
             <script filename="test.ts" type="sample/ts">
-              import { readable, get } from 'svelte/store';
+              import { readable, get } from '@holochain-open-dev/store';
               import { assert } from './assert.js';
               import { waitUntilCountIs10 } from './index.js';
               export function test() {
