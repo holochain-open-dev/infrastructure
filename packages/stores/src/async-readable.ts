@@ -1,4 +1,4 @@
-import { isEqual } from "lodash-es";
+import isEqual from "lodash-es/isEqual.js";
 import { readable, Readable, Subscriber, Unsubscriber } from "svelte/store";
 
 export type AsyncStatus<T> =

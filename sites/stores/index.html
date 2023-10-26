@@ -17,6 +17,19 @@
     </script>
 
     <title>@holochain-open-dev/stores</title>
+    <style>
+      .slides {
+        width: 90% !important;
+        height: 90% !important;
+      }
+      body {
+        --r-main-font-size: 28px !important;
+      }
+      .playground-theme-monokai {
+        --playground-code-font-size: 19.5px !important;
+        --playground-code-keyword-color: #817eed !important;
+      }
+    </style>
   </head>
   <body class="playground-theme-monokai">
     <div class="reveal">
@@ -24,6 +37,36 @@
         <section>
           <h1>@holochain-open-dev/stores</h1>
           <h2>Reactive stores to build hApps</h2>
+          <li class="fragment fade-out">
+            Click on the blue arrow on the bottom right corner to advance!
+          </li>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            - State management for web-apps
+            - Re-export of svelte stores, but with additional tooling on top of it
+            - Tuned specifically to the holochain architecture
+
+            ### Features
+
+            - Push-based
+            - Extensible
+            - Composable
+            - Enables developers to create clear interfaces between components
+
+            ### Cons
+
+            - Difficult to dive into it if you haven't done reactive programming before (eg. haskell, RxJS)
+            - Thus this tutorial!
+              - This is an experiment, and feedback is very well appreciated in [the issues page](https://github.com/holochain-open-dev/common)! 
+
+            ### Tutorial
+
+            - In this tutorial, you will find an incremental approach to learning concepts 
+            - Each slide will contain a minimal explanation of the concept, a code example, and a code exercise 
+            - The concepts build heavily on each other, so I recommend actually doing the code example 
+            - Have fun!
+
+</fragment>
         </section>
 
         <section>
@@ -44,13 +87,13 @@ export function subscribeAndLog&lt;T>(store: Readable&lt;T>) {
   // After some other code has executed...
 
   unsubscribe(); // Unsubscribes from the store, from this point on new
-                 // values from the store won't get logged
+                 // values from the store will not be logged
 }
 </code></pre>
 
           <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
-            #### Exercise
+            #### Complete This Exercise:
           </fragment>
 
           <playground-exercise class="fragment fade-in">
@@ -69,7 +112,7 @@ export async function waitUntilCountIs10(counter: Readable<number>): Promise<voi
 }
             </script>
             <script filename="test.ts" type="sample/ts">
-              import { readable, get } from '@holochain-open-dev/store';
+              import { readable, get } from 'svelte/store';
               import { assert } from './assert.js';
               import { waitUntilCountIs10 } from './index.js';
               export function test() {
@@ -103,18 +146,812 @@ export async function waitUntilCountIs10(counter: Readable<number>): Promise<voi
         <section>
           <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
-            ### Desirable features of a peer-to-peer network
+            ## Async Readable stores
 
-            - Scalable
-              - No consensus on the state of the system, peers can change state without having all the other peers agree
-            - Data availability
-              - Resilient to network partitions
-            - Consistency
-              - Data never reaches an irreconcilable state
-            - Resilient to bad actors
-              - If some node is not behaving according to the rules of the game, they can be easily identified and protected against
-            - Security and Privacy
+            - Readable stores that hold `AsyncStatus` values
+            - Represents the execution of a promise task
+            - **Promises to contain the latest known value for a certain piece of relevant state in our app**
           </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+export type AsyncStatus&lt;T> =
+  | { status: "pending" }            // Task is still executing...
+  | { status: "complete"; value: T } // Task has completed, its value is available
+  | { status: "error"; error: any }; // Task has failed, the error is available
+
+export type AsyncReadable&lt;T> = Readable&lt;AsyncStatus&lt;T>>; // `AsyncReadable` is just a readable of an `AsyncStatus`
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Complete This Exercise:
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { AsyncReadable } from '@holochain-open-dev/stores';
+
+// Given an `AsyncReadable` store that will contain a string,
+// waits until it's completed, and then resolves the promise with the given string,
+// and finally unsubscribes from the store
+export async function waitUntilCountIsComplete(asyncStore: AsyncReadable<string>): Promise<string> {
+  return new Promise((resolve) => {
+    // Remove the following line and add your own code to fix this function
+    resolve('');
+  });
+}
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { get } from 'svelte/store';
+              import { asyncReadable } from '@holochain-open-dev/stores/dist/async-readable.js';
+
+              import { assert } from './assert.js';
+              import { waitUntilCountIsComplete } from './index.js';
+              const sleep = (ms:number) => new Promise(resolve => setTimeout(()=>resolve(undefined), ms))
+              export function test() {
+                return new Promise((resolve, reject) => {
+                  const store = asyncReadable<string>(async set => {
+                    await sleep(100);
+                    set('hello world!');
+                    return () => {
+                      resolve(undefined)
+                    }
+                  });
+                 waitUntilCountIsComplete(store).then(result => {
+                    try {
+                      assert.equal(get(store).status, 'complete', "After executing the function, the status of the store is not complete");
+                      assert.equal(result, 'hello world', "The return value of the function does not equal the completed value from the store");
+                    } catch (e) {
+                      reject(e);
+                    }
+                    setTimeout(()=> reject('After completion, the store has not been unsubscribed.'), 300);
+                  });
+                });
+              }
+            </script>
+            <script type="sample/importmap">
+              {
+                "imports": {
+                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                }
+              }
+            </script>
+          </playground-exercise>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## lazy Load
+
+            - Builds a simple `AsyncReadable` from the execution of a promise
+            - The promise will only execute when the store is subscribed to for the first time
+            - After all subscribers have unsubscribed, it will clear its value
+          </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+const lazyStore = lazyLoad(() => fetch('/some/big/request')); // Build the store
+                                                              // **No request is done yet**
+const unsubscribe1 = lazyStore.subscribe(value => console.log(value)); // Now the request is made
+
+// After a while...
+
+const unsubscribe2 = lazyStore.subscribe(value => console.log(value)); // No new request is made, the
+                                                                       // status is automatically "complete"
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Complete This Exercise:
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="zome-calls.ts">
+import { writable } from 'svelte/store'
+export interface Post {
+  content: string
+}
+export let invocations = writable(0);
+const sleep = (ms:number) => new Promise(resolve => setTimeout(()=>resolve(undefined), ms))
+export async function getAllPosts(): Promise<Post[]> {
+  invocations.update(i => i + 1);
+  await sleep(100);
+  return [{
+    content:'First Post'  },
+{
+   content:'Second Post'  }
+]}
+</script>
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { lazyLoad, AsyncReadable } from '@holochain-open-dev/stores';
+import { getAllPosts, Post } from './zome-calls.js';
+
+// Builds an `AsyncReadable` store which lazily fetches all the posts
+export function getAllPostsStore(): AsyncReadable<Post[]> {
+  // Implement the function
+}
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { get } from 'svelte/store';
+              import { asyncReadable } from '@holochain-open-dev/stores/dist/async-readable.js';
+
+              import { assert } from './assert.js';
+              import { getAllPostsStore } from './index.js';
+              import { invocations } from './zome-calls.js';
+              const sleep = (ms:number) => new Promise(resolve => setTimeout(()=>resolve(undefined), ms))
+              export async function test() {
+                const store = getAllPostsStore();
+                assert.equal(get(invocations), 0, "getAllPosts was called before the store was subscribed to.")
+                store.subscribe(task => {})
+                assert.equal(get(store).status, 'pending', "The status of the store is not pending at first.")
+                await sleep(101);
+                assert.equal(get(store).status, 'complete', "The status of the store is not complete after the getAllPosts call has finished.")
+                assert.equal((get(store) as any).value.length, 2, "The value of the store is does not contain the list of posts.")
+                assert.equal((get(store) as any).value[0].content, 'First Post', "The value of the store is does not contain the list of posts.")
+              }
+            </script>
+            <script type="sample/importmap">
+              {
+                "imports": {
+                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                }
+              }
+            </script>
+          </playground-exercise>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## lazy Load And Poll
+
+            - Builds an `AsyncReadable` that executes the given promise on a polling interval whenever it has subscribers
+            - After all subscribers have unsubscribed, it will clear its value
+          </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+const lazyStore = lazyLoadAndPoll(
+  () => fetch('/some/big/request'), 
+  4000 // Polling interval in ms 
+); // Build the store, **no request is done yet**
+const unsubscribe = lazyStore.subscribe(value => console.log(value)); // Now the request is made
+                                                                      // And will continually be made every 4 seconds
+// After a while...
+
+unsubscribe(); // Polling stops
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Complete This Exercise:
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="zome-calls.ts">
+import { writable, get } from 'svelte/store';
+export interface Post {
+  content: string
+}
+export const invocations = writable(0);
+export const posts = writable([
+  { content:'First Post' },
+  { content:'Second Post' }
+]);
+const sleep = (ms: number) => new Promise(resolve => setTimeout(()=>resolve(undefined), ms));
+export async function getAllPosts(): Promise<Post[]> {
+  invocations.update(i => i + 1)
+  await sleep(100);
+  return get(posts);
+}
+</script>
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { lazyLoadAndPoll, AsyncReadable } from '@holochain-open-dev/stores';
+import { getAllPosts, Post } from './zome-calls.js';
+
+// Builds an `AsyncReadable` store which lazily fetches all the posts,
+// And keeps fetching the list of posts every 1 second to keep it up to date
+export function getAllPostsStore(): AsyncReadable<Post[]> {
+  // Implement the function
+}
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { get } from 'svelte/store';
+              import { asyncReadable } from '@holochain-open-dev/stores/dist/async-readable.js';
+
+              import { assert } from './assert.js';
+              import { getAllPostsStore } from './index.js';
+              import { invocations, posts } from './zome-calls.js';
+              const sleep = (ms:number) => new Promise(resolve => setTimeout(()=>resolve(undefined), ms))
+              export async function test() {
+                const store = getAllPostsStore();
+                assert.equal(get(invocations), 0, "getAllPosts was called before the store was subscribed to.")
+                store.subscribe(task => {})
+                assert.equal(get(invocations), 1, "getAllPosts was not called after the store was subscribed to.")
+                assert.equal(get(store).status, 'pending', "The status of the store is not pending at first.")
+                await sleep(101);
+                assert.equal(get(store).status, 'complete', "The status of the store is not complete after the getAllPosts call has finished.")
+                assert.equal((get(store) as any).value.length, 2, "The value of the store is does not contain the list of posts.")
+                assert.equal((get(store) as any).value[0].content, 'First Post', "The value of the store is does not contain the list of posts.")
+                posts.update(p => [...p, { content: 'third post'}])
+                await sleep(1000);
+                assert.equal(get(invocations), 2, "getAllPosts was not called after a second when the store was subscribed to.")
+                await sleep(200);
+                assert.equal(get(store).status, 'complete', "The status of the store is not complete after the getAllPosts call has finished.")
+                assert.equal((get(store) as any).value.length, 3, "The value of the store is does not contain the list of posts after a second.")
+                assert.equal((get(store) as any).value[2].content, 'third post', "The value of the store is does not contain the list of posts.")
+              }
+            </script>
+            <script type="sample/importmap">
+              {
+                "imports": {
+                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                }
+              }
+            </script>
+          </playground-exercise>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## Lazy Holo Hash Map
+
+            - Similar to standard javascript HashMap, but only exposes a `get(key: HoloHash)` method, and not any `set()` methods
+            - Receives a function in its constructor, of the form "(hash: HoloHash) => T"
+            - Whenever `get(key: HoloHash)` is called:
+              - If it's the first time this key is requested, it will execute the function defined in the constructor, store it in the map, and return that value
+              - Any later time, it will just return the value stored with that key
+          </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+const lazyMap = new LazyHoloHashMap((agent: AgentPubKey) => // Define the fn to execute for new gets 
+  lazyLoadAndPoll(() => getAllPosts(agent), 4000) // Builds a new store that keeps polling whenever a new agent is requested
+);
+const myPostsStore1 = lazyMap.get(client.myPubKey); // Builds the store bound to "myPubKey"
+const myPostsStore2 = lazyMap.get(client.myPubKey); // Does not build a new store, just returns the same one
+const unsubscribe1 = myPostsStore.subscribe(value => console.log(value)); // Now the request is made
+                                                                          // And will continually be made every 4 seconds
+const unsubscribe2 = myPostsStore.subscribe(value => console.log(value)); // No other requests are made, the polling is already active
+// After a while...
+unsubscribe1(); // Polling does not stop
+unsubscribe2(); // Last subscriber unsubscribes, polling stops
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Complete This Exercise:
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="zome-calls.ts">
+import { writable, get } from 'svelte/store';
+import { ActionHash } from '@holochain/client';
+import { HoloHashMap } from '@holochain-open-dev/utils';
+export interface Post {
+  content: string
+}
+export const invocations = writable(0);
+export const posts = new HoloHashMap();
+const sleep = (ms: number) => new Promise(resolve => setTimeout(()=>resolve(undefined), ms));
+export async function getLatestPostVersion(actionHash: ActionHash): Promise<Post> {
+  invocations.update(i => i + 1)
+  await sleep(100);
+  return posts.get(actionHash);
+}
+</script>
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { ActionHash } from '@holochain/client';
+import { LazyHoloHashMap } from '@holochain-open-dev/utils';
+import { lazyLoadAndPoll, AsyncReadable } from '@holochain-open-dev/stores';
+import { getLatestPostVersion, Post } from './zome-calls.js';
+
+// Builds an `AsyncReadable` store which lazily fetches all the posts,
+// And keeps fetching the latest version of the post which have subscribers every 1 second to keep it up to date
+export const latestPostVersion: LazyHoloHashMap<ActionHash, AsyncReadable<Post>>; // Implement the map
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { get } from 'svelte/store';
+              import { fakeActionHash } from '@holochain/client';
+              import { asyncReadable } from '@holochain-open-dev/stores/dist/async-readable.js';
+
+              import { assert } from './assert.js';
+              import { latestPostVersion } from './index.js';
+              import { invocations, posts } from './zome-calls.js';
+              const sleep = (ms: number) => new Promise(resolve => setTimeout(()=>resolve(undefined), ms))
+              export async function test() {
+                const postHash1 = await fakeActionHash();
+                posts.set(postHash1, { content: 'First Post'});
+                const store = latestPostVersion.get(postHash1);
+                assert.equal(get(invocations), 0, "getLatestPostVersion was called before the store was subscribed to.");
+                const unsubscribe = store.subscribe(task => {});
+                assert.equal(get(invocations), 1, "getLatestPostVersion was not called after the store was subscribed to.");
+                assert.equal(get(store).status, 'pending', "The status of the store is not pending at first.");
+                await sleep(101);
+                assert.equal(get(store).status, 'complete', "The status of the store is not complete after the getLatestPostVersion call has finished.");
+                assert.equal((get(store) as any).value.content, 'First Post', "The value of the store is does not contain the latest version of the posts.");
+                posts.set(postHash1, { content: 'First Post Updated'});
+                await sleep(1000);
+                assert.equal(get(invocations), 2, "getLatestPostVersion was not called after a second when the store was subscribed to.");
+                await sleep(200);
+                assert.equal(get(store).status, 'complete', "The status of the store is not complete after the getLatestPostVersion call has finished.");
+                assert.equal((get(store) as any).value.content, 'First Post Updated', "The value of the store is does not contain the list of posts.");
+              }
+            </script>
+            <script type="sample/importmap">
+              {
+                "imports": {
+                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                }
+              }
+            </script>
+          </playground-exercise>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## Derived
+
+            - Receives a store or an array of stores, and a mapping function to convert their values into some other derived value 
+          </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+export function deriveAllPosts(alicePostsStore: Readable&lt;Post[]>, bobPostsStore: Readable&lt;Post[]>): Readable&lt;Posts[]> {
+  return derived([alicePostsStore, bobPostsStore], 
+    ([alicePosts, bobPosts]) => [...alicePosts, ...bobPosts] // Will be called any time either `alicePostsStore` 
+                                                             // or `bobPostsStore` are updated
+  );
+}
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Complete This Exercise:
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="zome-calls.ts">
+export interface Post {
+  content: string
+}
+</script>
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { derived, Readable} from '@holochain-open-dev/stores';
+import { Post } from './zome-calls.js';
+
+// Returns a Readable store which will contain the count of all posts by Alice and Bob
+export function deriveAllPostsCount(alicePostsStore: Readable<Post[]>, bobPostsStore: Readable<Post[]>): Readable<number> {
+  // Implement this function
+}
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { get, writable } from 'svelte/store';
+
+              import { assert } from './assert.js';
+              import { deriveAllPostsCount } from './index.js';
+              import { Post } from './zome-calls.js';
+              export async function test() {
+                const alicePostsStore = writable<Post[]>([]);
+                const bobPostsStore = writable<Post[]>([]);
+                const store = deriveAllPostsCount(alicePostsStore, bobPostsStore);
+                assert.equal(get(store), 0, "When neither Alice nor Bob have created any posts, the all posts count store should be 0.");
+                alicePostsStore.set([{content: 'First Post'}])
+                assert.equal(get(store), 1, "When Alice has created a post, the all posts count store should be 1.");
+                bobPostsStore.set([{content: 'First Post for bob'}])
+                assert.equal(get(store), 2, "When both Alice and Bob have created a post, the all posts count store should be 2.");
+                alicePostsStore.set([{content: 'First Post'}, {content: 'Second Post'}])
+                assert.equal(get(store), 3, "When Alice has created two posts and Bob 1, the all posts count store should be 3.");
+              }
+            </script>
+            <script type="sample/importmap">
+              {
+                "imports": {
+                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                }
+              }
+            </script>
+          </playground-exercise>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## Async Derived
+
+            - Similar to `derived`, but for `AsyncReadable` stores, and can only accept one store
+            - The derive function will only get executed when the status of the input store is complete
+          </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+export function deriveFilterEmptyPosts(postsStore: AsyncReadable&lt;Post[]>): AsyncReadable&lt;Posts[]> {
+  return asyncDerived(postsStore, 
+    (posts) => posts.filter(post => post.content.length > 0) // Will be called when `postsStore` has status "complete"
+                                                             // and then every time it is updated
+  );
+}
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Complete This Exercise:
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="zome-calls.ts">
+export interface Post {
+  content: string
+}
+</script>
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { asyncDerived, AsyncReadable} from '@holochain-open-dev/stores';
+import { Post } from './zome-calls.js';
+
+export function derivePostsCount(postsStore: AsyncReadable<Post[]>): AsyncReadable<number> {
+  // Implement this function
+}
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { get, writable } from 'svelte/store';
+              import { AsyncStatus } from '@holochain-open-dev/stores';
+
+              import { assert } from './assert.js';
+              import { derivePostsCount } from './index.js';
+              import { Post } from './zome-calls.js';
+              export async function test() {
+                const postsStore = writable<AsyncStatus<Post[]>>({
+                  status: 'pending'
+                });
+                const store = derivePostsCount(postsStore);
+                store.subscribe(()=> {});
+                assert.equal(get(store).status, 'pending', "First status for the store should be pending.");
+                postsStore.set({status: "complete", value: [{content: 'First Post'}]})
+                assert.equal((get(store) as any).value, 1, "When a post has been created, the all posts count store should be 1.");
+                postsStore.set({ status: 'complete', value: [{content: 'First Post'}, {content: 'Second Post'}]})
+                assert.equal((get(store) as any).value, 2, "When two posts have been created, the all posts count store should be 2.");
+              }
+            </script>
+            <script type="sample/importmap">
+              {
+                "imports": {
+                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                }
+              }
+            </script>
+          </playground-exercise>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## join Async
+
+            - Takes an array of `AsyncReadable` stores, and joins them to return a single `AsyncReadable` of the array of the completed values of the stores
+              - If any store has status "pending", the joined store will have status "pending"
+              - If any store has status "error", the joined store will have status "error" and will contain the first error
+          </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+export function deriveAllPosts(alicePostsStore: AsyncReadable&lt;Post[]>, bobPostsStore: AsyncReadable&lt;Post[]>): AsyncReadable&lt;Posts[]> {
+  return asyncDerived(joinAsync([alicePostsStore, bobPostsStore]), // Creates an `AsyncReadable&lt;[Array&lt;Post>, Array&lt;Post>]>`
+    ([alicePosts, bobPosts]) => [...alicePosts, ...bobPosts] // Will be called any time either `alicePostsStore` 
+                                                             // or `bobPostsStore` are updated
+  );
+}
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Complete This Exercise:
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="zome-calls.ts">
+export interface Post {
+  content: string
+}
+</script>
+
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { asyncDerived, joinAsync, AsyncReadable} from '@holochain-open-dev/stores';
+import { Post } from './zome-calls.js';
+
+export function deriveAllPostsCount(alicePostsStore: AsyncReadable<Post[]>, bobPostsStore: AsyncReadable<Post[]>): AsyncReadable<number> {
+  // Implement this function
+}
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { get, writable } from 'svelte/store';
+              import { AsyncStatus } from '@holochain-open-dev/stores';
+
+              import { assert } from './assert.js';
+              import { deriveAllPostsCount } from './index.js';
+              import { Post } from './zome-calls.js';
+              export async function test() {
+                const alicePostsStore = writable<AsyncStatus<Post[]>>({
+                  status: 'pending'
+                });
+                const bobPostsStore = writable<AsyncStatus<Post[]>>({
+                  status: 'pending'
+                });
+                const store = deriveAllPostsCount(alicePostsStore, bobPostsStore);
+                store.subscribe(()=> {});
+                assert.equal(get(store).status, 'pending', "First status for the store should be pending.");
+                alicePostsStore.set({status: "complete", value: [{content: 'First Post'}]})
+                assert.equal(get(store).status, 'pending', "Status for the store should be pending when Bob's store is still pending.");
+                bobPostsStore.set({status: 'complete', value: [{content: 'First Post for bob'}]})
+                assert.equal((get(store) as any).value, 2, "When both Alice and Bob have created a post, the all posts count store should be 2.");
+                alicePostsStore.set({ status: 'complete', value: [{content: 'First Post'}, {content: 'Second Post'}]})
+                assert.equal((get(store) as any).value, 3, "When Alice has created two posts and Bob 1, the all posts count store should be 3.");
+              }
+            </script>
+            <script type="sample/importmap">
+              {
+                "imports": {
+                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                }
+              }
+            </script>
+          </playground-exercise>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## slice and join 
+
+            - Takes a `HoloHashMap` of `AsyncReadable` stores, and an array of hashes, and:
+              - Does a `get(hash)` for each one of the given hashes
+              - Returns those stores joined in a map
+              - If any store has status "pending", the joined store will have status "pending"
+              - If any store has status "error", the joined store will have status "error" and will contain the first error
+          </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+// Imagine for some reason we need to display the latest content for all the posts in the app,
+// and we already have a `LazyHoloHashMap` for the latest version of each of them
+export function latestVersionOfAllPosts(
+  allPosts: ActionHash[], 
+  latestVersionOfPostsMap: LazyHoloHashMap&lt;ActionHash, AsyncReadable&lt;Post>>
+): AsyncReadable&lt;ReadonlyMap&lt;ActionHash, Posts>> {
+  return sliceAndJoin(latestVersionOfPostsMap, allPosts); // Will do a get for each post ActionHash
+                                                          // If some of the posts were already loaded, 
+                                                          // it will not need to make any new requests
+}
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Complete This Exercise:
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { AgentPubKey, ActionHash } from '@holochain/client';
+import { sliceAndJoin, AsyncReadable} from '@holochain-open-dev/stores';
+import { LazyHoloHashMap } from '@holochain-open-dev/utils';
+
+export function allPostsHashesByAuthor(allAgents: AgentPubKey[], postsHashesByAuthor: LazyHoloHashMap<AgentPubKey, AsyncReadable<ActionHash[]>>): AsyncReadable<ReadonlyMap<AgentPubKey, ActionHash[]>> {
+  // Implement this function
+}
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { Writable, get, writable } from 'svelte/store';
+              import { HoloHashMap, LazyHoloHashMap } from '@holochain-open-dev/utils';
+              import { AsyncStatus, AsyncReadable } from '@holochain-open-dev/stores';
+              import { fakeActionHash, AgentPubKey, ActionHash, fakeAgentPubKey } from '@holochain/client';
+
+              import { assert } from './assert.js';
+              import { allPostsHashesByAuthor } from './index.js';
+
+              export async function test() {
+                const alicePubKey = await fakeAgentPubKey();
+                const bobPubKey = await fakeAgentPubKey();
+                const map = new HoloHashMap<AgentPubKey, Writable<AsyncStatus<ActionHash[]>>>();
+                map.set(alicePubKey, writable<AsyncStatus<ActionHash[]>>({
+                  status: 'pending'
+                }));
+                map.set(bobPubKey, writable<AsyncStatus<ActionHash[]>>({
+                  status: 'pending'
+                }));
+                const store = allPostsHashesByAuthor([alicePubKey, bobPubKey], map as any as LazyHoloHashMap<AgentPubKey, AsyncReadable<ActionHash[]>>);
+                store.subscribe(()=> {});
+                assert.equal(get(store).status, 'pending', "First status for the store should be pending.");
+                map.get(alicePubKey).set({status: "complete", value: [await fakeActionHash()]});
+                assert.equal(get(store).status, 'pending', "Status for the store should be pending when Bob's store is still pending.");
+                map.get(bobPubKey).set({status: "complete", value: []});
+                assert.equal(get(store).status, 'complete', "Status for the store should be complete when both have finished loading.");
+                assert.equal((get(store) as any).value.get(alicePubKey).length, 1, "When alice has created a post, the map should contain it.");
+                assert.equal((get(store) as any).value.get(bobPubKey).length, 0, "When bob has not created a post, the map should contain 0 posts hashes.");
+                map.get(bobPubKey).set({status: "complete", value: [await fakeActionHash()]});
+                assert.equal((get(store) as any).value.get(bobPubKey).length, 1, "When bob has created a post, the map should contain it.");
+              }
+            </script>
+            <script type="sample/importmap">
+              {
+                "imports": {
+                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                }
+              }
+            </script>
+          </playground-exercise>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## pipe
+
+            - Takes an `AsyncReadable`, and applies any number of steps to derive the desired value
+              - Each of the steps can return a raw value, a promise, another `AsyncReadable` or a `Readable` of any other value
+          </fragment>
+
+          <pre
+            class="fragment fade-in"
+          ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
+// Imagine for some reason we need to display the latest content for all the posts in the app,
+// we already have a `LazyHoloHashMap` for the latest version of each of them
+// and an `AsyncReadable` for all the post hashes in the app
+export function latestVersionOfAllPosts(
+  allPostsStore: AsyncReadable&lt;ActionHash[]>, 
+  latestVersionOfPostsMap: LazyHoloHashMap&lt;ActionHash, AsyncReadable&lt;Post>>
+): AsyncReadable&lt;ReadonlyMap&lt;ActionHash, Posts>> {
+  return pipe(allPostsStore, // We pipe from the `allPostsStore`
+    (postsHashes: ActionHash[]) => // The argument of each step is the result value of the previous one
+                                   // In this case, it is the list of post hashes 
+      sliceAndJoin(latestVersionOfPostsMap, postHashes) // And then, we just return the already familiar "sliceAndJoin" 
+  ); 
+}
+</code></pre>
+
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            #### Complete This Exercise:
+          </fragment>
+
+          <playground-exercise class="fragment fade-in">
+            <!-- prettier-ignore -->
+            <script type="sample/ts" filename="index.ts">
+import { AgentPubKey, ActionHash } from '@holochain/client';
+import { pipe, sliceAndJoin, AsyncReadable } from '@holochain-open-dev/stores';
+import { LazyHoloHashMap } from '@holochain-open-dev/utils';
+
+// Builds a pipe that derives a map of all the posts hashes by author
+export function allPostsHashesByAuthor(allAgents: AsyncReadable<AgentPubKey[]>, postsHashesByAuthor: LazyHoloHashMap<AgentPubKey, AsyncReadable<ActionHash[]>>): AsyncReadable<ReadonlyMap<AgentPubKey, ActionHash[]>> {
+  // Implement this function
+}
+            </script>
+            <script filename="test.ts" type="sample/ts">
+              import { Writable, get, writable } from 'svelte/store';
+              import { HoloHashMap, LazyHoloHashMap } from '@holochain-open-dev/utils';
+              import { AsyncStatus, AsyncReadable } from '@holochain-open-dev/stores';
+              import { fakeActionHash, AgentPubKey, ActionHash, fakeAgentPubKey } from '@holochain/client';
+
+              import { assert } from './assert.js';
+              import { allPostsHashesByAuthor } from './index.js';
+
+              export async function test() {
+                const alicePubKey = await fakeAgentPubKey();
+                const bobPubKey = await fakeAgentPubKey();
+                const agentsStore = writable<AsyncStatus<AgentPubKey[]>>({status: 'complete', value:[]});
+                const map = new HoloHashMap<AgentPubKey, Writable<AsyncStatus<ActionHash[]>>>();
+                map.set(alicePubKey, writable<AsyncStatus<ActionHash[]>>({
+                  status: 'complete',
+                  value: []
+                }));
+                map.set(bobPubKey, writable<AsyncStatus<ActionHash[]>>({
+                  status: 'pending'
+                }));
+                const store = allPostsHashesByAuthor(agentsStore, map as any as LazyHoloHashMap<AgentPubKey, AsyncReadable<ActionHash[]>>);
+                store.subscribe(()=> {});
+                assert.equal(get(store).status, 'complete', "Status should be complete when the list of agents is empty");
+                agentsStore.update(a => ({
+                  status: 'pending'
+                }));
+                assert.equal(get(store).status, 'pending', "Status should be complete when the list of agents is pending");
+                agentsStore.update(a => ({
+                  status: 'complete',
+                  value: [alicePubKey]
+                }));
+                assert.equal(get(store).status, 'complete', "Status should be complete when the list of agents is complete");
+                assert.equal((get(store) as any).value.get(alicePubKey).length, 0, "List of alice's post should be empty when alice hasn't created any posts");
+                map.get(alicePubKey).set({status: "complete", value: [await fakeActionHash()]});
+                assert.equal((get(store) as any).value.get(alicePubKey).length, 1, "List of alice's post should contain 1 post when alice has created 1 post");
+                agentsStore.update(a => ({
+                  status: 'complete',
+                  value: [alicePubKey, bobPubKey]
+                }));
+                assert.equal(get(store).status, 'pending', "Status for the store should be pending when Bob's store is still pending.");
+                map.get(bobPubKey).set({status: "complete", value: []});
+                assert.equal(get(store).status, 'complete', "Status for the store should be complete when both have finished loading.");
+                assert.equal((get(store) as any).value.get(alicePubKey).length, 1, "When alice has created a post, the map should contain it.");
+                assert.equal((get(store) as any).value.get(bobPubKey).length, 0, "When bob has not created a post, the map should contain 0 posts hashes.");
+                map.get(bobPubKey).set({status: "complete", value: [await fakeActionHash()]});
+                assert.equal((get(store) as any).value.get(bobPubKey).length, 1, "When bob has created a post, the map should contain it.");
+              }
+            </script>
+            <script type="sample/importmap">
+              {
+                "imports": {
+                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                }
+              }
+            </script>
+          </playground-exercise>
+        </section>
+
+        <section>
+          <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ## That's it!
+
+            - That's it for the concepts 
+            - The exercises are designed to be as minimal as possible to actual train the required skill
+            - You can imagine needing complex pipes to build your own stores in your app
+            - A big thank you to svelte for the inspiration and actual core of the stores implementation
+
+            ### Real-world Examples
+
+            - [ProfilesStore](https://github.com/holochain-open-dev/profiles/blob/main/ui/src/profiles-store.ts)
+            - [CancellationsStore](https://github.com/holochain-open-dev/cancellations/blob/main/ui/src/cancellations-store.ts)
+            - [WeStore](https://github.com/lightningrodlabs/we/blob/main/ui/app/src/we-store.ts)
+            - [GatherStore](https://github.com/darksoil-studio/gather/blob/main/ui/src/gather/gather/gather-store.ts)
+
+            ### Future improvements on the library
+
+            - Most of the usages of `lazyLoadAndPoll()` will be replaced by a fully pushed based approach based on signals
+              - This depends on holochain implementing the pub/sub system
+          </fragment>
+        </section>
+        <section>
+          <h1>That's it!</h1>
         </section>
       </div>
     </div>
@@ -132,6 +969,8 @@ export async function waitUntilCountIs10(counter: Readable<number>): Promise<voi
       deck.initialize({
         ...config,
         keyboard: false,
+        minScale: 1,
+        maxScale: 1,
       });
     </script>
   </body>

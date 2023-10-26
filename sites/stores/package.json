@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@mythosthesia/reveal-course-preset": "^0.1.5",
-    "playground-exercise": "^0.1.2",
+    "playground-exercise": "^0.1.3",
     "reveal.js": "=4.3.1",
     "typed-js": "^0.2.3"
   },

@@ -4,7 +4,7 @@ import blake from "blakejs";
 import { encode } from "@msgpack/msgpack";
 import { Base64 } from "js-base64";
 import sortKeys from "sort-keys";
-import { isPlainObject } from "lodash-es";
+import isPlainObject from "lodash-es/isPlainObject.js";
 
 export enum HashType {
   AGENT,
