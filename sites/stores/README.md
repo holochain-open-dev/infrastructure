@@ -1,8 +1,12 @@
-# Holochain Immersive: Lesson 1
+# @holochain-open-dev/stores training
 
 Source code for the lesson slides. Visit the slides here:
 
-https://holochain-immersive.github.io/holochain-lesson-1
+https://holochain-open-dev.github.io/common/stores
+
+If the exercises don't work for you, try them in Firefox!
+
+> Exercises being flakey in chrome is a known issue, which needs to be addressed at some point.
 
 ## Setup Instructions
 
@@ -18,4 +22,3 @@ To edit the slides, open `index.html` and edit them.
 ## Relevant documentation
 
 - [Reveal.js](https://revealjs.com/)
-- [reveal.js-animate-fragments](https://www.npmjs.com/package/reveal.js-animate-fragments)
