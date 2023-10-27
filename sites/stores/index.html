@@ -50,7 +50,7 @@
         <section>
           <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
-          ## @holochain-open-dev/stores
+            ## @holochain-open-dev/stores
 
             ### Features
 
@@ -220,9 +220,10 @@ export async function waitUntilCountIsComplete(asyncStore: AsyncReadable<string>
             <script type="sample/importmap">
               {
                 "imports": {
-                  "libsodium-wrappers": "https://unpkg.com/emittery",
+                  "libsodium-wrappers": "https://unpkg.com/modern-isomorphic-ws",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
-                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
                 }
               }
             </script>
@@ -309,7 +310,8 @@ export function getAllPostsStore(): AsyncReadable<Post[]> {
                 "imports": {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
-                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
                 }
               }
             </script>
@@ -406,7 +408,8 @@ export function getAllPostsStore(): AsyncReadable<Post[]> {
                 "imports": {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
-                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
                 }
               }
             </script>
@@ -508,7 +511,8 @@ export const latestPostVersion: LazyHoloHashMap<ActionHash, AsyncReadable<Post>>
                 "imports": {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
-                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
                 }
               }
             </script>
@@ -580,7 +584,8 @@ export function deriveAllPostsCount(alicePostsStore: Readable<Post[]>, bobPostsS
                 "imports": {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
-                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
                 }
               }
             </script>
@@ -653,7 +658,8 @@ export function derivePostsCount(postsStore: AsyncReadable<Post[]>): AsyncReadab
                 "imports": {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
-                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
                 }
               }
             </script>
@@ -733,7 +739,8 @@ export function deriveAllPostsCount(alicePostsStore: AsyncReadable<Post[]>, bobP
                 "imports": {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
-                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
                 }
               }
             </script>
@@ -820,7 +827,8 @@ export function allPostsHashesByAuthor(allAgents: AgentPubKey[], postsHashesByAu
                 "imports": {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
-                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
                 }
               }
             </script>
@@ -925,7 +933,8 @@ export function allPostsHashesByAuthor(allAgents: AsyncReadable<AgentPubKey[]>, 
                 "imports": {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
-                  "blakejs": "https://unpkg.com/modern-isomorphic-ws"
+                  "blakejs": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
                 }
               }
             </script>
@@ -940,9 +949,9 @@ export function allPostsHashesByAuthor(allAgents: AsyncReadable<AgentPubKey[]>, 
             - That's it for the concepts 
             - The exercises are designed to be as minimal as possible to actual train the required skill
             - You can imagine needing complex pipes to build your own stores in your app
-            - A big thank you to svelte for the inspiration and actual core of the stores implementation
+            - A big thank you to svelte for the inspiration and actual implementation of svelte stores 
 
-            ### Real-world Examples
+            ### Real-world Examples of Stores
 
             - [ProfilesStore](https://github.com/holochain-open-dev/profiles/blob/main/ui/src/profiles-store.ts)
             - [CancellationsStore](https://github.com/holochain-open-dev/cancellations/blob/main/ui/src/cancellations-store.ts)
