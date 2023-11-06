@@ -71,6 +71,8 @@
           </fragment>
         </section>
 
+        <!-- TODO: motivation!!! LOOOK PIPE -->
+
         <section>
           <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
@@ -155,6 +157,7 @@ export async function waitUntilCountIs10(counter: Readable<number>): Promise<voi
             - **Promises to contain the latest known value for a certain piece of relevant state in our app**
           </fragment>
 
+          <!-- TODO: change the word "task" for something else -->
           <pre
             class="fragment fade-in"
           ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
@@ -220,7 +223,11 @@ export async function waitUntilCountIsComplete(asyncStore: AsyncReadable<string>
                   "libsodium-wrappers": "https://unpkg.com/modern-isomorphic-ws",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
                   "blakejs": "https://unpkg.com/modern-isomorphic-ws",
-                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
+                  "lodash-es/isEqual.js": "https://unpkg.com/lodash-es/isEqual.js",
+                  "lodash-es/flatMap.js": "https://unpkg.com/lodash-es/flatMap.js",
+                  "lodash-es/uniqWith.js": "https://unpkg.com/lodash-es/uniqWith.js",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es/": "https://unpkg.com/modern-isomorphic-ws/"
                 }
               }
             </script>
@@ -241,10 +248,10 @@ export async function waitUntilCountIsComplete(asyncStore: AsyncReadable<string>
             class="fragment fade-in"
           ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
 const lazyStore = lazyLoad(() => fetch('/some/big/request')); // Build the store
-                                                              // **No request is done yet**
+                                                              // **No request is made yet**
 const unsubscribe1 = lazyStore.subscribe(value => console.log(value)); // Now the request is made
 
-// After a while...
+// After a while, after the fetch completed...
 
 const unsubscribe2 = lazyStore.subscribe(value => console.log(value)); // No new request is made, the
                                                                        // status is automatically "complete"
@@ -253,7 +260,17 @@ const unsubscribe2 = lazyStore.subscribe(value => console.log(value)); // No new
           <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             #### Complete This Exercise:
-          </fragment>
+          </fragment
+
+
+
+
+
+
+
+
+
+          ><!-- How do we build an asyncstore? -->
 
           <playground-exercise class="fragment fade-in">
             <!-- prettier-ignore -->
@@ -273,6 +290,7 @@ export async function getAllPosts(): Promise<Post[]> {
    content:'Second Post'  }
 ]}
 </script>
+            <!-- TODO: too small a chuck -->
             <!-- prettier-ignore -->
             <script type="sample/ts" filename="index.ts">
 import { lazyLoad, AsyncReadable } from '@holochain-open-dev/stores';
@@ -308,7 +326,11 @@ export function getAllPostsStore(): AsyncReadable<Post[]> {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
                   "blakejs": "https://unpkg.com/modern-isomorphic-ws",
-                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
+                  "lodash-es/isEqual.js": "https://unpkg.com/lodash-es/isEqual.js",
+                  "lodash-es/flatMap.js": "https://unpkg.com/lodash-es/flatMap.js",
+                  "lodash-es/uniqWith.js": "https://unpkg.com/lodash-es/uniqWith.js",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es/": "https://unpkg.com/modern-isomorphic-ws/"
                 }
               }
             </script>
@@ -330,7 +352,7 @@ export function getAllPostsStore(): AsyncReadable<Post[]> {
 const lazyStore = lazyLoadAndPoll(
   () => fetch('/some/big/request'), 
   4000 // Polling interval in ms 
-); // Build the store, **no request is done yet**
+); // Build the store, **no request is made yet**
 const unsubscribe = lazyStore.subscribe(value => console.log(value)); // Now the request is made
                                                                       // And will continually be made every 4 seconds
 // After a while...
@@ -342,7 +364,7 @@ unsubscribe(); // Polling stops
           <fragment language="markdown" animate="by-line with-ancestry">
             #### Complete This Exercise:
           </fragment>
-
+          <!-- TODO: add usage of the stores to the exercise -->
           <playground-exercise class="fragment fade-in">
             <!-- prettier-ignore -->
             <script type="sample/ts" filename="zome-calls.ts">
@@ -406,7 +428,11 @@ export function getAllPostsStore(): AsyncReadable<Post[]> {
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
                   "blakejs": "https://unpkg.com/modern-isomorphic-ws",
-                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
+                  "lodash-es/isEqual.js": "https://unpkg.com/lodash-es/isEqual.js",
+                  "lodash-es/flatMap.js": "https://unpkg.com/lodash-es/flatMap.js",
+                  "lodash-es/uniqWith.js": "https://unpkg.com/lodash-es/uniqWith.js",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es/": "https://unpkg.com/modern-isomorphic-ws/"
                 }
               }
             </script>
@@ -428,14 +454,14 @@ export function getAllPostsStore(): AsyncReadable<Post[]> {
           <pre
             class="fragment fade-in"
           ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
-const lazyMap = new LazyHoloHashMap((agent: AgentPubKey) => // Define the fn to execute for new gets 
+const postsByAuthor = new LazyHoloHashMap((agent: AgentPubKey) => // Define the fn to execute for new gets 
   lazyLoadAndPoll(() => getAllPosts(agent), 4000) // Builds a new store that keeps polling whenever a new agent is requested
 );
-const myPostsStore1 = lazyMap.get(client.myPubKey); // Builds the store bound to "myPubKey"
-const myPostsStore2 = lazyMap.get(client.myPubKey); // Does not build a new store, just returns the same one
-const unsubscribe1 = myPostsStore.subscribe(value => console.log(value)); // Now the request is made
+const myPostsStore1: AsyncReadable&lt;Array&lt;ActionHash>> = postsByAuthor.get(client.myPubKey); // Builds the store bound to "myPubKey"
+const myPostsStore2: AsyncReadable&lt;Array&lt;ActionHash>> = postsByAuthor.get(client.myPubKey); // Does not build a new store, just returns the same one
+const unsubscribe1 = myPostsStore1.subscribe(asyncStatus => console.log(asyncStatus)); // Now the request is made
                                                                           // And will continually be made every 4 seconds
-const unsubscribe2 = myPostsStore.subscribe(value => console.log(value)); // No other requests are made, the polling is already active
+const unsubscribe2 = myPostsStore2.subscribe(asyncStatus => console.log(asyncStatus)); // No other requests are made, the polling is already active
 // After a while...
 unsubscribe1(); // Polling does not stop
 unsubscribe2(); // Last subscriber unsubscribes, polling stops
@@ -473,7 +499,7 @@ import { getLatestPostVersion, Post } from './zome-calls.js';
 
 // Builds an `AsyncReadable` store which lazily fetches all the posts,
 // And keeps fetching the latest version of the post which have subscribers every 1 second to keep it up to date
-export const latestPostVersion: LazyHoloHashMap<ActionHash, AsyncReadable<Post>>; // Implement the map
+export const latestPostVersion: LazyHoloHashMap<ActionHash, AsyncReadable<Post>> = // Implement the map
             </script>
             <script filename="test.ts" type="sample/ts">
               import { get } from 'svelte/store';
@@ -509,7 +535,11 @@ export const latestPostVersion: LazyHoloHashMap<ActionHash, AsyncReadable<Post>>
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
                   "blakejs": "https://unpkg.com/modern-isomorphic-ws",
-                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
+                  "lodash-es/isEqual.js": "https://unpkg.com/lodash-es/isEqual.js",
+                  "lodash-es/flatMap.js": "https://unpkg.com/lodash-es/flatMap.js",
+                  "lodash-es/uniqWith.js": "https://unpkg.com/lodash-es/uniqWith.js",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es/": "https://unpkg.com/modern-isomorphic-ws/"
                 }
               }
             </script>
@@ -528,7 +558,7 @@ export const latestPostVersion: LazyHoloHashMap<ActionHash, AsyncReadable<Post>>
             class="fragment fade-in"
           ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
 export function deriveAllPosts(alicePostsStore: Readable&lt;Post[]>, bobPostsStore: Readable&lt;Post[]>): Readable&lt;Posts[]> {
-  return derived([alicePostsStore, bobPostsStore], 
+  return derived([alicePostsStore, bobPostsStore]: [Post[], Post[]], 
     ([alicePosts, bobPosts]) => [...alicePosts, ...bobPosts] // Will be called any time either `alicePostsStore` 
                                                              // or `bobPostsStore` are updated
   );
@@ -582,7 +612,11 @@ export function deriveAllPostsCount(alicePostsStore: Readable<Post[]>, bobPostsS
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
                   "blakejs": "https://unpkg.com/modern-isomorphic-ws",
-                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
+                  "lodash-es/isEqual.js": "https://unpkg.com/lodash-es/isEqual.js",
+                  "lodash-es/flatMap.js": "https://unpkg.com/lodash-es/flatMap.js",
+                  "lodash-es/uniqWith.js": "https://unpkg.com/lodash-es/uniqWith.js",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es/": "https://unpkg.com/modern-isomorphic-ws/"
                 }
               }
             </script>
@@ -656,7 +690,11 @@ export function derivePostsCount(postsStore: AsyncReadable<Post[]>): AsyncReadab
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
                   "blakejs": "https://unpkg.com/modern-isomorphic-ws",
-                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
+                  "lodash-es/isEqual.js": "https://unpkg.com/lodash-es/isEqual.js",
+                  "lodash-es/flatMap.js": "https://unpkg.com/lodash-es/flatMap.js",
+                  "lodash-es/uniqWith.js": "https://unpkg.com/lodash-es/uniqWith.js",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es/": "https://unpkg.com/modern-isomorphic-ws/"
                 }
               }
             </script>
@@ -677,7 +715,8 @@ export function derivePostsCount(postsStore: AsyncReadable<Post[]>): AsyncReadab
             class="fragment fade-in"
           ><code class="typescript" data-noescape data-trim animate="by-line separate-comments trailing-comments-in-popover">
 export function deriveAllPosts(alicePostsStore: AsyncReadable&lt;Post[]>, bobPostsStore: AsyncReadable&lt;Post[]>): AsyncReadable&lt;Posts[]> {
-  return asyncDerived(joinAsync([alicePostsStore, bobPostsStore]), // Creates an `AsyncReadable&lt;[Array&lt;Post>, Array&lt;Post>]>`
+  const joinedPosts: AsyncReadable&lt;Posts[]> = joinAsync([alicePostsStore, bobPostsStore]); // Creates an `AsyncReadable&lt;[Array&lt;Post>, Array&lt;Post>]>`
+  return asyncDerived(joinedPosts,
     ([alicePosts, bobPosts]) => [...alicePosts, ...bobPosts] // Will be called any time either `alicePostsStore` 
                                                              // or `bobPostsStore` are updated
   );
@@ -737,7 +776,11 @@ export function deriveAllPostsCount(alicePostsStore: AsyncReadable<Post[]>, bobP
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
                   "blakejs": "https://unpkg.com/modern-isomorphic-ws",
-                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
+                  "lodash-es/isEqual.js": "https://unpkg.com/lodash-es/isEqual.js",
+                  "lodash-es/flatMap.js": "https://unpkg.com/lodash-es/flatMap.js",
+                  "lodash-es/uniqWith.js": "https://unpkg.com/lodash-es/uniqWith.js",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es/": "https://unpkg.com/modern-isomorphic-ws/"
                 }
               }
             </script>
@@ -762,9 +805,9 @@ export function deriveAllPostsCount(alicePostsStore: AsyncReadable<Post[]>, bobP
 // Imagine for some reason we need to display the latest content for all the posts in the app,
 // and we already have a `LazyHoloHashMap` for the latest version of each of them
 export function latestVersionOfAllPosts(
-  allPosts: ActionHash[], 
+  allPostsHashes: ActionHash[], 
   latestVersionOfPostsMap: LazyHoloHashMap&lt;ActionHash, AsyncReadable&lt;Post>>
-): AsyncReadable&lt;ReadonlyMap&lt;ActionHash, Posts>> {
+): AsyncReadable&lt;ReadonlyMap&lt;ActionHash, Posts>> { // A ReadonlyMap is a map that only exposes a `get(hash)`
   return sliceAndJoin(latestVersionOfPostsMap, allPosts); // Will do a get for each post ActionHash
                                                           // If some of the posts were already loaded, 
                                                           // it will not need to make any new requests
@@ -825,7 +868,11 @@ export function allPostsHashesByAuthor(allAgents: AgentPubKey[], postsHashesByAu
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
                   "blakejs": "https://unpkg.com/modern-isomorphic-ws",
-                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
+                  "lodash-es/isEqual.js": "https://unpkg.com/lodash-es/isEqual.js",
+                  "lodash-es/flatMap.js": "https://unpkg.com/lodash-es/flatMap.js",
+                  "lodash-es/uniqWith.js": "https://unpkg.com/lodash-es/uniqWith.js",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es/": "https://unpkg.com/modern-isomorphic-ws/"
                 }
               }
             </script>
@@ -848,7 +895,7 @@ export function allPostsHashesByAuthor(allAgents: AgentPubKey[], postsHashesByAu
 // we already have a `LazyHoloHashMap` for the latest version of each of them
 // and an `AsyncReadable` for all the post hashes in the app
 export function latestVersionOfAllPosts(
-  allPostsStore: AsyncReadable&lt;ActionHash[]>, 
+  allPostsHashesStore: AsyncReadable&lt;ActionHash[]>, 
   latestVersionOfPostsMap: LazyHoloHashMap&lt;ActionHash, AsyncReadable&lt;Post>>
 ): AsyncReadable&lt;ReadonlyMap&lt;ActionHash, Posts>> {
   return pipe(allPostsStore, // We pipe from the `allPostsStore`
@@ -864,6 +911,7 @@ export function latestVersionOfAllPosts(
             #### Complete This Exercise:
           </fragment>
 
+          <!-- TODO: add example where pipe has two steps -->
           <playground-exercise class="fragment fade-in">
             <!-- prettier-ignore -->
             <script type="sample/ts" filename="index.ts">
@@ -931,7 +979,11 @@ export function allPostsHashesByAuthor(allAgents: AsyncReadable<AgentPubKey[]>, 
                   "libsodium-wrappers": "https://unpkg.com/emittery",
                   "isomorphic-ws": "https://unpkg.com/modern-isomorphic-ws",
                   "blakejs": "https://unpkg.com/modern-isomorphic-ws",
-                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws"
+                  "lodash-es/isEqual.js": "https://unpkg.com/lodash-es/isEqual.js",
+                  "lodash-es/flatMap.js": "https://unpkg.com/lodash-es/flatMap.js",
+                  "lodash-es/uniqWith.js": "https://unpkg.com/lodash-es/uniqWith.js",
+                  "lodash-es": "https://unpkg.com/modern-isomorphic-ws",
+                  "lodash-es/": "https://unpkg.com/modern-isomorphic-ws/"
                 }
               }
             </script>
