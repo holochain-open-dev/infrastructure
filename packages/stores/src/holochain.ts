@@ -133,7 +133,7 @@ export function latestVersionOfEntryStore<
     const fetch = async () => {
       try {
         const nlatestVersion = await fetchLatestVersion();
-        if (latestVersion) {
+        if (nlatestVersion) {
           if (!isEqual(latestVersion, nlatestVersion)) {
             latestVersion = nlatestVersion;
             set({
@@ -155,7 +155,7 @@ export function latestVersionOfEntryStore<
       }
     };
     fetch();
-    const interval = setInterval(() => fetchLatestVersion(), 4000);
+    const interval = setInterval(() => fetch(), 4000);
     const unsubs = client.onSignal(async (signal) => {
       if (
         signal.type === "EntryUpdated" &&
@@ -275,7 +275,7 @@ export function deletesForEntryStore<S extends ActionCommittedSignal<any, any>>(
       }
     };
     await fetch();
-    const interval = setInterval(() => fetchDeletes(), 4000);
+    const interval = setInterval(() => fetch(), 4000);
     const unsubs = client.onSignal(async (signal) => {
       if (
         signal.type === "EntryDeleted" &&

@@ -7,6 +7,7 @@ import cloneDeepWith from "lodash-es/cloneDeepWith.js";
 import "@scoped-elements/cytoscape";
 import { EdgeDefinition, NodeDefinition } from "cytoscape";
 import { encodeHashToBase64 } from "@holochain/client";
+import "@shoelace-style/shoelace/dist/components/relative-time/relative-time.js";
 
 import { Derived } from "../derived.js";
 import { deriveStore } from "../async-derived.js";
@@ -33,7 +34,7 @@ function getObjectId(object: any): number {
 
 export function buildAndJoinTree(
   store: Readable<any>
-): Readable<TreeNode<{ id: number; value: any }>> {
+): Readable<TreeNode<{ id: number; value: any; lastUpdated: number }>> {
   return deriveStore(store, (value) => {
     const deps = (store as Derived<any>).derivedFrom || [];
     const childStores = deps.map((c) => buildAndJoinTree(c));
@@ -41,6 +42,7 @@ export function buildAndJoinTree(
       node: {
         id: getObjectId(store),
         value,
+        lastUpdated: Date.now(),
       },
       children,
     }));
@@ -90,7 +92,7 @@ export function valueTreeToElements(
       data: {
         id: `${valueTree.node.id.toString()}-content`,
         parent: valueTree.node.id.toString(),
-        label,
+        label: label.toString().slice(0, 20),
       },
     }
   );
@@ -98,13 +100,13 @@ export function valueTreeToElements(
   return elements;
 }
 
-export function findValueInTree(
-  tree: TreeNode<{ id: number; value: any }>,
+export function findNodeInTree(
+  tree: TreeNode<{ id: number; value: any; lastUpdated: number }>,
   id: number
-): any {
-  if (tree.node.id === id) return tree.node.value;
+): { id: number; value: any; lastUpdated: number } {
+  if (tree.node.id === id) return tree.node;
   for (const c of tree.children) {
-    const value = findValueInTree(c, id);
+    const value = findNodeInTree(c, id);
     if (value) {
       return value;
     }
@@ -129,7 +131,7 @@ export class VisualizeStoreTree extends LitElement {
 
   get selectedValue() {
     return cloneDeepWith(
-      findValueInTree(this._subscriber.value, this.selectedStore),
+      findNodeInTree(this._subscriber.value, this.selectedStore).value,
       (value) => {
         if (value instanceof Map) {
           return Object.fromEntries(value);
@@ -199,10 +201,25 @@ node > node {
         <div class="row" style="flex-basis: 300px">
           ${this.selectedStore
             ? html`
-                <json-viewer
-                  .data=${this.selectedValue}
-                  style="flex: 1;"
-                ></json-viewer>
+                <div
+                  style="display: flex; flex-direction: column; flex: 1; gap: 16px"
+                >
+                  <json-viewer
+                    style="flex: 1"
+                    .data=${this.selectedValue}
+                  ></json-viewer>
+                  <div style="display: flex; flex-direction: row;">
+                    <span>Last updated: </span>
+                    <sl-relative-time
+                      .date=${new Date(
+                        findNodeInTree(
+                          this._subscriber.value,
+                          this.selectedStore
+                        ).lastUpdated
+                      )}
+                    ></sl-relative-time>
+                  </div>
+                </div>
               `
             : html`
                 <span style="align-self: center"
