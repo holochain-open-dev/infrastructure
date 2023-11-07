@@ -14,6 +14,7 @@ import {
 } from "@holochain/client";
 import { encode } from "@msgpack/msgpack";
 import { readable } from "svelte/store";
+import isEqual from "lodash-es/isEqual.js";
 
 import { asyncReadable, AsyncReadable, AsyncStatus } from "./async-readable.js";
 import { retryUntilSuccess } from "./retry-until-success.js";
@@ -40,8 +41,11 @@ export function liveLinksTargetsStore<
   return asyncReadable<TARGET[]>(async (set) => {
     let hashes: TARGET[] = [];
     const fetch = async () => {
-      hashes = await fetchTargets();
-      set(hashes);
+      const nhashes = await fetchTargets();
+      if (!isEqual(nhashes, hashes)) {
+        hashes = nhashes;
+        set(hashes);
+      }
     };
     await fetch();
     const interval = setInterval(() => fetch(), 4000);
@@ -128,12 +132,15 @@ export function latestVersionOfEntryStore<
     let latestVersion: EntryRecord<T> | undefined;
     const fetch = async () => {
       try {
-        latestVersion = await fetchLatestVersion();
+        const nlatestVersion = await fetchLatestVersion();
         if (latestVersion) {
-          set({
-            status: "complete",
-            value: latestVersion,
-          });
+          if (!isEqual(latestVersion, nlatestVersion)) {
+            latestVersion = nlatestVersion;
+            set({
+              status: "complete",
+              value: latestVersion,
+            });
+          }
         } else {
           set({
             status: "error",
@@ -204,8 +211,11 @@ export function deletedLinksTargetsStore<
       [CreateLink, Array<SignedActionHashed<DeleteLink>>]
     > = [];
     const fetch = async () => {
-      deletedTargets = await fetchDeletedTargets();
-      set(deletedTargets);
+      const ndeletedTargets = await fetchDeletedTargets();
+      if (!isEqual(deletedTargets, ndeletedTargets)) {
+        deletedTargets = ndeletedTargets;
+        set(deletedTargets);
+      }
     };
     await fetch();
     const interval = setInterval(() => fetch(), 4000);
@@ -258,8 +268,11 @@ export function deletesForEntryStore<S extends ActionCommittedSignal<any, any>>(
   return asyncReadable(async (set) => {
     let deletes: Array<SignedActionHashed<Delete>>;
     const fetch = async () => {
-      deletes = await fetchDeletes();
-      set(deletes);
+      const ndeletes = await fetchDeletes();
+      if (!isEqual(deletes, ndeletes)) {
+        deletes = ndeletes;
+        set(deletes);
+      }
     };
     await fetch();
     const interval = setInterval(() => fetchDeletes(), 4000);

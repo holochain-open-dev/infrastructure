@@ -6,6 +6,7 @@ import "@alenaksu/json-viewer";
 import cloneDeepWith from "lodash-es/cloneDeepWith.js";
 import "@scoped-elements/cytoscape";
 import { EdgeDefinition, NodeDefinition } from "cytoscape";
+import { encodeHashToBase64 } from "@holochain/client";
 
 import { Derived } from "../derived.js";
 import { deriveStore } from "../async-derived.js";
@@ -132,6 +133,8 @@ export class VisualizeStoreTree extends LitElement {
       (value) => {
         if (value instanceof Map) {
           return Object.fromEntries(value);
+        } else if (value instanceof Uint8Array) {
+          return encodeHashToBase64(value);
         }
         return undefined;
       }
@@ -163,6 +166,9 @@ node[label] {
   label: data(label);
   height: 10px;
 }
+        node {
+          max-width: 100px;
+        }
         :selected {
           border-color: black;
         }
