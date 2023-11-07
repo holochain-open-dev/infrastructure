@@ -11,7 +11,7 @@ function pipeStep<T, U>(
   stepFn: (arg: T, ...args: any[]) => PipeStep<U>,
   previousStores: Array<AsyncReadable<any>>
 ): AsyncReadable<U> {
-  return derived([store, ...previousStores], (values, set) => {
+  const s = derived([store, ...previousStores], (values, set) => {
     const value = values[0];
     if (value.status === "error") set(value);
     else if (value.status === "pending") set(value);
@@ -52,6 +52,9 @@ function pipeStep<T, U>(
     }
     return undefined;
   });
+  s.derivedFrom = [store];
+
+  return s as any;
 }
 
 /**

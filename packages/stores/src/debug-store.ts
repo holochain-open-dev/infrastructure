@@ -1,5 +1,11 @@
 import { Readable, get } from "svelte/store";
-import logtree from "console-log-tree";
+import { customElement, property } from "lit/decorators.js";
+import { render, html, LitElement } from "lit";
+import "@shoelace-style/shoelace/dist/components/drawer/drawer.js";
+import lighttheme from "@shoelace-style/shoelace/dist/themes/light.styles.js";
+
+import "./elements/visualize-store-tree.js";
+
 import { Derived } from "./derived.js";
 
 type TreeNode = {
@@ -20,11 +26,33 @@ export function buildTree(store: Readable<any>): TreeNode {
   };
 }
 
+@customElement("debug-store")
+export class DebugStore extends LitElement {
+  @property()
+  store: Readable<any>;
+
+  render() {
+    return html`<sl-drawer
+      placement="bottom"
+      open
+      label="Debug Store"
+      contained
+    >
+      <visualize-store-tree
+        style="flex: 1"
+        .store=${this.store}
+      ></visualize-store-tree>
+    </sl-drawer>`;
+  }
+
+  static styles = lighttheme;
+}
+
 export function debugStore(store: Readable<any>) {
-  console.log(logtree.parse(buildTree(store)));
-  setInterval(() => {
-    console.log(logtree.parse(buildTree(store)));
-  }, 1000);
+  const div = document.createElement("div");
+  render(html`<debug-store .store=${store}></debug-store>`, div);
+
+  document.body.appendChild(div);
 }
 
 if (typeof window === "object") {

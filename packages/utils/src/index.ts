@@ -1,5 +1,6 @@
 export * from "./hash.js";
 export * from "./fake.js";
+export * from "./action-committed-signal.js";
 export * from "./zome-client.js";
 export * from "./zome-mock.js";
 export * from "./holo-hash-map.js";

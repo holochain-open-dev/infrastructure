@@ -6,17 +6,16 @@
     <link rel="stylesheet" href="" />
   </head>
   <body>
-    <debug-store></debug-store>
-
     <script type="module">
       import { LitElement, html } from "lit";
       import { pipe, lazyLoad, joinAsync } from "../src";
+      import "../src/debug-store.ts";
 
       const sleep = (ms) =>
         new Promise((resolve) => setTimeout(() => resolve(), ms));
 
       const s1 = lazyLoad(async () => {
-        await sleep(1000);
+        await sleep(5000);
 
         return 2;
       });
@@ -27,14 +26,27 @@
         return 2;
       });
 
-      const store = pipe(joinAsync([s1, s2]), async ([n1, n2]) => {
-        await sleep(1000);
-        return n1 + n2;
-      });
+      const store = pipe(
+        joinAsync([s1, s2]),
+        async ([n1, n2]) => {
+          await sleep(1000);
+          return n1 + n2;
+        },
+        async (n1) => {
+          await sleep(1000);
+          return [n1, new A()];
+        }
+      );
+      class A {
+        constructor() {
+          this.m = new Map();
+          this.m.set("klj", 0);
+        }
+      }
 
       store.subscribe(() => {});
 
-      window.__debugStore(store);
+      __debugStore(store);
     </script>
   </body>
 </html>
