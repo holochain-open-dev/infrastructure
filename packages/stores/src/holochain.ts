@@ -7,8 +7,10 @@ import {
 import {
   ActionHash,
   CreateLink,
+  decodeHashFromBase64,
   Delete,
   DeleteLink,
+  encodeHashToBase64,
   HoloHash,
   SignedActionHashed,
 } from "@holochain/client";
@@ -26,7 +28,7 @@ import { retryUntilSuccess } from "./retry-until-success.js";
  * Will do so by calling the given every 4 seconds calling the given fetch function,
  * and listening to `LinkCreated` and `LinkDeleted` signals
  *
- * Useful for link types and collections
+ * Useful for link types
  */
 export function liveLinksTargetsStore<
   BASE extends HoloHash,
@@ -39,11 +41,11 @@ export function liveLinksTargetsStore<
   linkType: LinkTypeForSignal<S>
 ): AsyncReadable<Array<TARGET>> {
   return asyncReadable<TARGET[]>(async (set) => {
-    let hashes: TARGET[] = [];
+    let hashes: TARGET[];
     const fetch = async () => {
       const nhashes = await fetchTargets();
       if (!isEqual(nhashes, hashes)) {
-        hashes = nhashes;
+        hashes = uniquify(nhashes);
         set(hashes);
       }
     };
@@ -56,10 +58,10 @@ export function liveLinksTargetsStore<
           signal.action.hashed.content.base_address.toString() ===
             baseAddress.toString()
         ) {
-          hashes = [
+          hashes = uniquify([
             ...hashes,
             signal.action.hashed.content.target_address as TARGET,
-          ];
+          ]);
           set(hashes);
         }
       } else if (signal.type === "LinkDeleted") {
@@ -68,10 +70,69 @@ export function liveLinksTargetsStore<
           signal.create_link_action.hashed.content.base_address.toString() ===
             baseAddress.toString()
         ) {
-          hashes = hashes.filter(
-            (h) =>
-              h.toString() !==
-              signal.create_link_action.hashed.content.target_address.toString()
+          hashes = uniquify(
+            hashes.filter(
+              (h) =>
+                h.toString() !==
+                signal.create_link_action.hashed.content.target_address.toString()
+            )
+          );
+          set(hashes);
+        }
+      }
+    });
+    return () => {
+      clearInterval(interval);
+      unsubs();
+    };
+  });
+}
+
+/**
+ * Keeps an up to date list of the targets for the non-deleted links for the given collection in this DHT
+ * Makes requests only while it has some subscriber
+ *
+ * Will do so by calling the given every 4 seconds calling the given fetch function,
+ * and listening to `LinkCreated` and `LinkDeleted` signals
+ *
+ * Useful for collections
+ */
+export function collectionStore<
+  H extends HoloHash,
+  S extends ActionCommittedSignal<any, any>
+>(
+  client: ZomeClient<S>,
+  fetchCollection: () => Promise<H[]>,
+  linkType: string
+): AsyncReadable<Array<H>> {
+  return asyncReadable<H[]>(async (set) => {
+    let hashes: H[];
+    const fetch = async () => {
+      const nhashes = await fetchCollection();
+      if (!isEqual(nhashes, hashes)) {
+        hashes = uniquify(nhashes);
+        set(hashes);
+      }
+    };
+    await fetch();
+    const interval = setInterval(() => fetch(), 4000);
+    const unsubs = client.onSignal((signal) => {
+      if (signal.type === "LinkCreated") {
+        if (linkType in signal.link_type) {
+          hashes = uniquify([
+            ...hashes,
+            signal.action.hashed.content.target_address as H,
+          ]);
+          set(hashes);
+        }
+      } else if (signal.type === "LinkDeleted") {
+        if (linkType in signal.link_type) {
+          hashes = uniquify(
+            hashes.filter(
+              (h) =>
+                h.toString() !==
+                signal.create_link_action.hashed.content.target_address.toString()
+            )
           );
           set(hashes);
         }
@@ -209,7 +270,7 @@ export function deletedLinksTargetsStore<
   return asyncReadable(async (set) => {
     let deletedTargets: Array<
       [CreateLink, Array<SignedActionHashed<DeleteLink>>]
-    > = [];
+    >;
     const fetch = async () => {
       const ndeletedTargets = await fetchDeletedTargets();
       if (!isEqual(deletedTargets, ndeletedTargets)) {
@@ -291,4 +352,10 @@ export function deletesForEntryStore<S extends ActionCommittedSignal<any, any>>(
       unsubs();
     };
   });
+}
+
+export function uniquify<H extends HoloHash>(array: Array<H>): Array<H> {
+  const strArray = array.map((h) => encodeHashToBase64(h));
+  const uniqueArray = [...new Set(strArray)];
+  return uniqueArray.map((h) => decodeHashFromBase64(h) as H);
 }

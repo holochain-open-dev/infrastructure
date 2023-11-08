@@ -107,16 +107,21 @@ export class SlDatetimeInput extends LitElement implements FormField {
 
   render() {
     return html`
-      <div class="row" style="align-items: end">
+      <div class="row" style="align-items: end; gap: 8px">
         <sl-input
           id="date"
           type="date"
           .label=${this.required ? `${this.label}*` : this.label}
           .disabled=${this.disabled}
-          style="margin-right: 8px; flex: 1"
+          style="flex: 1"
         ></sl-input>
 
-        <sl-input id="time" type="time" .disabled=${this.disabled}></sl-input>
+        <sl-input
+          id="time"
+          style="flex: 1"
+          type="time"
+          .disabled=${this.disabled}
+        ></sl-input>
       </div>
     `;
   }

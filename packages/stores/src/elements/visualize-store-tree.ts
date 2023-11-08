@@ -134,7 +134,12 @@ export class VisualizeStoreTree extends LitElement {
       findNodeInTree(this._subscriber.value, this.selectedStore).value,
       (value) => {
         if (value instanceof Map) {
-          return Object.fromEntries(value);
+          return cloneDeepWith(Object.fromEntries(value), (value) => {
+            if (value instanceof Uint8Array) {
+              return encodeHashToBase64(value);
+            }
+            return undefined;
+          });
         } else if (value instanceof Uint8Array) {
           return encodeHashToBase64(value);
         }
