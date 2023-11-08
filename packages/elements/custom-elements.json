@@ -447,22 +447,11 @@
         {
           "kind": "function",
           "name": "renderAsyncStatus",
-          "return": {
-            "type": {
-              "text": "TemplateResult"
-            }
-          },
           "parameters": [
-            {
-              "name": "status",
-              "type": {
-                "text": "AsyncStatus<T>"
-              }
-            },
             {
               "name": "renderers",
               "type": {
-                "text": "{\n    completed: (value: T) => TemplateResult;\n    error: (error: any) => TemplateResult;\n    pending: () => TemplateResult;\n  }"
+                "text": "{\n  completed: (value: T) => TemplateResult;\n  error: (error: any) => TemplateResult;\n  pending: () => TemplateResult;\n}"
               }
             }
           ],
