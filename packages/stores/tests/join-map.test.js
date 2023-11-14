@@ -52,6 +52,38 @@ it("asyncJoinMap", async () => {
   expect(Array.from(get(j).value.entries()).length).to.deep.equal(2);
 });
 
+it("asyncJoinMap with error filtering", async () => {
+  let first = true;
+  const lazyStoreMap = new LazyHoloHashMap((hash) =>
+    asyncReadable(async (set) => {
+      await sleep(10);
+      if (first) {
+        first = false;
+        throw new Error("hi");
+      }
+      set(2);
+    })
+  );
+
+  const hashes = [new Uint8Array([0]), new Uint8Array([1])];
+
+  for (const h of hashes) {
+    lazyStoreMap.get(h);
+  }
+
+  const j = joinAsyncMap(lazyStoreMap, {
+    errors: "filter_out",
+  });
+
+  const subscriber = j.subscribe(() => {});
+
+  expect(get(j)).to.deep.equal({ status: "pending" });
+  await sleep(20);
+
+  expect(get(j).status).to.equal("complete");
+  expect(Array.from(get(j).value.entries()).length).to.deep.equal(1);
+});
+
 it("mapAndJoin", async () => {
   const lazyStoreMap = new LazyHoloHashMap((hash) =>
     asyncReadable(async (set) => {

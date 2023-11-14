@@ -1,4 +1,9 @@
-import { encodeHashToBase64, HoloHash } from "@holochain/client";
+import {
+  encodeHashToBase64,
+  Entry,
+  EntryHash,
+  HoloHash,
+} from "@holochain/client";
 // @ts-ignore
 import blake from "blakejs";
 import { encode } from "@msgpack/msgpack";
@@ -42,6 +47,11 @@ export function retype(hash: HoloHash, type: HashType): HoloHash {
     ...Base64.toUint8Array(getPrefix(type)),
     ...hash.slice(3),
   ]);
+}
+
+export function hashEntry(entry: Entry): EntryHash {
+  if (entry.entry_type === "Agent") return entry.entry;
+  return hash(entry, HashType.ENTRY);
 }
 
 export function isHash(hash: string): boolean {

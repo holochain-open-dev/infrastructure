@@ -59,14 +59,35 @@ export function asyncDerived<T, S extends AsyncReadable<any>>(
 }
 
 /**
+ * Defines the behavior of the joining of the `AsyncReadables`
+ */
+export interface JoinAsyncOptions {
+  /**
+   * 'bubbles': the first error encountered in the collection of stores is going to be automatically returned
+   * 'filter_out': all errors encountered in the collection of stores are going to be filtered out, returning only those stores that completed successfully
+   */
+  errors?: "filter_out" | "bubble";
+  /**
+   * 'bubbles': the first pending status encountered in the collection of stores is going to be automatically returned
+   * 'filter_out': all pending status encountered in the collection of stores are going to be filtered out, returning only those stores that completed successfully
+   */
+  pendings?: "filter_out" | "bubble";
+}
+
+/**
  *  Joins an array of `AsyncReadables` into a single `AsyncReadable` of the array of values
  */
-export function joinAsync<T>(stores: [AsyncReadable<T>]): AsyncReadable<[T]>;
+export function joinAsync<T>(
+  stores: [AsyncReadable<T>],
+  joinOptions?: JoinAsyncOptions
+): AsyncReadable<[T]>;
 export function joinAsync<T, U>(
-  stores: [AsyncReadable<T>, AsyncReadable<U>]
+  stores: [AsyncReadable<T>, AsyncReadable<U>],
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U]>;
 export function joinAsync<T, U, V>(
-  stores: [AsyncReadable<T>, AsyncReadable<U>, AsyncReadable<V>]
+  stores: [AsyncReadable<T>, AsyncReadable<U>, AsyncReadable<V>],
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V]>;
 export function joinAsync<T, U, V, W>(
   stores: [
@@ -74,7 +95,8 @@ export function joinAsync<T, U, V, W>(
     AsyncReadable<U>,
     AsyncReadable<V>,
     AsyncReadable<W>
-  ]
+  ],
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W]>;
 export function joinAsync<T, U, V, W, X>(
   stores: [
@@ -83,7 +105,8 @@ export function joinAsync<T, U, V, W, X>(
     AsyncReadable<V>,
     AsyncReadable<W>,
     AsyncReadable<X>
-  ]
+  ],
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X]>;
 export function joinAsync<T, U, V, W, X, Y>(
   stores: [
@@ -93,7 +116,8 @@ export function joinAsync<T, U, V, W, X, Y>(
     AsyncReadable<W>,
     AsyncReadable<X>,
     AsyncReadable<Y>
-  ]
+  ],
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y]>;
 export function joinAsync<T, U, V, W, X, Y, Z>(
   stores: [
@@ -104,7 +128,8 @@ export function joinAsync<T, U, V, W, X, Y, Z>(
     AsyncReadable<X>,
     AsyncReadable<Y>,
     AsyncReadable<Z>
-  ]
+  ],
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y, Z]>;
 export function joinAsync<T, U, V, W, X, Y, Z, A>(
   stores: [
@@ -116,7 +141,8 @@ export function joinAsync<T, U, V, W, X, Y, Z, A>(
     AsyncReadable<Y>,
     AsyncReadable<Z>,
     AsyncReadable<A>
-  ]
+  ],
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y, Z, A]>;
 export function joinAsync<T, U, V, W, X, Y, Z, A, B>(
   stores: [
@@ -129,7 +155,8 @@ export function joinAsync<T, U, V, W, X, Y, Z, A, B>(
     AsyncReadable<Z>,
     AsyncReadable<A>,
     AsyncReadable<B>
-  ]
+  ],
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y, Z, A, B]>;
 export function joinAsync<T, U, V, W, X, Y, Z, A, B, C>(
   stores: [
@@ -143,29 +170,48 @@ export function joinAsync<T, U, V, W, X, Y, Z, A, B, C>(
     AsyncReadable<A>,
     AsyncReadable<B>,
     AsyncReadable<C>
-  ]
+  ],
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y, Z, A, B, C]>;
 export function joinAsync<T>(
-  stores: Array<AsyncReadable<T>>
+  stores: Array<AsyncReadable<T>>,
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<Array<T>>;
 export function joinAsync<T>(
-  stores: Array<AsyncReadable<T>>
+  stores: Array<AsyncReadable<T>>,
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<Array<T>> {
+  let options = {
+    errors: "bubble",
+    pendings: "bubble",
+  };
+  if (joinOptions) {
+    options = {
+      ...options,
+      ...joinOptions,
+    };
+  }
   return derived(stores, (values): AsyncStatus<T[]> => {
-    const firstError = values.find(
-      (v) => v && (v as AsyncStatus<any>).status === "error"
-    );
-    if (firstError) {
-      return firstError as AsyncStatus<T[]>;
+    if (options.errors === "bubble") {
+      const firstError = values.find(
+        (v) => v && (v as AsyncStatus<any>).status === "error"
+      );
+      if (firstError) {
+        return firstError as AsyncStatus<T[]>;
+      }
     }
-    const firstLoading = values.find(
-      (v) => v && (v as AsyncStatus<any>).status === "pending"
-    );
-    if (firstLoading) {
-      return firstLoading as AsyncStatus<T[]>;
+    if (options.pendings === "bubble") {
+      const firstLoading = values.find(
+        (v) => v && (v as AsyncStatus<any>).status === "pending"
+      );
+      if (firstLoading) {
+        return firstLoading as AsyncStatus<T[]>;
+      }
     }
 
-    const v = values.map((v) => (v as any).value as T);
+    const v = values
+      .filter((v) => v.status === "complete")
+      .map((v) => (v as any).value as T);
     return {
       status: "complete",
       value: v,

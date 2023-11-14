@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/utils",
-  "version": "0.16.2",
+  "version": "0.16.3",
   "description": "Common utilities to build Holochain web applications",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",

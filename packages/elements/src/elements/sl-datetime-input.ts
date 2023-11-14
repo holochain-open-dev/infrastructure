@@ -17,7 +17,7 @@ export class SlDatetimeInput extends LitElement implements FormField {
   name: string | undefined;
 
   @property()
-  defaultValue: Date | number | string | undefined = new Date();
+  defaultValue: Date | number | string | undefined;
 
   @property({ type: Boolean, attribute: "required" })
   required = false;
@@ -95,14 +95,17 @@ export class SlDatetimeInput extends LitElement implements FormField {
   }
 
   get value(): string | undefined {
-    const dateValue = this.dateField.value;
-    const timeValue = this.timeField.value;
+    try {
+      const dateValue = this.dateField.value;
+      const timeValue = this.timeField.value;
 
-    if (!dateValue || !timeValue) return "";
+      if (!dateValue || !timeValue) return "";
+      const date = new Date(`${dateValue}T${timeValue}`);
 
-    const date = new Date(`${dateValue}T${timeValue}`);
-
-    return date.toISOString();
+      return date.toISOString();
+    } catch (_e) {
+      return undefined;
+    }
   }
 
   render() {

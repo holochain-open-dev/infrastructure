@@ -2,12 +2,12 @@ import { HoloHashMap } from "@holochain-open-dev/utils";
 import { HoloHash } from "@holochain/client";
 import { Readable } from "svelte/store";
 import { derived } from "./derived.js";
-import { asyncDerived, joinAsync } from "./async-derived.js";
+import { asyncDerived, joinAsync, JoinAsyncOptions } from "./async-derived.js";
 import { AsyncReadable } from "./async-readable.js";
 
-type StoreValue<T> = T extends Readable<infer U> ? U : never;
+export type StoreValue<T> = T extends Readable<infer U> ? U : never;
 
-type AsyncStoreValue<T> = T extends AsyncReadable<infer U> ? U : never;
+export type AsyncStoreValue<T> = T extends AsyncReadable<infer U> ? U : never;
 
 /**
  * Joins all the stores in a HoloHashMap of `Readables`
@@ -29,12 +29,13 @@ export function joinMap<H extends HoloHash, T extends Readable<any>>(
  * Joins all the stores in a HoloHashMap of `AsyncReadables`
  */
 export function joinAsyncMap<H extends HoloHash, T extends AsyncReadable<any>>(
-  holoHashMap: ReadonlyMap<H, T>
+  holoHashMap: ReadonlyMap<H, T>,
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<ReadonlyMap<H, AsyncStoreValue<T>>> {
   const storeArray = Array.from(holoHashMap.entries()).map(([key, store]) =>
     asyncDerived(store, (v) => [key, v] as [H, AsyncStoreValue<T>])
   );
-  const arrayStore = joinAsync(storeArray);
+  const arrayStore = joinAsync(storeArray, joinOptions);
   return asyncDerived(
     arrayStore,
     (entries) => new HoloHashMap<H, AsyncStoreValue<T>>(entries)

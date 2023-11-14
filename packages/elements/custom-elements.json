@@ -842,8 +842,7 @@
               "name": "defaultValue",
               "type": {
                 "text": "Date | number | string | undefined"
-              },
-              "default": "new Date()"
+              }
             },
             {
               "kind": "field",
