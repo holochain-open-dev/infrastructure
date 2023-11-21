@@ -20,6 +20,7 @@ import {
   HoloHash,
   SignedActionHashed,
 } from "@holochain/client";
+import { Link } from "@holochain/client/lib/hdk/link.js";
 import { encode } from "@msgpack/msgpack";
 import { readable } from "svelte/store";
 import isEqual from "lodash-es/isEqual.js";
@@ -27,74 +28,18 @@ import isEqual from "lodash-es/isEqual.js";
 import { asyncReadable, AsyncReadable, AsyncStatus } from "./async-readable.js";
 import { retryUntilSuccess } from "./retry-until-success.js";
 
-/**
- * Keeps an up to date list of the targets for the non-deleted links in this DHT
- * Makes requests only while it has some subscriber
- *
- * Will do so by calling the given every 4 seconds calling the given fetch function,
- * and listening to `LinkCreated` and `LinkDeleted` signals
- *
- * Useful for link types that **don't** target AgentPubKeys (see liveLinksTargetsAgentPubKeysStore)
- */
-export function liveLinksTargetsStore<
-  BASE extends HoloHash,
-  TARGET extends HoloHash,
-  S extends ActionCommittedSignal<any, any> & any
->(
-  client: ZomeClient<S>,
-  baseAddress: BASE,
-  fetchTargets: () => Promise<TARGET[]>,
-  linkType: LinkTypeForSignal<S>
-): AsyncReadable<Array<TARGET>> {
-  return asyncReadable<TARGET[]>(async (set) => {
-    let hashes: TARGET[];
-    const fetch = async () => {
-      const nhashes = await fetchTargets();
-      if (!isEqual(nhashes, hashes)) {
-        hashes = uniquify(nhashes);
-        set(hashes);
-      }
-    };
-    await fetch();
-    const interval = setInterval(() => fetch(), 4000);
-    const unsubs = client.onSignal((originalSignal) => {
-      if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
-      const signal = originalSignal as ActionCommittedSignal<any, any>;
-
-      if (signal.type === "LinkCreated") {
-        if (
-          linkType in signal.link_type &&
-          signal.action.hashed.content.base_address.toString() ===
-            baseAddress.toString()
-        ) {
-          hashes = uniquify([
-            ...hashes,
-            signal.action.hashed.content.target_address as TARGET,
-          ]);
-          set(hashes);
-        }
-      } else if (signal.type === "LinkDeleted") {
-        if (
-          linkType in signal.link_type &&
-          signal.create_link_action.hashed.content.base_address.toString() ===
-            baseAddress.toString()
-        ) {
-          hashes = uniquify(
-            hashes.filter(
-              (h) =>
-                h.toString() !==
-                signal.create_link_action.hashed.content.target_address.toString()
-            )
-          );
-          set(hashes);
-        }
-      }
-    });
-    return () => {
-      clearInterval(interval);
-      unsubs();
-    };
-  });
+export function createLinkToLink(
+  createLink: SignedActionHashed<CreateLink>
+): Link {
+  return {
+    author: createLink.hashed.content.author,
+    link_type: (createLink.hashed.content as any).link_type,
+    tag: createLink.hashed.content.tag,
+    target: createLink.hashed.content.target_address,
+    timestamp: createLink.hashed.content.timestamp,
+    zome_index: createLink.hashed.content.zome_id,
+    create_link_hash: createLink.hashed.hash,
+  };
 }
 
 /**
@@ -107,20 +52,19 @@ export function liveLinksTargetsStore<
  * Useful for collections
  */
 export function collectionStore<
-  H extends HoloHash,
   S extends ActionCommittedSignal<any, any> & any
 >(
   client: ZomeClient<S>,
-  fetchCollection: () => Promise<H[]>,
+  fetchCollection: () => Promise<Link[]>,
   linkType: string
-): AsyncReadable<Array<H>> {
-  return asyncReadable<H[]>(async (set) => {
-    let hashes: H[];
+): AsyncReadable<Array<Link>> {
+  return asyncReadable<Link[]>(async (set) => {
+    let links: Link[];
     const fetch = async () => {
-      const nhashes = await fetchCollection();
-      if (!isEqual(nhashes, hashes)) {
-        hashes = uniquify(nhashes);
-        set(hashes);
+      const nlinks = await fetchCollection();
+      if (!isEqual(nlinks, links)) {
+        links = uniquifyLinks(nlinks);
+        set(links);
       }
     };
     await fetch();
@@ -131,22 +75,19 @@ export function collectionStore<
 
       if (signal.type === "LinkCreated") {
         if (linkType in signal.link_type) {
-          hashes = uniquify([
-            ...hashes,
-            signal.action.hashed.content.target_address as H,
-          ]);
-          set(hashes);
+          links = uniquifyLinks([...links, createLinkToLink(signal.action)]);
+          set(links);
         }
       } else if (signal.type === "LinkDeleted") {
         if (linkType in signal.link_type) {
-          hashes = uniquify(
-            hashes.filter(
-              (h) =>
-                h.toString() !==
-                signal.create_link_action.hashed.content.target_address.toString()
+          links = uniquifyLinks(
+            links.filter(
+              (link) =>
+                link.create_link_hash.toString() !==
+                signal.create_link_action.hashed.hash.toString()
             )
           );
-          set(hashes);
+          set(links);
         }
       }
     });
@@ -207,7 +148,10 @@ export function latestVersionOfEntryStore<
       try {
         const nlatestVersion = await fetchLatestVersion();
         if (nlatestVersion) {
-          if (!isEqual(latestVersion, nlatestVersion)) {
+          if (
+            latestVersion.actionHash.toString() !==
+            nlatestVersion.actionHash.toString()
+          ) {
             latestVersion = nlatestVersion;
             set({
               status: "complete",
@@ -255,6 +199,7 @@ export function latestVersionOfEntryStore<
       }
     });
     return () => {
+      set({ status: "pending" });
       clearInterval(interval);
       unsubs();
     };
@@ -322,75 +267,6 @@ export function allRevisionsOfEntryStore<
 }
 
 /**
- * Keeps an up to date list of the targets for the deleted links in this DHT
- * Makes requests only while it has some subscriber
- *
- * Will do so by calling the given every 4 seconds calling the given fetch function,
- * and listening to `LinkDeleted` signals
- *
- * Useful for link types and collections with some form of archive retrieving functionality
- */
-export function deletedLinksTargetsStore<
-  BASE extends HoloHash,
-  TARGET extends HoloHash,
-  S extends ActionCommittedSignal<any, any> & any
->(
-  client: ZomeClient<S>,
-  baseAddress: BASE,
-  fetchDeletedTargets: () => Promise<
-    Array<[CreateLink, Array<SignedActionHashed<DeleteLink>>]>
-  >,
-  linkType: LinkTypeForSignal<S>
-): AsyncReadable<Array<[CreateLink, Array<SignedActionHashed<DeleteLink>>]>> {
-  return asyncReadable(async (set) => {
-    let deletedTargets: Array<
-      [CreateLink, Array<SignedActionHashed<DeleteLink>>]
-    >;
-    const fetch = async () => {
-      const ndeletedTargets = await fetchDeletedTargets();
-      if (!isEqual(deletedTargets, ndeletedTargets)) {
-        deletedTargets = ndeletedTargets;
-        set(deletedTargets);
-      }
-    };
-    await fetch();
-    const interval = setInterval(() => fetch(), 4000);
-    const unsubs = client.onSignal((originalSignal) => {
-      if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
-      const signal = originalSignal as ActionCommittedSignal<any, any>;
-
-      if (signal.type === "LinkDeleted") {
-        if (
-          linkType in signal.link_type &&
-          signal.create_link_action.hashed.content.base_address.toString() ===
-            baseAddress.toString()
-        ) {
-          const target_address = signal.create_link_action.hashed.content
-            .target_address as TARGET;
-          const alreadyDeletedTargetIndex = deletedTargets.findIndex(
-            ([cl]) => cl.target_address.toString() === target_address.toString()
-          );
-
-          if (alreadyDeletedTargetIndex !== -1) {
-            deletedTargets[alreadyDeletedTargetIndex][1].push(signal.action);
-          } else {
-            deletedTargets = [
-              ...deletedTargets,
-              [signal.create_link_action.hashed.content, [signal.action]],
-            ];
-          }
-          set(deletedTargets);
-        }
-      }
-    });
-    return () => {
-      clearInterval(interval);
-      unsubs();
-    };
-  });
-}
-
-/**
  * Keeps an up to date list of the deletes for an entry
  * Makes requests only while it has some subscriber
  *
@@ -443,6 +319,15 @@ export function uniquify<H extends HoloHash>(array: Array<H>): Array<H> {
   return uniqueArray.map((h) => decodeHashFromBase64(h) as H);
 }
 
+export function uniquifyLinks(links: Array<Link>): Array<Link> {
+  const map = new HoloHashMap<ActionHash, Link>();
+  for (const link of links) {
+    map.set(link.create_link_hash, link);
+  }
+
+  return Array.from(map.values());
+}
+
 function uniquifyActions<T extends Action>(
   actions: Array<SignedActionHashed<T>>
 ): Array<SignedActionHashed<T>> {
@@ -469,19 +354,19 @@ export function liveLinksStore<
 >(
   client: ZomeClient<S>,
   baseAddress: BASE,
-  fetchLinks: () => Promise<Array<SignedActionHashed<CreateLink>>>,
+  fetchLinks: () => Promise<Array<Link>>,
   linkType: LinkTypeForSignal<S>
-): AsyncReadable<Array<SignedActionHashed<CreateLink>>> {
+): AsyncReadable<Array<Link>> {
   let innerBaseAddress = baseAddress;
   if (getHashType(innerBaseAddress) === HashType.AGENT) {
     innerBaseAddress = retype(innerBaseAddress, HashType.ENTRY) as BASE;
   }
   return asyncReadable(async (set) => {
-    let links: SignedActionHashed<CreateLink>[];
+    let links: Link[];
     const fetch = async () => {
       const nlinks = await fetchLinks();
       if (!isEqual(nlinks, links)) {
-        links = uniquifyActions(nlinks);
+        links = uniquifyLinks(nlinks);
         set(links);
       }
     };
@@ -497,7 +382,7 @@ export function liveLinksStore<
           signal.action.hashed.content.base_address.toString() ===
             innerBaseAddress.toString()
         ) {
-          links = uniquifyActions([...links, signal.action]);
+          links = uniquifyLinks([...links, createLinkToLink(signal.action)]);
           set(links);
         }
       } else if (signal.type === "LinkDeleted") {
@@ -506,10 +391,10 @@ export function liveLinksStore<
           signal.create_link_action.hashed.content.base_address.toString() ===
             innerBaseAddress.toString()
         ) {
-          links = uniquifyActions(
+          links = uniquifyLinks(
             links.filter(
-              (h) =>
-                h.hashed.hash.toString() !==
+              (link) =>
+                link.create_link_hash.toString() !==
                 signal.create_link_action.hashed.hash.toString()
             )
           );
@@ -590,81 +475,6 @@ export function deletedLinksStore<
             ];
           }
           set(deletedTargets);
-        }
-      }
-    });
-    return () => {
-      clearInterval(interval);
-      unsubs();
-    };
-  });
-}
-
-/**
- * Keeps an up to date list of the target AgentPubKeys for the non-deleted links in this DHT
- * Makes requests only while it has some subscriber
- *
- * Will do so by calling the given every 4 seconds calling the given fetch function,
- * and listening to `LinkCreated` and `LinkDeleted` signals
- *
- * Useful for link types that target AgentPubKeys
- */
-export function liveLinksAgentPubKeysTargetsStore<
-  BASE extends HoloHash,
-  S extends ActionCommittedSignal<any, any>
->(
-  client: ZomeClient<S & any>,
-  baseAddress: BASE,
-  fetchTargets: () => Promise<AgentPubKey[]>,
-  linkType: LinkTypeForSignal<S>
-): AsyncReadable<Array<AgentPubKey>> {
-  return asyncReadable<AgentPubKey[]>(async (set) => {
-    let hashes: AgentPubKey[];
-    const fetch = async () => {
-      const nhashes = await fetchTargets();
-      if (!isEqual(nhashes, hashes)) {
-        hashes = uniquify(nhashes);
-        set(hashes);
-      }
-    };
-    await fetch();
-    const interval = setInterval(() => fetch(), 4000);
-    const unsubs = client.onSignal((originalSignal) => {
-      if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
-      const signal = originalSignal as ActionCommittedSignal<any, any>;
-
-      if (signal.type === "LinkCreated") {
-        if (
-          linkType in signal.link_type &&
-          signal.action.hashed.content.base_address.toString() ===
-            baseAddress.toString()
-        ) {
-          hashes = uniquify([
-            ...hashes,
-            retype(
-              signal.action.hashed.content.target_address as AgentPubKey,
-              HashType.AGENT
-            ),
-          ]);
-          set(hashes);
-        }
-      } else if (signal.type === "LinkDeleted") {
-        if (
-          linkType in signal.link_type &&
-          signal.create_link_action.hashed.content.base_address.toString() ===
-            baseAddress.toString()
-        ) {
-          hashes = uniquify(
-            hashes.filter(
-              (h) =>
-                h.toString() !==
-                retype(
-                  signal.create_link_action.hashed.content.target_address,
-                  HashType.AGENT
-                ).toString()
-            )
-          );
-          set(hashes);
         }
       }
     });
