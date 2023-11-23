@@ -5,7 +5,7 @@ import { AsyncStatus } from "@holochain-open-dev/stores";
  * Renders the async status with an <sl-spinner> on pending, and <display-error> on error
  */
 export function withSpinnerAndDisplayError<T>(renderers: {
-  completed: (value: T) => TemplateResult;
+  complete: (value: T) => TemplateResult;
   error: ((error: any) => TemplateResult) | { label: string; tooltip: boolean };
 }) {
   return renderAsyncStatus({
@@ -22,7 +22,7 @@ export function withSpinnerAndDisplayError<T>(renderers: {
             .tooltip=${renderers.error?.tooltip}
             .error=${e}
           ></display-error> `,
-    completed: renderers.completed,
+    complete: renderers.complete,
   });
 }
 
@@ -30,14 +30,14 @@ export function withSpinnerAndDisplayError<T>(renderers: {
  * Renders the given AsyncStatus with the given renderers
  */
 export function renderAsyncStatus<T>(renderers: {
-  completed: (value: T) => TemplateResult;
+  complete: (value: T) => TemplateResult;
   error: (error: any) => TemplateResult;
   pending: () => TemplateResult;
 }) {
   return (status: AsyncStatus<T>) => {
     switch (status.status) {
       case "complete":
-        return renderers.completed(status.value);
+        return renderers.complete(status.value);
       case "error":
         return renderers.error(status.error);
       default:

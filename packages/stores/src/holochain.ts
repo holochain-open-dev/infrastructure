@@ -11,7 +11,6 @@ import {
 import {
   Action,
   ActionHash,
-  AgentPubKey,
   CreateLink,
   decodeHashFromBase64,
   Delete,
@@ -19,8 +18,8 @@ import {
   encodeHashToBase64,
   HoloHash,
   SignedActionHashed,
+  Link,
 } from "@holochain/client";
-import { Link } from "@holochain/client/lib/hdk/link.js";
 import { encode } from "@msgpack/msgpack";
 import { readable } from "svelte/store";
 import isEqual from "lodash-es/isEqual.js";
@@ -33,11 +32,11 @@ export function createLinkToLink(
 ): Link {
   return {
     author: createLink.hashed.content.author,
-    link_type: (createLink.hashed.content as any).link_type,
+    link_type: createLink.hashed.content.link_type,
     tag: createLink.hashed.content.tag,
     target: createLink.hashed.content.target_address,
     timestamp: createLink.hashed.content.timestamp,
-    zome_index: createLink.hashed.content.zome_id,
+    zome_index: createLink.hashed.content.zome_index,
     create_link_hash: createLink.hashed.hash,
   };
 }
@@ -149,8 +148,8 @@ export function latestVersionOfEntryStore<
         const nlatestVersion = await fetchLatestVersion();
         if (nlatestVersion) {
           if (
-            latestVersion.actionHash.toString() !==
-            nlatestVersion.actionHash.toString()
+            latestVersion?.actionHash.toString() !==
+            nlatestVersion?.actionHash.toString()
           ) {
             latestVersion = nlatestVersion;
             set({
