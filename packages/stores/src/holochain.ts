@@ -23,6 +23,7 @@ import {
 import { encode } from "@msgpack/msgpack";
 import { readable } from "svelte/store";
 import isEqual from "lodash-es/isEqual.js";
+import cloneDeep from "lodash-es/cloneDeep.js";
 
 import { asyncReadable, AsyncReadable, AsyncStatus } from "./async-readable.js";
 import { retryUntilSuccess } from "./retry-until-success.js";
@@ -59,12 +60,20 @@ export function collectionStore<
 ): AsyncReadable<Array<Link>> {
   return asyncReadable<Link[]>(async (set) => {
     let links: Link[];
-    const fetch = async () => {
-      const nlinks = await fetchCollection();
-      if (!isEqual(nlinks, links)) {
-        links = uniquifyLinks(nlinks);
+
+    const maybeSet = (newLinksValue: Link[]) => {
+      const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
+        sortLinksByTimestampAscending
+      );
+      if (!isEqual(orderedNewLinks, links)) {
+        links = orderedNewLinks;
         set(links);
       }
+    };
+
+    const fetch = async () => {
+      const nlinks = await fetchCollection();
+      maybeSet(nlinks);
     };
     await fetch();
     const interval = setInterval(() => fetch(), 4000);
@@ -74,19 +83,17 @@ export function collectionStore<
 
       if (signal.type === "LinkCreated") {
         if (linkType in signal.link_type) {
-          links = uniquifyLinks([...links, createLinkToLink(signal.action)]);
-          set(links);
+          maybeSet([...links, createLinkToLink(signal.action)]);
         }
       } else if (signal.type === "LinkDeleted") {
         if (linkType in signal.link_type) {
-          links = uniquifyLinks(
+          maybeSet(
             links.filter(
               (link) =>
                 link.create_link_hash.toString() !==
                 signal.create_link_action.hashed.hash.toString()
             )
           );
-          set(links);
         }
       }
     });
@@ -312,6 +319,17 @@ export function deletesForEntryStore<
   });
 }
 
+export const sortLinksByTimestampAscending = (linkA: Link, linkB: Link) =>
+  linkA.timestamp - linkB.timestamp;
+export const sortDeletedLinksByTimestampAscending = (
+  linkA: [SignedActionHashed<CreateLink>, SignedActionHashed<DeleteLink>[]],
+  linkB: [SignedActionHashed<CreateLink>, SignedActionHashed<DeleteLink>[]]
+) => linkA[0].hashed.content.timestamp - linkB[0].hashed.content.timestamp;
+export const sortActionsByTimestampAscending = (
+  actionA: SignedActionHashed<any>,
+  actionB: SignedActionHashed<any>
+) => actionA[0].hashed.content.timestamp - actionB[0].hashed.content.timestamp;
+
 export function uniquify<H extends HoloHash>(array: Array<H>): Array<H> {
   const strArray = array.map((h) => encodeHashToBase64(h));
   const uniqueArray = [...new Set(strArray)];
@@ -362,12 +380,19 @@ export function liveLinksStore<
   }
   return asyncReadable(async (set) => {
     let links: Link[];
-    const fetch = async () => {
-      const nlinks = await fetchLinks();
-      if (!isEqual(nlinks, links)) {
-        links = uniquifyLinks(nlinks);
+
+    const maybeSet = (newLinksValue: Link[]) => {
+      const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
+        sortLinksByTimestampAscending
+      );
+      if (!isEqual(orderedNewLinks, links)) {
+        links = orderedNewLinks;
         set(links);
       }
+    };
+    const fetch = async () => {
+      const nlinks = await fetchLinks();
+      maybeSet(nlinks);
     };
     await fetch();
     const interval = setInterval(() => fetch(), 4000);
@@ -381,8 +406,7 @@ export function liveLinksStore<
           signal.action.hashed.content.base_address.toString() ===
             innerBaseAddress.toString()
         ) {
-          links = uniquifyLinks([...links, createLinkToLink(signal.action)]);
-          set(links);
+          maybeSet([...links, createLinkToLink(signal.action)]);
         }
       } else if (signal.type === "LinkDeleted") {
         if (
@@ -390,14 +414,13 @@ export function liveLinksStore<
           signal.create_link_action.hashed.content.base_address.toString() ===
             innerBaseAddress.toString()
         ) {
-          links = uniquifyLinks(
+          maybeSet(
             links.filter(
               (link) =>
                 link.create_link_hash.toString() !==
                 signal.create_link_action.hashed.hash.toString()
             )
           );
-          set(links);
         }
       }
     });
@@ -423,7 +446,7 @@ export function deletedLinksStore<
 >(
   client: ZomeClient<S>,
   baseAddress: BASE,
-  fetchDeletedTargets: () => Promise<
+  fetchDeletedLinks: () => Promise<
     Array<
       [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
     >
@@ -437,15 +460,31 @@ export function deletedLinksStore<
     innerBaseAddress = retype(innerBaseAddress, HashType.ENTRY) as BASE;
   }
   return asyncReadable(async (set) => {
-    let deletedTargets: Array<
+    let deletedLinks: Array<
       [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
     >;
-    const fetch = async () => {
-      const ndeletedTargets = await fetchDeletedTargets();
-      if (!isEqual(deletedTargets, ndeletedTargets)) {
-        deletedTargets = ndeletedTargets;
-        set(deletedTargets);
+
+    const maybeSet = (
+      newDeletedLinks: Array<
+        [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
+      >
+    ) => {
+      const orderedNewLinks = newDeletedLinks.sort(
+        sortDeletedLinksByTimestampAscending
+      );
+      for (let i = 0; i < orderedNewLinks.length; i += 1) {
+        orderedNewLinks[i][1] = orderedNewLinks[i][1].sort(
+          sortActionsByTimestampAscending
+        );
       }
+      if (!isEqual(orderedNewLinks, deletedLinks)) {
+        deletedLinks = orderedNewLinks;
+        set(deletedLinks);
+      }
+    };
+    const fetch = async () => {
+      const ndeletedLinks = await fetchDeletedLinks();
+      maybeSet(ndeletedLinks);
     };
     await fetch();
     const interval = setInterval(() => fetch(), 4000);
@@ -459,21 +498,30 @@ export function deletedLinksStore<
           signal.create_link_action.hashed.content.base_address.toString() ===
             innerBaseAddress.toString()
         ) {
-          const alreadyDeletedTargetIndex = deletedTargets.findIndex(
+          const alreadyDeletedTargetIndex = deletedLinks.findIndex(
             ([cl]) =>
               cl.hashed.hash.toString() ===
               signal.create_link_action.hashed.hash.toString()
           );
 
           if (alreadyDeletedTargetIndex !== -1) {
-            deletedTargets[alreadyDeletedTargetIndex][1].push(signal.action);
+            if (
+              !deletedLinks[alreadyDeletedTargetIndex][1].find(
+                (dl) =>
+                  dl.hashed.hash.toString() ===
+                  signal.action.hashed.hash.toString()
+              )
+            ) {
+              const clone = cloneDeep(deletedLinks);
+              clone[alreadyDeletedTargetIndex][1].push(signal.action);
+              maybeSet(clone);
+            }
           } else {
-            deletedTargets = [
-              ...deletedTargets,
+            maybeSet([
+              ...deletedLinks,
               [signal.create_link_action, [signal.action]],
-            ];
+            ]);
           }
-          set(deletedTargets);
         }
       }
     });
