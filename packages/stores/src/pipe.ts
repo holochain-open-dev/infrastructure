@@ -16,37 +16,43 @@ function pipeStep<T, U>(
     if (value.status === "error") set(value);
     else if (value.status === "pending") set(value);
     else {
-      const v = stepFn(
-        value.value,
-        ...values
-          .slice(1)
-          .map((v) => (v as any).value)
-          .reverse()
-      );
+      try {
+        const v = stepFn(
+          value.value,
+          ...values
+            .slice(1)
+            .map((v) => (v as any).value)
+            .reverse()
+        );
 
-      if ((v as Readable<any>).subscribe) {
-        return (v as Readable<any>).subscribe((value) => {
-          if ((value as AsyncStatus<U>).status) {
-            set(value);
-          } else {
-            set({ status: "complete", value });
-          }
-        });
-      } else if (is_promise(v)) {
-        set({ status: "pending" });
-        Promise.resolve(v)
-          .then((v) => {
-            set({ status: "complete", value: v });
-          })
-          .catch((error) => {
-            set({
-              status: "error",
-              error,
-            });
+        if ((v as Readable<any>).subscribe) {
+          return (v as Readable<any>).subscribe((value) => {
+            if ((value as AsyncStatus<U>).status) {
+              set(value);
+            } else {
+              set({ status: "complete", value });
+            }
           });
-        return () => {};
-      } else {
-        set({ status: "complete", value: v as U });
+        } else if (is_promise(v)) {
+          set({ status: "pending" });
+          Promise.resolve(v)
+            .then((v) => {
+              set({ status: "complete", value: v });
+            })
+            .catch((error) => {
+              set({
+                status: "error",
+                error,
+              });
+            });
+          return () => {};
+        } else {
+          set({ status: "complete", value: v as U });
+          return () => {};
+        }
+      } catch (e) {
+        const status: AsyncStatus<U> = { status: "error", error: e };
+        set(status);
         return () => {};
       }
     }
