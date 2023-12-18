@@ -25,7 +25,7 @@ function pipeStep<T, U>(
             .reverse()
         );
 
-        if ((v as Readable<any>).subscribe) {
+        if (!!v && (v as Readable<any>).subscribe) {
           return (v as Readable<any>).subscribe((value) => {
             if ((value as AsyncStatus<U>).status) {
               set(value);
