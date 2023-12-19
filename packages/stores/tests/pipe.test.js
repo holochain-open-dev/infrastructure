@@ -38,6 +38,23 @@ it("pipe with normal fn that returns undefined", async () => {
   });
 });
 
+it("pipe with readable fn that returns undefined", async () => {
+  const asyncReadableStore = asyncReadable(async (set) => {
+    await sleep(10);
+    set("hi");
+  });
+  const pipeStore = pipe(asyncReadableStore, (s) => readable(undefined));
+  const subscriber = pipeStore.subscribe(() => {});
+
+  expect(get(pipeStore)).to.deep.equal({ status: "pending" });
+  await sleep(20);
+
+  expect(get(pipeStore)).to.deep.equal({
+    status: "complete",
+    value: undefined,
+  });
+});
+
 it("pipe with promise", async () => {
   const asyncReadableStore = asyncReadable(async (set) => {
     await sleep(10);

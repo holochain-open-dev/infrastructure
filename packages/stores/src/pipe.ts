@@ -27,7 +27,7 @@ function pipeStep<T, U>(
 
         if (!!v && (v as Readable<any>).subscribe) {
           return (v as Readable<any>).subscribe((value) => {
-            if ((value as AsyncStatus<U>).status) {
+            if (value !== undefined && (value as AsyncStatus<U>).status) {
               set(value);
             } else {
               set({ status: "complete", value });
