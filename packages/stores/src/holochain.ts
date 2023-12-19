@@ -65,6 +65,7 @@ export function collectionStore<
         sortLinksByTimestampAscending
       );
       if (
+        links === undefined ||
         !areArrayHashesEqual(
           orderedNewLinks.map((l) => l.create_link_hash),
           links.map((l) => l.create_link_hash)
@@ -237,6 +238,7 @@ export function allRevisionsOfEntryStore<
     const fetch = async () => {
       const nAllRevisions = await fetchAllRevisions();
       if (
+        allRevisions === undefined ||
         !areArrayHashesEqual(
           allRevisions.map((r) => r.actionHash),
           nAllRevisions.map((r) => r.actionHash)
@@ -302,6 +304,7 @@ export function deletesForEntryStore<
     const fetch = async () => {
       const ndeletes = await fetchDeletes();
       if (
+        deletes === undefined ||
         !areArrayHashesEqual(
           deletes.map((d) => d.hashed.hash),
           ndeletes.map((d) => d.hashed.hash)
@@ -414,7 +417,9 @@ export function liveLinksStore<
       const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
         sortLinksByTimestampAscending
       );
+
       if (
+        links === undefined ||
         !areArrayHashesEqual(
           orderedNewLinks.map((l) => l.create_link_hash),
           links.map((l) => l.create_link_hash)
@@ -428,7 +433,9 @@ export function liveLinksStore<
       const nlinks = await fetchLinks();
       maybeSet(nlinks);
     };
+
     await fetch();
+
     const interval = setInterval(() => fetch(), 4000);
     const unsubs = client.onSignal((originalSignal) => {
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
@@ -511,15 +518,17 @@ export function deletedLinksStore<
           sortActionsByTimestampAscending
         );
         if (
-          !deletedLinks[i] ||
-          !areArrayHashesEqual(
-            orderedNewLinks[i][1].map((d) => d.hashed.hash),
-            deletedLinks[i][1].map((d) => d.hashed.hash)
-          )
+          deletedLinks !== undefined &&
+          (!deletedLinks[i] ||
+            !areArrayHashesEqual(
+              orderedNewLinks[i][1].map((d) => d.hashed.hash),
+              deletedLinks[i][1].map((d) => d.hashed.hash)
+            ))
         )
           return;
       }
       if (
+        deletedLinks === undefined ||
         !areArrayHashesEqual(
           orderedNewLinks.map((l) => l[0].hashed.hash),
           deletedLinks.map((l) => l[0].hashed.hash)

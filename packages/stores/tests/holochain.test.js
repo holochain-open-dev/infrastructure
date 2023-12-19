@@ -1,12 +1,11 @@
-import { ZomeMock } from "@holochain-open-dev/utils";
+import { ZomeClient, ZomeMock } from "@holochain-open-dev/utils";
 import {
   fakeActionHash,
   fakeAgentPubKey,
   fakeEntryHash,
-  Link,
 } from "@holochain/client";
-import { test, assert } from "vitest";
-import { get, liveLinksStore, manualReloadStore } from "../src";
+import { test } from "vitest";
+import { liveLinksStore } from "../src";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
 
@@ -25,7 +24,7 @@ async function fakeLink() {
 test("liveLinks only updates once if no new links exist", async () => {
   const links = [await fakeLink()];
   const store = liveLinksStore(
-    new ZomeMock("", ""),
+    new ZomeClient(new ZomeMock("", "")),
     await fakeEntryHash(),
     async () => links,
     ""
@@ -55,10 +54,10 @@ test("liveLinks only updates once if no new links exist", async () => {
     store.subscribe((value) => {
       if (value.status === "complete") {
         numUpdated2++;
-        console.log("hey", value.value);
+        // console.log(value.value);
 
         if (numUpdated2 > 1) reject("Multiple updates");
-      }
+      } else if (value.status === "error") reject(value.error);
     });
 
     await sleep(8000);
