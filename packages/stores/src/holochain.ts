@@ -22,7 +22,6 @@ import {
 } from "@holochain/client";
 import { encode } from "@msgpack/msgpack";
 import { readable } from "svelte/store";
-import isEqual from "lodash-es/isEqual.js";
 import cloneDeep from "lodash-es/cloneDeep.js";
 
 import { asyncReadable, AsyncReadable, AsyncStatus } from "./async-readable.js";
@@ -65,7 +64,12 @@ export function collectionStore<
       const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
         sortLinksByTimestampAscending
       );
-      if (!isEqual(orderedNewLinks, links)) {
+      if (
+        !areArrayHashesEqual(
+          orderedNewLinks.map((l) => l.create_link_hash),
+          links.map((l) => l.create_link_hash)
+        )
+      ) {
         links = orderedNewLinks;
         set(links);
       }
@@ -232,7 +236,12 @@ export function allRevisionsOfEntryStore<
     let allRevisions: Array<EntryRecord<T>>;
     const fetch = async () => {
       const nAllRevisions = await fetchAllRevisions();
-      if (!isEqual(allRevisions, nAllRevisions)) {
+      if (
+        !areArrayHashesEqual(
+          allRevisions.map((r) => r.actionHash),
+          nAllRevisions.map((r) => r.actionHash)
+        )
+      ) {
         allRevisions = nAllRevisions;
         set(allRevisions);
       }
@@ -292,7 +301,12 @@ export function deletesForEntryStore<
     let deletes: Array<SignedActionHashed<Delete>>;
     const fetch = async () => {
       const ndeletes = await fetchDeletes();
-      if (!isEqual(deletes, ndeletes)) {
+      if (
+        !areArrayHashesEqual(
+          deletes.map((d) => d.hashed.hash),
+          ndeletes.map((d) => d.hashed.hash)
+        )
+      ) {
         deletes = ndeletes;
         set(deletes);
       }
@@ -345,6 +359,21 @@ export function uniquifyLinks(links: Array<Link>): Array<Link> {
   return Array.from(map.values());
 }
 
+function areArrayHashesEqual(
+  array1: Array<HoloHash>,
+  array2: Array<HoloHash>
+): boolean {
+  if (array1.length !== array2.length) return false;
+
+  for (let i = 0; i < array1.length; i += 1) {
+    if (array1[i].toString() !== array2[i].toString()) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function uniquifyActions<T extends Action>(
   actions: Array<SignedActionHashed<T>>
 ): Array<SignedActionHashed<T>> {
@@ -385,7 +414,12 @@ export function liveLinksStore<
       const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
         sortLinksByTimestampAscending
       );
-      if (!isEqual(orderedNewLinks, links)) {
+      if (
+        !areArrayHashesEqual(
+          orderedNewLinks.map((l) => l.create_link_hash),
+          links.map((l) => l.create_link_hash)
+        )
+      ) {
         links = orderedNewLinks;
         set(links);
       }
@@ -476,8 +510,21 @@ export function deletedLinksStore<
         orderedNewLinks[i][1] = orderedNewLinks[i][1].sort(
           sortActionsByTimestampAscending
         );
+        if (
+          !deletedLinks[i] ||
+          !areArrayHashesEqual(
+            orderedNewLinks[i][1].map((d) => d.hashed.hash),
+            deletedLinks[i][1].map((d) => d.hashed.hash)
+          )
+        )
+          return;
       }
-      if (!isEqual(orderedNewLinks, deletedLinks)) {
+      if (
+        !areArrayHashesEqual(
+          orderedNewLinks.map((l) => l[0].hashed.hash),
+          deletedLinks.map((l) => l[0].hashed.hash)
+        )
+      ) {
         deletedLinks = orderedNewLinks;
         set(deletedLinks);
       }
