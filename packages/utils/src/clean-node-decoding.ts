@@ -9,7 +9,8 @@
  */
 export function cleanNodeDecoding(object: any): any {
   return deepMap(object, (value) => {
-    if (Buffer.isBuffer(value)) return new Uint8Array(value);
+    if (typeof Buffer !== "undefined" && Buffer.isBuffer(value))
+      return new Uint8Array(value);
     if (value === null) return undefined;
     return value;
   });
