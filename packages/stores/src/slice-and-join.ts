@@ -2,6 +2,7 @@ import { GetonlyMap, HoloHashMap, slice } from "@holochain-open-dev/utils";
 import { HoloHash } from "@holochain/client";
 import { joinAsyncMap } from "./join-map.js";
 import { AsyncReadable } from "./async-readable.js";
+import { JoinAsyncOptions } from "./async-derived.js";
 
 export type Option<T> = T | undefined;
 
@@ -9,7 +10,8 @@ export type Option<T> = T | undefined;
 // and returns those stores joined
 export function sliceAndJoin<H extends HoloHash, T>(
   map: GetonlyMap<H, AsyncReadable<Option<T>>>,
-  hashes: Array<H>
+  hashes: Array<H>,
+  joinOptions?: JoinAsyncOptions
 ): AsyncReadable<ReadonlyMap<H, T>> {
   const s = slice(map, hashes);
 
@@ -17,5 +19,5 @@ export function sliceAndJoin<H extends HoloHash, T>(
     Array.from(s.entries()).filter(([h, v]) => v !== undefined)
   ) as HoloHashMap<H, AsyncReadable<T>>;
 
-  return joinAsyncMap(hs);
+  return joinAsyncMap(hs, joinOptions);
 }
