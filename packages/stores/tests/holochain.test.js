@@ -1,11 +1,29 @@
-import { ZomeClient, ZomeMock } from "@holochain-open-dev/utils";
+import {
+  EntryRecord,
+  fakeCreateAction,
+  fakeCreateLinkAction,
+  fakeDeleteEntry,
+  fakeDeleteLinkAction,
+  fakeEntry,
+  fakeRecord,
+  ZomeClient,
+  ZomeMock,
+} from "@holochain-open-dev/utils";
 import {
   fakeActionHash,
   fakeAgentPubKey,
   fakeEntryHash,
 } from "@holochain/client";
-import { test } from "vitest";
-import { liveLinksStore } from "../src";
+import { assert, test } from "vitest";
+import {
+  allRevisionsOfEntryStore,
+  collectionStore,
+  deletedLinksStore,
+  deletesForEntryStore,
+  latestVersionOfEntryStore,
+  liveLinksStore,
+  toPromise,
+} from "../src";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
 
@@ -63,4 +81,183 @@ test("liveLinks only updates once if no new links exist", async () => {
     await sleep(8000);
     resolve();
   });
+});
+
+test("collection store works", async () => {
+  const links = [await fakeLink()];
+  const collection = collectionStore(
+    new ZomeClient(new ZomeMock("", "")),
+    async () => links,
+    "",
+    100
+  );
+
+  collection.subscribe(() => {});
+
+  let collectionLinks = await toPromise(collection);
+
+  assert.equal(collectionLinks.length, 1);
+
+  links.push(await fakeLink());
+
+  collectionLinks = await toPromise(collection);
+
+  assert.equal(collectionLinks.length, 1);
+
+  await sleep(110);
+
+  collectionLinks = await toPromise(collection);
+
+  assert.equal(collectionLinks.length, 2);
+});
+
+test("latestVersionOfEntry store works", async () => {
+  let record = new EntryRecord(
+    await fakeRecord(await fakeCreateAction(), fakeEntry({ some: "entry" }))
+  );
+  const firstRecord = record;
+  const latestVersion = latestVersionOfEntryStore(
+    new ZomeClient(new ZomeMock("", "")),
+    async () => record,
+    100
+  );
+
+  latestVersion.subscribe(() => {});
+
+  let latestRecord = await toPromise(latestVersion);
+
+  assert.deepEqual(latestRecord, record);
+
+  record = new EntryRecord(
+    await fakeRecord(
+      await fakeCreateAction(),
+      fakeEntry({ some: "other-entry" })
+    )
+  );
+
+  latestRecord = await toPromise(latestVersion);
+
+  assert.deepEqual(latestRecord, firstRecord);
+
+  await sleep(110);
+
+  latestRecord = await toPromise(latestVersion);
+
+  assert.deepEqual(latestRecord, record);
+});
+
+test("allRevisionsOfEntryStore works", async () => {
+  let record = await fakeRecord(
+    await fakeCreateAction(),
+    fakeEntry({ some: "entry" })
+  );
+  const allRevisions = [new EntryRecord(record)];
+  const allRevisionsStore = allRevisionsOfEntryStore(
+    new ZomeClient(new ZomeMock("", "")),
+    async () => allRevisions,
+    100
+  );
+
+  allRevisionsStore.subscribe(() => {});
+
+  let latestAllRevisions = await toPromise(allRevisionsStore);
+
+  assert.equal(latestAllRevisions.length, 1);
+
+  allRevisions.push(
+    new EntryRecord(
+      await fakeRecord(
+        await fakeCreateAction(),
+        fakeEntry({ some: "other-entry" })
+      )
+    )
+  );
+
+  await sleep(110);
+
+  latestAllRevisions = await toPromise(allRevisionsStore);
+
+  assert.equal(latestAllRevisions.length, 2);
+});
+
+test("deletesForEntry works", async () => {
+  const deletes = [(await fakeRecord(await fakeDeleteEntry())).signed_action];
+  const deletesStore = deletesForEntryStore(
+    new ZomeClient(new ZomeMock("", "")),
+    await fakeActionHash(),
+    async () => deletes,
+    100
+  );
+
+  deletesStore.subscribe(() => {});
+
+  let latestDeletes = await toPromise(deletesStore);
+
+  assert.equal(latestDeletes.length, 1);
+
+  deletes.push((await fakeRecord(await fakeDeleteEntry())).signed_action);
+
+  await sleep(110);
+
+  latestDeletes = await toPromise(deletesStore);
+
+  assert.equal(latestDeletes.length, 2);
+});
+
+test("liveLinksStore works", async () => {
+  const links = [await fakeLink()];
+  const linksStore = liveLinksStore(
+    new ZomeClient(new ZomeMock("", "")),
+    await fakeActionHash(),
+    async () => links,
+    "",
+    100
+  );
+
+  linksStore.subscribe(() => {});
+
+  let latestLinks = await toPromise(linksStore);
+
+  assert.equal(latestLinks.length, 1);
+
+  links.push(await fakeLink());
+
+  await sleep(110);
+
+  latestLinks = await toPromise(linksStore);
+
+  assert.equal(latestLinks.length, 2);
+});
+
+test("deleteLinksStore works", async () => {
+  const deletedLinks = [
+    [
+      (await fakeRecord(await fakeCreateLinkAction())).signed_action,
+      [(await fakeRecord(await fakeDeleteLinkAction())).signed_action],
+    ],
+  ];
+  const deletedStore = deletedLinksStore(
+    new ZomeClient(new ZomeMock("", "")),
+    await fakeActionHash(),
+    async () => deletedLinks,
+    "",
+    100
+  );
+
+  deletedStore.subscribe(() => {});
+
+  let latestDeletedLinks = await toPromise(deletedStore);
+
+  assert.equal(latestDeletedLinks.length, 1);
+
+  deletedLinks.push([
+    (await fakeRecord(await fakeCreateLinkAction())).signed_action,
+    [(await fakeRecord(await fakeDeleteLinkAction())).signed_action],
+  ]);
+
+  await sleep(110);
+
+  latestDeletedLinks = await toPromise(deletedStore);
+
+  assert.equal(latestDeletedLinks.length, 2);
 });

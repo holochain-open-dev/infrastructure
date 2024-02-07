@@ -27,6 +27,8 @@ import cloneDeep from "lodash-es/cloneDeep.js";
 import { asyncReadable, AsyncReadable, AsyncStatus } from "./async-readable.js";
 import { retryUntilSuccess } from "./retry-until-success.js";
 
+const DEFAULT_POLL_INTERVAL_MS = 20_000; // 20 seconds
+
 export function createLinkToLink(
   createLink: SignedActionHashed<CreateLink>
 ): Link {
@@ -55,9 +57,11 @@ export function collectionStore<
 >(
   client: ZomeClient<S>,
   fetchCollection: () => Promise<Link[]>,
-  linkType: string
+  linkType: string,
+  pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS
 ): AsyncReadable<Array<Link>> {
   return asyncReadable<Link[]>(async (set) => {
+    let active = true;
     let links: Link[];
 
     const maybeSet = (newLinksValue: Link[]) => {
@@ -77,11 +81,14 @@ export function collectionStore<
     };
 
     const fetch = async () => {
-      const nlinks = await fetchCollection();
+      const nlinks = await fetchCollection().finally(() => {
+        if (active) {
+          setTimeout(() => fetch(), pollIntervalMs);
+        }
+      });
       maybeSet(nlinks);
     };
     await fetch();
-    const interval = setInterval(() => fetch(), 4000);
     const unsubs = client.onSignal((originalSignal) => {
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
       const signal = originalSignal as ActionCommittedSignal<any, any>;
@@ -103,7 +110,7 @@ export function collectionStore<
       }
     });
     return () => {
-      clearInterval(interval);
+      active = false;
       unsubs();
     };
   });
@@ -151,9 +158,11 @@ export function latestVersionOfEntryStore<
   S extends ActionCommittedSignal<any, any> & any
 >(
   client: ZomeClient<S>,
-  fetchLatestVersion: () => Promise<EntryRecord<T> | undefined>
+  fetchLatestVersion: () => Promise<EntryRecord<T> | undefined>,
+  pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS
 ): AsyncReadable<EntryRecord<T>> {
   return readable<AsyncStatus<EntryRecord<T>>>({ status: "pending" }, (set) => {
+    let active = true;
     let latestVersion: EntryRecord<T> | undefined;
     const fetch = async () => {
       try {
@@ -180,10 +189,13 @@ export function latestVersionOfEntryStore<
           status: "error",
           error: e,
         });
+      } finally {
+        if (active) {
+          setTimeout(() => fetch(), pollIntervalMs);
+        }
       }
     };
     fetch();
-    const interval = setInterval(() => fetch(), 4000);
     const unsubs = client.onSignal((originalSignal) => {
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
       const signal = originalSignal as ActionCommittedSignal<any, any>;
@@ -211,7 +223,7 @@ export function latestVersionOfEntryStore<
     });
     return () => {
       set({ status: "pending" });
-      clearInterval(interval);
+      active = false;
       unsubs();
     };
   });
@@ -231,12 +243,18 @@ export function allRevisionsOfEntryStore<
   S extends ActionCommittedSignal<any, any> & any
 >(
   client: ZomeClient<S>,
-  fetchAllRevisions: () => Promise<Array<EntryRecord<T>>>
+  fetchAllRevisions: () => Promise<Array<EntryRecord<T>>>,
+  pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS
 ): AsyncReadable<Array<EntryRecord<T>>> {
   return asyncReadable(async (set) => {
+    let active = true;
     let allRevisions: Array<EntryRecord<T>>;
     const fetch = async () => {
-      const nAllRevisions = await fetchAllRevisions();
+      const nAllRevisions = await fetchAllRevisions().finally(() => {
+        if (active) {
+          setTimeout(() => fetch(), pollIntervalMs);
+        }
+      });
       if (
         allRevisions === undefined ||
         !areArrayHashesEqual(
@@ -249,7 +267,6 @@ export function allRevisionsOfEntryStore<
       }
     };
     await fetch();
-    const interval = setInterval(() => fetch(), 4000);
     const unsubs = client.onSignal(async (originalSignal) => {
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
       const signal = originalSignal as ActionCommittedSignal<any, any>;
@@ -277,7 +294,7 @@ export function allRevisionsOfEntryStore<
       }
     });
     return () => {
-      clearInterval(interval);
+      active = false;
       unsubs();
     };
   });
@@ -297,12 +314,18 @@ export function deletesForEntryStore<
 >(
   client: ZomeClient<S>,
   originalActionHash: ActionHash,
-  fetchDeletes: () => Promise<Array<SignedActionHashed<Delete>>>
+  fetchDeletes: () => Promise<Array<SignedActionHashed<Delete>>>,
+  pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS
 ): AsyncReadable<Array<SignedActionHashed<Delete>>> {
   return asyncReadable(async (set) => {
+    let active = true;
     let deletes: Array<SignedActionHashed<Delete>>;
     const fetch = async () => {
-      const ndeletes = await fetchDeletes();
+      const ndeletes = await fetchDeletes().finally(() => {
+        if (active) {
+          setTimeout(() => fetch(), pollIntervalMs);
+        }
+      });
       if (
         deletes === undefined ||
         !areArrayHashesEqual(
@@ -315,7 +338,6 @@ export function deletesForEntryStore<
       }
     };
     await fetch();
-    const interval = setInterval(() => fetch(), 4000);
     const unsubs = client.onSignal((originalSignal) => {
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
       const signal = originalSignal as ActionCommittedSignal<any, any>;
@@ -330,7 +352,7 @@ export function deletesForEntryStore<
       }
     });
     return () => {
-      clearInterval(interval);
+      active = false;
       unsubs();
     };
   });
@@ -392,7 +414,7 @@ function uniquifyActions<T extends Action>(
  * Keeps an up to date list of the links for the non-deleted links in this DHT
  * Makes requests only while it has some subscriber
  *
- * Will do so by calling the given every 4 seconds calling the given fetch function,
+ * Will do so by calling the given fetch callback every 20 seconds,
  * and listening to `LinkCreated` and `LinkDeleted` signals
  *
  * Useful for link types
@@ -404,7 +426,8 @@ export function liveLinksStore<
   client: ZomeClient<S>,
   baseAddress: BASE,
   fetchLinks: () => Promise<Array<Link>>,
-  linkType: LinkTypeForSignal<S>
+  linkType: LinkTypeForSignal<S>,
+  pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS
 ): AsyncReadable<Array<Link>> {
   let innerBaseAddress = baseAddress;
   if (getHashType(innerBaseAddress) === HashType.AGENT) {
@@ -412,6 +435,7 @@ export function liveLinksStore<
   }
   return asyncReadable(async (set) => {
     let links: Link[];
+    let active = true;
 
     const maybeSet = (newLinksValue: Link[]) => {
       const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
@@ -430,13 +454,15 @@ export function liveLinksStore<
       }
     };
     const fetch = async () => {
-      const nlinks = await fetchLinks();
+      const nlinks = await fetchLinks().finally(() => {
+        if (active) {
+          setTimeout(() => fetch(), pollIntervalMs);
+        }
+      });
       maybeSet(nlinks);
     };
 
     await fetch();
-
-    const interval = setInterval(() => fetch(), 4000);
     const unsubs = client.onSignal((originalSignal) => {
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
       const signal = originalSignal as ActionCommittedSignal<any, any>;
@@ -466,7 +492,7 @@ export function liveLinksStore<
       }
     });
     return () => {
-      clearInterval(interval);
+      active = false;
       unsubs();
     };
   });
@@ -492,7 +518,8 @@ export function deletedLinksStore<
       [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
     >
   >,
-  linkType: LinkTypeForSignal<S>
+  linkType: LinkTypeForSignal<S>,
+  pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS
 ): AsyncReadable<
   Array<[SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]>
 > {
@@ -504,6 +531,7 @@ export function deletedLinksStore<
     let deletedLinks: Array<
       [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
     >;
+    let active = true;
 
     const maybeSet = (
       newDeletedLinks: Array<
@@ -539,11 +567,14 @@ export function deletedLinksStore<
       }
     };
     const fetch = async () => {
-      const ndeletedLinks = await fetchDeletedLinks();
+      const ndeletedLinks = await fetchDeletedLinks().finally(() => {
+        if (active) {
+          setTimeout(() => fetch(), pollIntervalMs);
+        }
+      });
       maybeSet(ndeletedLinks);
     };
     await fetch();
-    const interval = setInterval(() => fetch(), 4000);
     const unsubs = client.onSignal((originalSignal) => {
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
       const signal = originalSignal as ActionCommittedSignal<any, any>;
@@ -582,7 +613,7 @@ export function deletedLinksStore<
       }
     });
     return () => {
-      clearInterval(interval);
+      active = true;
       unsubs();
     };
   });

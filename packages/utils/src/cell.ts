@@ -1,5 +1,6 @@
 import {
   AppAgentClient,
+  AppAgentWebsocket,
   AppInfo,
   AppSignal,
   CellId,
@@ -30,6 +31,19 @@ export async function isSignalFromCellWithRole(
   roleName: RoleName,
   signal: AppSignal
 ): Promise<boolean> {
+  if ((client as AppAgentWebsocket).cachedAppInfo) {
+    const role = roleNameForCellId(
+      (client as AppAgentWebsocket).cachedAppInfo,
+      signal.cell_id
+    );
+    if (role) {
+      return roleName === role;
+    }
+  }
+
+  // Cache miss: most likely due to a new clone having been created,
+  // So in this case we _should_ trigger a new fetch of the app info
+
   const appInfo = await client.appInfo();
   const role = roleNameForCellId(appInfo, signal.cell_id);
 
