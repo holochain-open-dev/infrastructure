@@ -4,20 +4,19 @@
 	binaryen,
   craneLib,
   src,
-	cargoExtraArgs ? "--locked"
+	excludedCrates ? []
 }:
 
 let 
+	cargoExtraArgs = "--workspace ${if excludedCrates != null then builtins.concatStringsSep " " (builtins.map (excludedCrate: ''--exclude ${excludedCrate}'') excludedCrates) else ''''}";
   wasmDeps = craneLib.buildDepsOnly {
 		inherit src cargoExtraArgs;
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
-		cargoCheckExtraArgs = cargoExtraArgs;
 		doCheck = false;
 	};
 	wasm = craneLib.buildPackage {
-	  inherit src cargoExtraArgs;
+		inherit src cargoExtraArgs;
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
-		cargoCheckExtraArgs = cargoExtraArgs;
 		cargoArtifacts = wasmDeps;
 	  pname = crate;
 		doCheck = false;
