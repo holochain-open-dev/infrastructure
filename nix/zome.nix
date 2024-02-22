@@ -15,9 +15,10 @@ let
 		doCheck = false;
 	};
 	wasm = craneLib.buildPackage {
-		inherit src cargoExtraArgs;
+		inherit src;
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
 		cargoArtifacts = wasmDeps;
+		cargoExtraArgs = "-p ${crate} --locked";
 	  pname = crate;
 		doCheck = false;
 	};
