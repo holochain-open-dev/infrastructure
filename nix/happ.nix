@@ -15,8 +15,10 @@ let
   # Recurse over the DNA roles, and add the correct bundled DNA package by name
 
 	manifest = (holochain.legacyPackages.callPackage ./import-yaml.nix {}) happManifest;
-	dnaToBundled = dna: dna // {
-		bundled = dnas.${dna.name};
+	dnaToBundled = role: role // {
+	  dna = role.dna // {
+			bundled = dnas.${role.name};
+		};
 	};
 	roles = builtins.map dnaToBundled manifest.roles;
 
