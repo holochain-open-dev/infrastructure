@@ -27,7 +27,7 @@
       {
 			  flake = {
 					lib = {
-						rustZome = { src, crate, holochain, workspacePath, optimizeWasm ? true, excludedCrates ? [] }: 
+						rustZome = { crate, holochain, workspacePath, optimizeWasm ? true, excludedCrates ? [] }: 
 							let 
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
