@@ -16,7 +16,7 @@
   outputs = inputs @ { ... }: 
 		{
 			lib = {
-				rustZome = { src, crate, holochain }: 
+				rustZome = { src, crate, holochain, version }: 
 					let 
 					  # system = builtins.trace holochain holochain.system;
 					  system = holochain.devShells.holonix.system;
@@ -41,7 +41,7 @@
 
 					in
 						pkgs.callPackage ./nix/zome.nix {
-			        inherit src craneLib crate;
+			        inherit src craneLib crate version;
 			      };
 				dna = { holochain, dnaManifest, zomes }: 
 					let 

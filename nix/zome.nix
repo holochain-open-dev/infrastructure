@@ -3,12 +3,13 @@
 	stdenv,
 	binaryen,
   craneLib,
-  src
+  src,
+	version
 }:
 
 let 
 	wasm = craneLib.buildPackage {
-	  inherit src;
+	  inherit src version;
 	  cargoExtraArgs = "-p ${crate}";
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
 	  pname = crate;
