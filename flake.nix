@@ -8,7 +8,6 @@
       url = "github:oxalica/rust-overlay";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        # flake-utils.follows = "flake-utils";
       };
     };
   };
@@ -16,26 +15,18 @@
   outputs = inputs @ { ... }: 
 		{
 			lib = {
-				rustZome = { src, crate, holochain }: 
+				rustZome = { src, crate, holochain, cargoExtraArgs ? null }: 
 					let 
-					  # system = builtins.trace holochain holochain.system;
 					  system = holochain.devShells.holonix.system;
 					  pkgs = import inputs.nixpkgs {
 					    inherit system;
 					    overlays = [ (import inputs.rust-overlay) ];
 					  };
 
-					  # # inherit (pkgs) lib;
 					  rustToolchain = pkgs.rust-bin.stable."1.75.0".minimal.override {
 					    # Set the build targets supported by the toolchain,
 					    # wasm32-unknown-unknown is required for trunk.
 					    targets = [ "wasm32-unknown-unknown" ];
-							# extensions = [ 
-			    #       "rust-src"
-			    #       "rust-analyzer"
-			    #       "clippy"
-			    #       "rustfmt"
-							# ];
 					  };
 			      craneLib = inputs.crane.lib.${system}.overrideToolchain rustToolchain;
 
