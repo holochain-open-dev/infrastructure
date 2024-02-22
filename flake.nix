@@ -15,7 +15,7 @@
   outputs = inputs @ { ... }: 
 		{
 			lib = {
-				rustZome = { src, crate, holochain, cargoExtraArgs ? null }: 
+				rustZome = { src, crate, holochain, cargoExtraArgs ? "--locked" }: 
 					let 
 					  system = holochain.devShells.holonix.system;
 					  pkgs = import inputs.nixpkgs {

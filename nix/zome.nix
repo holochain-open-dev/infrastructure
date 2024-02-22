@@ -4,7 +4,7 @@
 	binaryen,
   craneLib,
   src,
-	cargoExtraArgs ? null
+	cargoExtraArgs ? "--locked"
 }:
 
 let 
