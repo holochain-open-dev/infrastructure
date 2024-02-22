@@ -59,7 +59,7 @@
 					      };
 						happ = { holochain, happManifest, dnas }: 
 							let 
-							  system = builtins.trace holochain holochain.system;
+							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
 							    inherit system;
 							    overlays = [ (import inputs.rust-overlay) ];
