@@ -36,7 +36,7 @@ in
 		phases = [ "buildPhase" ];
 		buildPhase = ''
 		  mkdir workdir
-			cp ${happManifestYaml} workdir/dna.yaml
+			cp ${happManifestYaml} workdir/happ.yaml
 			hc app pack workdir
 			mv workdir/${manifest.name}.happ $out
  		'';
