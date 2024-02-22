@@ -11,13 +11,13 @@ let
   wasmDeps = craneLib.buildDepsOnly {
 		inherit src cargoExtraArgs;
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
-	  CARGO_PROFILE = "release";
+		cargoCheckExtraArgs = cargoExtraArgs;
 		doCheck = false;
 	};
 	wasm = craneLib.buildPackage {
 	  inherit src cargoExtraArgs;
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
-	  CARGO_PROFILE = "release";
+		cargoCheckExtraArgs = cargoExtraArgs;
 		cargoArtifacts = wasmDeps;
 	  pname = crate;
 		doCheck = false;
