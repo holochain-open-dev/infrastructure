@@ -27,7 +27,7 @@
       {
 			  flake = {
 					lib = {
-						rustZome = { src, crate, holochain, cargoExtraArgs ? "--locked" }: 
+						rustZome = { src, crate, holochain, excludedCrates ? [] }: 
 							let 
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
@@ -44,7 +44,7 @@
 
 							in
 								pkgs.callPackage ./nix/zome.nix {
-					        inherit src craneLib crate cargoExtraArgs;
+					        inherit src craneLib crate excludedCrates;
 					      };
 						dna = { holochain, dnaManifest, zomes }: 
 							let 
