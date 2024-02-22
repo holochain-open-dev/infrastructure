@@ -44,7 +44,7 @@
 
 							in
 								pkgs.callPackage ./nix/zome.nix {
-					        inherit src craneLib crate;
+					        inherit src craneLib crate cargoExtraArgs;
 					      };
 						dna = { holochain, dnaManifest, zomes }: 
 							let 
