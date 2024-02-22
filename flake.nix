@@ -27,7 +27,7 @@
       {
 			  flake = {
 					lib = {
-						rustZome = { src, crate, holochain, excludedCrates ? [] }: 
+						rustZome = { src, crate, holochain, workspacePath, optimizeWasm ? true, excludedCrates ? [] }: 
 							let 
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
@@ -44,7 +44,7 @@
 
 							in
 								pkgs.callPackage ./nix/zome.nix {
-					        inherit src craneLib crate excludedCrates;
+					        inherit src craneLib crate excludedCrates workspacePath optimizeWasm;
 					      };
 						dna = { holochain, dnaManifest, zomes }: 
 							let 
