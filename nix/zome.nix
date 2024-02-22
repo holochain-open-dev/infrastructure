@@ -24,7 +24,7 @@ let
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
 		cargoArtifacts = wasmDeps;
 		cargoExtraArgs = "-p ${crate} --locked";
-	  pname = crate;
+	  # pname = crate;
 		doCheck = false;
 	};
 in
