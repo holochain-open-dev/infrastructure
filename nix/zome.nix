@@ -23,12 +23,12 @@ let
 	};
 	wasm = craneLib.buildPackage {
 		inherit cargoToml;
-	  src = craneLib.cleanCargoSource (craneLib.path cratePath);
+	  src = craneLib.cleanCargoSource (craneLib.path workspacePath);
 		cargoLock = workspacePath + /Cargo.lock;
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
 		cargoArtifacts = wasmDeps;
 		cargoExtraArgs = "-p ${crate} --locked";
-	  # pname = crate;
+	  pname = crate;
 		doCheck = false;
 	};
 in
