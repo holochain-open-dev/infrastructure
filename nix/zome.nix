@@ -1,5 +1,4 @@
 { 
-	crate,
 	stdenv,
 	binaryen,
   craneLib,
@@ -11,6 +10,11 @@
 
 let 
 	cargoExtraArgs = "--workspace ${if excludedCrates != null then builtins.concatStringsSep " " (builtins.map (excludedCrate: ''--exclude ${excludedCrate}'') excludedCrates) else ''''}";
+
+	cargoToml = cratePath + /Cargo.toml;
+	crateToml = builtins.fromTOML (builtins.readFile cargoToml);
+  crate = crateToml.package.name;
+
   wasmDeps = craneLib.buildDepsOnly {
 		inherit cargoExtraArgs;
 	  src = craneLib.cleanCargoSource (craneLib.path workspacePath);
@@ -18,8 +22,8 @@ let
 		doCheck = false;
 	};
 	wasm = craneLib.buildPackage {
+		inherit cargoToml;
 	  src = craneLib.cleanCargoSource (craneLib.path cratePath);
-		cargoToml = cratePath + /Cargo.toml;
 		cargoLock = workspacePath + /Cargo.lock;
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
 		cargoArtifacts = wasmDeps;
