@@ -4,6 +4,7 @@
 	binaryen,
   craneLib,
   workspacePath,
+	cratePath,
 	excludedCrates,
 	optimizeWasm
 }:
@@ -17,7 +18,9 @@ let
 		doCheck = false;
 	};
 	wasm = craneLib.buildPackage {
-	  src = craneLib.cleanCargoSource (craneLib.path workspacePath);
+	  src = craneLib.cleanCargoSource (craneLib.path cratePath);
+		cargoToml = cratePath + /Cargo.toml;
+		cargoLock = workspacePath + /Cargo.lock;
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
 		cargoArtifacts = wasmDeps;
 		cargoExtraArgs = "-p ${crate} --locked";
