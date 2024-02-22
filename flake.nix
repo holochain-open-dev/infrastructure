@@ -44,7 +44,7 @@
 
 							in
 								pkgs.callPackage ./nix/zome.nix {
-					        inherit src craneLib crate excludedCrates workspacePath optimizeWasm;
+					        inherit craneLib crate excludedCrates workspacePath optimizeWasm;
 					      };
 						dna = { holochain, dnaManifest, zomes }: 
 							let 
