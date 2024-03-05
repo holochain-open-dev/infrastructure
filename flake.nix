@@ -33,7 +33,7 @@
 						filterDnas = filterByHolochainPackageType "dna";
 						filterHapps = filterByHolochainPackageType "happ";
 
-						rustZome = { cargoTomlPath, holochain, workspacePath, excludedCrates ? [] }: 
+						rustZome = { crateCargoTomlPath, holochain, workspacePath, excludedCrates ? [] }: 
 							let 
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
@@ -50,9 +50,9 @@
 
 							in
 								pkgs.callPackage ./nix/zome.nix {
-					        inherit craneLib cargoTomlPath excludedCrates workspacePath;
+					        inherit craneLib crateCargoTomlPath excludedCrates workspacePath;
 					      };
-						sweettest = { holochain, dna, workspacePath, cargoTomlPath }: 
+						sweettest = { holochain, dna, workspacePath, crateCargoTomlPath }: 
 						  let
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
@@ -66,7 +66,7 @@
 							  };
 					      craneLib = inputs.crane.lib.${system}.overrideToolchain rustToolchain;
 							in pkgs.callPackage ./nix/sweettest.nix {
-								inherit holochain dna craneLib workspacePath cargoTomlPath;
+								inherit holochain dna craneLib workspacePath crateCargoTomlPath;
 							};
 						dna = { holochain, dnaManifestPath ? null, dnaManifest ? null, zomes }: 
 							let 
