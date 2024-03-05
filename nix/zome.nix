@@ -31,8 +31,7 @@ let
 	  pname = crate;
 		doCheck = false;
 	};
-in
-  if optimizeWasm then
+	finalWasm = if optimizeWasm then
 	  stdenv.mkDerivation {
 		  name = crate;
 			buildInputs = [ wasm binaryen ];
@@ -41,12 +40,16 @@ in
 			  wasm-opt --strip-debug -Oz -o $out ${wasm}/lib/${crate}.wasm
 	 		'';
 		}
-	else
-	  stdenv.mkDerivation {
-		  name = crate;
-			buildInputs = [ wasm ];
-			phases = [ "buildPhase" ];
-			buildPhase = ''
-			  cp ${wasm}/lib/${crate}.wasm $out 
-	 		'';
-		}
+	else wasm;
+in
+  stdenv.mkDerivation {
+	  name = crate;
+		buildInputs = [ finalWasm ];
+		phases = [ "buildPhase" ];
+		buildPhase = ''
+		  cp ${wasm}/lib/${crate}.wasm $out 
+ 		'';
+		meta = {
+			holochainType = "zome";
+		};
+	}
