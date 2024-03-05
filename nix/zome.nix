@@ -5,7 +5,7 @@
   workspacePath,
 	cratePath,
 	excludedCrates,
-	optimizeWasms
+	optimizeWasm
 }:
 
 let 
@@ -32,7 +32,7 @@ let
 		doCheck = false;
 	};
 in
-  if optimizeWasms then
+  if optimizeWasm then
 	  stdenv.mkDerivation {
 		  name = crate;
 			buildInputs = [ wasm binaryen ];
