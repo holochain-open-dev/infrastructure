@@ -33,6 +33,10 @@
 						filterDnas = filterByHolochainPackageType "dna";
 						filterHapps = filterByHolochainPackageType "happ";
 
+						filterZomesFromSources = sources: builtins.foldl' (acc: source: acc // filterZomes source) {} sources;
+						filterDnasFromSources = sources: builtins.foldl' (acc: source: acc // filterDnas source) {} sources;
+						filterHappsFromSources = sources: builtins.foldl' (acc: source: acc // filterHapps source) {} sources;
+
 						rustZome = { cratePath, holochain, workspacePath, excludedCrates ? [] }: 
 							let 
 							  system = holochain.devShells.holonix.system;
