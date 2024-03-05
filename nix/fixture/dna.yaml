@@ -1,0 +1,14 @@
+---
+manifest_version: "1"
+name: my_dna
+integrity:
+  network_seed: ~
+  properties: ~
+  origin_time: 1709638576394039
+  zomes: []
+coordinator:
+  zomes:
+    - name: my_zome
+      hash: ~
+      dependencies: []
+      dylib: ~

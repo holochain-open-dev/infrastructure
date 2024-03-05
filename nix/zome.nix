@@ -1,11 +1,11 @@
 { 
-	stdenv,
+	runCommandLocal,
+	runCommandNoCC,
 	binaryen,
   craneLib,
   workspacePath,
 	cratePath,
-	excludedCrates,
-	optimizeWasm
+	excludedCrates
 }:
 
 let 
@@ -31,34 +31,19 @@ let
 	  pname = crate;
 		doCheck = false;
 	};
-	optimizedWasm = stdenv.mkDerivation {
-	  name = "${crate}-optimized";
-		buildInputs = [ wasm binaryen ];
-		phases = [ "buildPhase" ];
-		buildPhase = ''
-		  wasm-opt --strip-debug -Oz -o $out ${wasm}/lib/${crate}.wasm
- 		'';
-	};
-in
-  stdenv.mkDerivation {
-	  name = crate;
-		buildInputs = [ optimizedWasm ];
-		phases = [ "buildPhase" ];
-		buildPhase = ''
-		  cp ${wasm}/lib/${crate}.wasm $out 
- 		'';
+	debug = runCommandLocal "${crate}-debug" {
 		meta = {
 			holochainPackageType = "zome";
-			debug = stdenv.mkDerivation {
-			  name = "${crate}-debug";
-				buildInputs = [ optimizedWasm ];
-				phases = [ "buildPhase" ];
-				buildPhase = ''
-				  cp ${wasm}/lib/${crate}.wasm $out 
-		 		'';
-				meta = {
-					holochainPackageType = "zome";
-				};
-			};
 		};
-	}
+	} ''
+		cp ${wasm}/lib/${crate}.wasm $out 
+	'';
+in
+	runCommandNoCC crate {
+		meta = {
+			inherit debug;
+			holochainPackageType = "zome";
+		};
+	} ''
+	  ${binaryen}/bin/wasm-opt --strip-debug -Oz -o $out ${debug}
+	''

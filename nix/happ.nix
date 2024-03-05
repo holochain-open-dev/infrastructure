@@ -1,11 +1,11 @@
 # Build a DNA
 {
 	happManifest,
-	stdenv,
 	holochain,
 	writeText,
 	json2yaml,
 	runCommandNoCC,
+	runCommandLocal,
 	dnas ? {}
 }:
 
@@ -30,19 +30,27 @@ let
 	happManifestYaml = runCommandNoCC "json-to-yaml" {} ''
 		${json2yaml}/bin/json2yaml ${happManifestJson} $out
 	'';
-in
-  stdenv.mkDerivation {
-	  name = manifest.name;
-		srcs = [ dnaSrcs happManifestYaml ];
-	  nativeBuildInputs = [ holochain.packages.holochain ];
-		phases = [ "buildPhase" ];
-		buildPhase = ''
-		  mkdir workdir
-			cp ${happManifestYaml} workdir/happ.yaml
-			hc app pack workdir
-			mv workdir/${manifest.name}.happ $out
- 		'';
+	debug = runCommandLocal manifest.name {
+		srcs = builtins.map (dna: dna.meta.debug) dnaSrcs;
 		meta = {
 			holochainPackageType = "happ";
 		};
-	}
+	} ''
+	  mkdir workdir
+		cp ${happManifestYaml} workdir/happ.yaml
+		${holochain.packages.holochain}/bin/hc app pack workdir
+		mv workdir/${manifest.name}.happ $out
+	'';
+in
+  runCommandLocal manifest.name {
+		srcs = dnaSrcs;
+		meta = {
+		  inherit debug;
+			holochainPackageType = "happ";
+		};
+	} ''
+	  mkdir workdir
+		cp ${happManifestYaml} workdir/happ.yaml
+		${holochain.packages.holochain}/bin/hc app pack workdir
+		mv workdir/${manifest.name}.happ $out
+	''

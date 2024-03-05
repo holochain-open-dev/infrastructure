@@ -1,9 +1,8 @@
 # Build a DNA
 {
 	dnaManifest,
-	stdenv,
 	json2yaml,
-	runCommandNoCC,
+	runCommandLocal,
 	writeText,
 	holochain,
 	zomes ? {}
@@ -29,23 +28,31 @@ let
 	};
 
 	dnaManifestJson = writeText "dna.json" (builtins.toJSON manifest');
-	dnaManifestYaml = runCommandNoCC "json-to-yaml" {} ''
+	dnaManifestYaml = runCommandLocal "json-to-yaml" {} ''
 		${json2yaml}/bin/json2yaml ${dnaManifestJson} $out
 	'';
-
-in
-  stdenv.mkDerivation {
-	  name = manifest.name;
-		srcs = [ zomeSrcs dnaManifestYaml ];
-	  nativeBuildInputs = [ holochain.packages.holochain ];
-		phases = [ "buildPhase" ];
-		buildPhase = ''
-		  mkdir workdir
-			cp ${dnaManifestYaml} workdir/dna.yaml
-			hc dna pack workdir
-			mv workdir/${manifest.name}.dna $out
- 		'';
+	debug = runCommandLocal manifest.name {
+		srcs = builtins.map (zome: zome.meta.debug) zomeSrcs;
 		meta = {
+			inherit debug;
 			holochainPackageType = "dna";
 		};
-	}
+	} ''
+	  mkdir workdir
+		cp ${dnaManifestYaml} workdir/dna.yaml
+		${holochain.packages.holochain}/bin/hc dna pack workdir
+		mv workdir/${manifest.name}.dna $out
+	'';
+in
+  runCommandLocal manifest.name {
+		srcs = zomeSrcs;
+		meta = {
+			inherit debug;
+			holochainPackageType = "dna";
+		};
+	} ''
+	  mkdir workdir
+		cp ${dnaManifestYaml} workdir/dna.yaml
+		${holochain.packages.holochain}/bin/hc dna pack workdir
+		mv workdir/${manifest.name}.dna $out
+	''

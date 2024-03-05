@@ -33,7 +33,7 @@
 						filterDnas = filterByHolochainPackageType "dna";
 						filterHapps = filterByHolochainPackageType "happ";
 
-						rustZome = { cratePath, holochain, workspacePath, optimizeWasm ? true, excludedCrates ? [] }: 
+						rustZome = { cratePath, holochain, workspacePath, excludedCrates ? [] }: 
 							let 
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
@@ -50,7 +50,7 @@
 
 							in
 								pkgs.callPackage ./nix/zome.nix {
-					        inherit craneLib cratePath excludedCrates workspacePath optimizeWasm;
+					        inherit craneLib cratePath excludedCrates workspacePath;
 					      };
 						dna = { holochain, dnaManifest, zomes }: 
 							let 
