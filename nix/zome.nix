@@ -31,28 +31,34 @@ let
 	  pname = crate;
 		doCheck = false;
 	};
+	optimizedWasm = stdenv.mkDerivation {
+	  name = "${crate}-optimized";
+		buildInputs = [ wasm binaryen ];
+		phases = [ "buildPhase" ];
+		buildPhase = ''
+		  wasm-opt --strip-debug -Oz -o $out ${wasm}/lib/${crate}.wasm
+ 		'';
+	};
 in
-  if optimizeWasm then
-	  stdenv.mkDerivation {
-		  name = crate;
-			buildInputs = [ wasm binaryen ];
-			phases = [ "buildPhase" ];
-			buildPhase = ''
-			  wasm-opt --strip-debug -Oz -o $out ${wasm}/lib/${crate}.wasm
-	 		'';
-			meta = {
-				holochainPackageType = "zome";
+  stdenv.mkDerivation {
+	  name = crate;
+		buildInputs = [ optimizedWasm ];
+		phases = [ "buildPhase" ];
+		buildPhase = ''
+		  cp ${wasm}/lib/${crate}.wasm $out 
+ 		'';
+		meta = {
+			holochainPackageType = "zome";
+			debug = stdenv.mkDerivation {
+			  name = "${crate}-debug";
+				buildInputs = [ optimizedWasm ];
+				phases = [ "buildPhase" ];
+				buildPhase = ''
+				  cp ${wasm}/lib/${crate}.wasm $out 
+		 		'';
+				meta = {
+					holochainPackageType = "zome";
+				};
 			};
-		}
-	else
-	  stdenv.mkDerivation {
-		  name = crate;
-			buildInputs = [ wasm ];
-			phases = [ "buildPhase" ];
-			buildPhase = ''
-			  cp ${wasm}/lib/${crate}.wasm $out 
-	 		'';
-			meta = {
-				holochainPackageType = "zome";
-			};
-		}
+		};
+	}
