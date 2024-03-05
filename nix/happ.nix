@@ -42,4 +42,7 @@ in
 			hc app pack workdir
 			mv workdir/${manifest.name}.happ $out
  		'';
+		meta = {
+			holochainPackageType = "happ";
+		};
 	}

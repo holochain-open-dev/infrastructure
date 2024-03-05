@@ -50,6 +50,6 @@ in
 		  cp ${wasm}/lib/${crate}.wasm $out 
  		'';
 		meta = {
-			holochainType = "zome";
+			holochainPackageType = "zome";
 		};
 	}

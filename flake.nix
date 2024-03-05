@@ -26,7 +26,13 @@
       }
       {
 			  flake = {
-					lib = {
+					lib = rec {
+					  filterByHolochainPackageType = holochainPackageType: packages: inputs.nixpkgs.lib.filterAttrs (key: value: value.meta.holochainPackageType == holochainPackageType) packages; 
+
+						filterZomes = filterByHolochainPackageType "zome";
+						filterDnas = filterByHolochainPackageType "dna";
+						filterHapps = filterByHolochainPackageType "happ";
+
 						rustZome = { cratePath, holochain, workspacePath, optimizeWasm ? true, excludedCrates ? [] }: 
 							let 
 							  system = holochain.devShells.holonix.system;

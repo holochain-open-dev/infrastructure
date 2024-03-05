@@ -45,4 +45,7 @@ in
 			hc dna pack workdir
 			mv workdir/${manifest.name}.dna $out
  		'';
+		meta = {
+			holochainPackageType = "dna";
+		};
 	}
