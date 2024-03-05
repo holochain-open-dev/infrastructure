@@ -2,3 +2,8 @@
 members = ["zome"]
 resolver = "2"
 
+[workspace.dependencies]
+hdi = "0.4.0-beta-dev"
+hdk = "0.3.0-beta-dev"
+holochain = "0.3.0-beta-dev"
+serde = "1"

@@ -33,7 +33,7 @@
 						filterDnas = filterByHolochainPackageType "dna";
 						filterHapps = filterByHolochainPackageType "happ";
 
-						rustZome = { cratePath, holochain, workspacePath, excludedCrates ? [] }: 
+						rustZome = { cargoTomlPath, holochain, workspacePath, excludedCrates ? [] }: 
 							let 
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
@@ -50,8 +50,24 @@
 
 							in
 								pkgs.callPackage ./nix/zome.nix {
-					        inherit craneLib cratePath excludedCrates workspacePath;
+					        inherit craneLib cargoTomlPath excludedCrates workspacePath;
 					      };
+						sweettest = { holochain, dna, workspacePath, cargoTomlPath }: 
+						  let
+							  system = holochain.devShells.holonix.system;
+							  pkgs = import inputs.nixpkgs {
+							    inherit system;
+							    overlays = [ (import inputs.rust-overlay) ];
+							  };
+							  rustToolchain = pkgs.rust-bin.stable."1.75.0".minimal.override {
+							    # Set the build targets supported by the toolchain,
+							    # wasm32-unknown-unknown is required for trunk.
+							    targets = [ "wasm32-unknown-unknown" ];
+							  };
+					      craneLib = inputs.crane.lib.${system}.overrideToolchain rustToolchain;
+							in pkgs.callPackage ./nix/sweettest.nix {
+								inherit holochain dna craneLib workspacePath cargoTomlPath;
+							};
 						dna = { holochain, dnaManifest, zomes }: 
 							let 
 							  system = holochain.devShells.holonix.system;

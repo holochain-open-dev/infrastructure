@@ -4,33 +4,36 @@
 	binaryen,
   craneLib,
   workspacePath,
-	cratePath,
+	cargoTomlPath,
 	excludedCrates
 }:
 
 let 
 	cargoExtraArgs = "--workspace ${if excludedCrates != null then builtins.concatStringsSep " " (builtins.map (excludedCrate: ''--exclude ${excludedCrate}'') excludedCrates) else ''''}";
 
-	cargoToml = cratePath + /Cargo.toml;
-	crateToml = builtins.fromTOML (builtins.readFile cargoToml);
-  crate = crateToml.package.name;
+	cargoToml = builtins.fromTOML (builtins.readFile cargoTomlPath);
+  crate = cargoToml.package.name;
 
-  wasmDeps = craneLib.buildDepsOnly {
-		inherit cargoExtraArgs;
-	  src = craneLib.cleanCargoSource (craneLib.path workspacePath);
-	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
+	commonArgs = {
+		strictDeps = true;
 		doCheck = false;
-	};
-	wasm = craneLib.buildPackage {
-		inherit cargoToml;
 	  src = craneLib.cleanCargoSource (craneLib.path workspacePath);
-		cargoLock = workspacePath + /Cargo.lock;
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
+	};
+	
+  wasmDeps = craneLib.buildDepsOnly (commonArgs // {
+		inherit cargoExtraArgs;
+		pname = "happ-workspace";
+		version = "workspace";
+	});
+	wasm = craneLib.buildPackage (commonArgs // {
+		cargoToml = cargoTomlPath;
+		cargoLock = workspacePath + /Cargo.lock;
 		cargoArtifacts = wasmDeps;
 		cargoExtraArgs = "-p ${crate} --locked";
 	  pname = crate;
-		doCheck = false;
-	};
+		version = cargoToml.package.version;
+	});
 	debug = runCommandLocal "${crate}-debug" {
 		meta = {
 			holochainPackageType = "zome";
