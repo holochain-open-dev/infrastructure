@@ -14,7 +14,29 @@
       checks.my_zome = inputs.hcUtils.outputs.lib.sweettest {
         workspacePath = rootPath;
         holochain = inputs'.holochain;
-        dna = self'.packages.my_dna;
+        dna = inputs.hcUtils.outputs.lib.dna {
+          dnaManifest = ''
+            ---
+            manifest_version: "1"
+            name: my_dna
+            integrity:
+              network_seed: ~
+              properties: ~
+              origin_time: 1709638576394039
+              zomes: []
+            coordinator:
+              zomes:
+                - name: my_zome
+                  hash: ~
+                  dependencies: []
+                  dylib: ~
+          '';
+          zomes = {
+            my_zome = self'.packages.my_zome;
+          };
+          holochain = inputs'.holochain;
+
+        };
 				cargoTomlPath = ./Cargo.toml;
       };
   	};

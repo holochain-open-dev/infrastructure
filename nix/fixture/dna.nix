@@ -15,14 +15,14 @@
     }: {
   	  packages = 
         let 
-          dnaManifest = ./dna.yaml;
           allZomes = inputs.hcUtils.lib.filterZomes self'.packages;
           zomes = {
           } // allZomes;
         in 
           {
             my_dna = inputs.hcUtils.outputs.lib.dna {
-              inherit dnaManifest zomes;
+              dnaManifestPath = ./dna.yaml;
+              inherit zomes;
               holochain = inputs'.holochain;
             };
           };

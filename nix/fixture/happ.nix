@@ -15,7 +15,7 @@
     }: {
   	  packages = 
 	    let
-          happManifest = ./happ.yaml;
+          happManifestPath = ./happ.yaml;
           allDnas = inputs.hcUtils.lib.filterDnas self'.packages;
 				  dnas = {
           } // allDnas;
@@ -23,7 +23,7 @@
 	      {
 	        my_happ = inputs.hcUtils.outputs.lib.happ {
 	          holochain = inputs'.holochain;
-	          inherit dnas happManifest;
+	          inherit dnas happManifestPath;
 	        };
 	  	  };
   	};
