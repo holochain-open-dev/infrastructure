@@ -15,7 +15,7 @@
         workspacePath = rootPath;
         holochain = inputs'.holochain;
         dna = inputs.hcUtils.outputs.lib.dna {
-          dnaManifest = ''
+          dnaManifest = builtins.toFile "dna.yaml" ''
             ---
             manifest_version: "1"
             name: my_dna
