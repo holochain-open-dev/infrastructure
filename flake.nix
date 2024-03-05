@@ -33,7 +33,7 @@
 						filterDnas = filterByHolochainPackageType "dna";
 						filterHapps = filterByHolochainPackageType "happ";
 
-						rustZome = { crateCargoTomlPath, holochain, workspacePath, excludedCrates ? [] }: 
+						rustZome = { crateCargoToml, holochain, workspacePath, excludedCrates ? [] }: 
 							let 
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
@@ -50,9 +50,9 @@
 
 							in
 								pkgs.callPackage ./nix/zome.nix {
-					        inherit craneLib crateCargoTomlPath excludedCrates workspacePath;
-					      };
-						sweettest = { holochain, dna, workspacePath, crateCargoTomlPath }: 
+					        inherit craneLib crateCargoToml excludedCrates workspacePath;
+								};
+						sweettest = { holochain, dna, workspacePath, crateCargoToml }: 
 						  let
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
@@ -66,43 +66,29 @@
 							  };
 					      craneLib = inputs.crane.lib.${system}.overrideToolchain rustToolchain;
 							in pkgs.callPackage ./nix/sweettest.nix {
-								inherit holochain dna craneLib workspacePath crateCargoTomlPath;
+								inherit holochain dna craneLib workspacePath crateCargoToml;
 							};
-						dna = { holochain, dnaManifestPath ? null, dnaManifest ? null, zomes }: 
+						dna = { holochain, dnaManifest, zomes }: 
 							let 
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
 							    inherit system;
 							    overlays = [ (import inputs.rust-overlay) ];
 							  };
-							  finalDnaManifest = if dnaManifestPath == null 
-								  then (if dnaManifest == null 
-										then builtins.throw "Either the dnaManifest or the dnaManifestPath need to be set" 
-										else pkgs.writeText "dna.yaml" dnaManifest
-									) 
-									else dnaManifestPath;
 							in
 								pkgs.callPackage ./nix/dna.nix {
-					        inherit zomes holochain;
-									dnaManifest = finalDnaManifest;
+					        inherit zomes holochain dnaManifest;
 					      };
-						happ = { holochain, happManifest ? null, happManifestPath ? null, dnas }: 
+						happ = { holochain, happManifest, dnas }: 
 							let 
 							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
 							    inherit system;
 							    overlays = [ (import inputs.rust-overlay) ];
 							  };
-							  finalHappManifest = if happManifestPath == null 
-								  then (if happManifest == null 
-										then builtins.throw "Either the happManifest or the happManifestPath need to be set" 
-										else pkgs.writeText "happ.yaml" happManifest
-									) 
-									else happManifestPath;
 							in
 								pkgs.callPackage ./nix/happ.nix {
-					        inherit dnas holochain;
-									happManifest = finalHappManifest;
+					        inherit dnas holochain happManifest;
 					      };
 			      };
 				};

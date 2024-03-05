@@ -5,11 +5,11 @@
 	pkgs,
 	lib,
 	craneLib,
-	crateCargoTomlPath,
+	crateCargoToml,
 	...
 }: 
 let 
-	cargoToml = builtins.fromTOML (builtins.readFile crateCargoTomlPath);
+	cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
   crate = cargoToml.package.name;
 	
   buildInputs = (with pkgs; [ openssl holochain.packages.opensslStatic sqlcipher ])

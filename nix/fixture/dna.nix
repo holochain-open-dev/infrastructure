@@ -21,7 +21,7 @@
         in 
           {
             my_dna = inputs.hcUtils.outputs.lib.dna {
-              dnaManifestPath = ./dna.yaml;
+              dnaManifest = ./dna.yaml;
               inherit zomes;
               holochain = inputs'.holochain;
             };
