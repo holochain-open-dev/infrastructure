@@ -13,4 +13,4 @@ serde = "1"
 [profile.release]
 opt-level = "z"
 trim-paths = true
-remap-debuginfo = true
+# remap-debuginfo = true
