@@ -19,7 +19,7 @@ let
 		doCheck = false;
 	  src = craneLib.cleanCargoSource (craneLib.path workspacePath);
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
-		CARGO_BUILD_RUSTFLAGS = "";
+		# CARGO_BUILD_RUSTFLAGS = "";
 	};
 	
   wasmDeps = craneLib.buildDepsOnly (commonArgs // {
