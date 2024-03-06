@@ -1,3 +1,5 @@
+cargo-features = ["trim-paths"]
+
 [workspace]
 members = ["zome"]
 resolver = "2"
@@ -7,3 +9,8 @@ hdi = "0.4.0-beta-dev"
 hdk = "0.3.0-beta-dev"
 holochain = "0.3.0-beta-dev"
 serde = "1"
+
+[profile.release]
+opt-level = "z"
+trim-paths = true
+remap-debuginfo = true
