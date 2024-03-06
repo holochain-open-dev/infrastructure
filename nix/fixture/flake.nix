@@ -10,7 +10,7 @@
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-		hcUtils.url = "git+file:../../?dir=.";
+		hcUtils.url = "path:../..";
   };
 
   outputs = inputs @ { ... }:
