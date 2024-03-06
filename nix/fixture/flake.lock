@@ -539,14 +539,18 @@
         "versions": "versions_2"
       },
       "locked": {
-        "lastModified": 0,
-        "narHash": "sha256-dwDb+8sDAzp+Q7ezlMfXpehwHW4Uy4jfg9N1w/Fv5So=",
-        "path": "../..",
-        "type": "path"
+        "dir": ".",
+        "dirtyRev": "fe7e32e5badf524092e72c6f1850863bdf08e73c-dirty",
+        "dirtyShortRev": "fe7e32e-dirty",
+        "lastModified": 1709733954,
+        "narHash": "sha256-TdsLf0v3dHl5j7VGD4RfkOBxb6P+DcCX0fzkS77OE7M=",
+        "type": "git",
+        "url": "file:../../?dir=."
       },
       "original": {
-        "path": "../..",
-        "type": "path"
+        "dir": ".",
+        "type": "git",
+        "url": "file:../../?dir=."
       }
     },
     "hcUtils_2": {
