@@ -13,9 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Extend space
-        uses: ./.github/actions/extend-space
-
       - name: Install nix
         uses: cachix/install-nix-action@v18
         with:
