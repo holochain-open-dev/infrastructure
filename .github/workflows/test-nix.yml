@@ -31,6 +31,7 @@ jobs:
       - name: Build zomes
         run: |
           cd ./nix/fixture
+          nix flake update
           nix build -L .#my_zome.meta.debug
           sha256sum result
           nix build -L .#my_zome
