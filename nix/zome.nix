@@ -34,7 +34,7 @@ let
 	wasm = craneLib.buildPackage (commonArgs // {
 		cargoToml = crateCargoToml;
 		cargoLock = workspacePath + /Cargo.lock;
-		cargoArtifacts = wasmDeps;
+		# cargoArtifacts = wasmDeps;
 		cargoExtraArgs = "-p ${crate} --locked -v";
 		# cargoBuildCommand = "cargo rustc --profile release -- -C metadata=${cratePath}/src/lib.rs";
 		# cargoBuildCommand = "rustc -vv --crate-name ${crate} --edition=2021 ${workspacePath}/zome/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type cdylib --crate-type rlib --emit=dep-info,link -C opt-level=z -C embed-bitcode=no -Zunstable-options -Zremap-path-scope=all --remap-path-prefix=/build/source=. --out-dir /build/source/target/wasm32-unknown-unknown/release/deps --target wasm32-unknown-unknown -L dependency=/build/source/target/wasm32-unknown-unknown/release/deps -L dependency=/build/source/target/release/deps --extern hdk=/build/source/target/wasm32-unknown-unknown/release/deps/libhdk-958f0c3891df457c.rlib --extern serde=/build/source/target/wasm32-unknown-unknown/release/deps/libserde-7c4f086b3ce3ca72.rlib";
