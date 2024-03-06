@@ -9,7 +9,7 @@
 }:
 
 let 
-	cargoExtraArgs = "--workspace ${if excludedCrates != null then builtins.concatStringsSep " " (builtins.map (excludedCrate: ''--exclude ${excludedCrate}'') excludedCrates) else ''''}";
+	cargoExtraArgs = "-Z avoid-dev-deps --workspace ${if excludedCrates != null then builtins.concatStringsSep " " (builtins.map (excludedCrate: ''--exclude ${excludedCrate}'') excludedCrates) else ''''}";
 
 	cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
   crate = cargoToml.package.name;
@@ -31,7 +31,7 @@ let
 		cargoToml = crateCargoToml;
 		cargoLock = workspacePath + /Cargo.lock;
 		cargoArtifacts = wasmDeps;
-		cargoExtraArgs = "-p ${crate} --locked";
+		cargoExtraArgs = "-p ${crate} --locked -v";
 	  pname = crate;
 		version = cargoToml.package.version;
 	});
