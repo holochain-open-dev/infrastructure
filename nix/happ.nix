@@ -4,6 +4,7 @@
 	holochain,
 	writeText,
 	json2yaml,
+	callPackage,
 	runCommandNoCC,
 	runCommandLocal,
 	dnas ? {}
@@ -14,7 +15,7 @@ let
 
   # Recurse over the DNA roles, and add the correct bundled DNA package by name
 
-	manifest = (holochain.legacyPackages.callPackage ./import-yaml.nix {}) happManifest;
+	manifest = (callPackage ./import-yaml.nix {}) happManifest;
 	dnaToBundled = role: role // {
 	  dna = role.dna // {
 			bundled = dnas.${role.name};

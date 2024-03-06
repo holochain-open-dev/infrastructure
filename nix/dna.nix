@@ -3,6 +3,7 @@
 	dnaManifest,
 	json2yaml,
 	runCommandLocal,
+	callPackage,
 	writeText,
 	holochain,
 	zomes ? {}
@@ -13,7 +14,7 @@ let
 
   # Recurse over the zomes, and add the correct bundled zome package by name
 
-	manifest = (holochain.legacyPackages.callPackage ./import-yaml.nix {}) dnaManifest;
+	manifest = (callPackage ./import-yaml.nix {}) dnaManifest;
 	zomeToBundled = zome: zome // {
 		bundled = zomes.${zome.name};
 	};
