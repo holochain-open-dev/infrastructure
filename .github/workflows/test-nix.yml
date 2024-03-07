@@ -30,9 +30,8 @@ jobs:
         run: |
           cd ./nix/fixture
           yes | nix flake update
-          nix build -L .#my_zome.meta.debug
-          nix build -L .#my_zome
-          cachix watch-store holochain-open-dev
+          cachix watch-exec holochain-open-dev -- nix build -L .#my_zome.meta.debug
+          cachix watch-exec holochain-open-dev -- nix build -L .#my_zome
           sha256sum result
 
   macos-just-get-from-cache:
