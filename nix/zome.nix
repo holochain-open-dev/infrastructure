@@ -2,6 +2,7 @@
 	runCommandLocal,
 	runCommandNoCC,
 	binaryen,
+	callPackage,
   craneLib,
   workspacePath,
 	crateCargoToml,
@@ -19,8 +20,6 @@ let
 		doCheck = false;
 	  src = craneLib.cleanCargoSource (craneLib.path workspacePath);
 	  CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
-		# CARGO_BUILD_RUSTFLAGS = "";
-		# RUSTC_WRAPPER = rustcWrapper;
 	};
 	
   wasmDeps = craneLib.buildDepsOnly (commonArgs // {
@@ -44,11 +43,19 @@ let
 		cp ${wasm}/lib/${crate}.wasm $out 
 	'';
 in
+ #  callPackage ./deterministic-zome.nix {
+ #    inherit workspacePath crateCargoToml;
+	# 	meta = {
+	# 		inherit debug;
+	# 		holochainPackageType = "zome";
+	# 	};
+	# }
 	runCommandNoCC crate {
 		meta = {
 			inherit debug;
 			holochainPackageType = "zome";
 		};
+		buildInputs = [ binaryen ];
 	} ''
-	  cp ${debug} $out
+	  wasm-opt --strip-debug -Oz -o $out ${debug}
 	''

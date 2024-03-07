@@ -1,17 +1,22 @@
 {
+  pkgs,
   runCommandNoCC,
-  dockerTools,
-  docker,
   workspacePath,
-  dbus,
+  dockerTools,
   crateCargoToml,
-  buildEnv,
-  git,
-  systemd,
   meta
 }:
 
 let 
+
+  hello = dockerTools.pullImage {
+    imageName = "hello-world";
+    imageDigest = "sha256:e2fc4e5012d16e7fe466f5291c476431beaa1f9b90a5c2125b493ed28e2aba57";
+    sha256 = "mQYzwbTpkslXAOAi4LX05kNcoPqVHfhzM8yZ9bQ7VgA=";
+    # finalImageTag = "nixos-23.11";
+    # finalImageName = "nix";
+  };
+
   nixFromDockerHub = dockerTools.pullImage {
     imageName = "nixpkgs/nix-flakes";
     imageDigest = "sha256:ae2d8172d75347b040b29b726faf680f35c9beffe3f90d6a93b74fa3d5227774";
@@ -24,32 +29,32 @@ let
     tag = "latest";
     fromImage = nixFromDockerHub;
 
-    copyToRoot = buildEnv {
+    copyToRoot = pkgs.buildEnv {
       name = "cargo-workspace";
       pathsToLink = [ workspacePath "/bin" ];
-      paths = [ workspacePath git ]; 
+      paths = [ workspacePath pkgs.git ]; 
     };
 
     # runAsRoot = ''
-    #   #!/bin/bash
-    #   echo ${workspacePath}
-    #   mkdir -p /build/source
-    #   cp -R ${workspacePath}/* /build/source
-    #   cd /build/source
-    #   git init .
-    #   git add .
-    #   ls -la
-    #   nix --help
-    #   nix build .#my_zome.meta.debug
+      #!/bin/bash
     
     # '';
-    config.Cmd = [ "/bin/nix --help"];
+    # config = {
+      # Cmd = [ "/bin/bash"];
+      # Volumes = {
+      #   "/etc/localtime" = "/etc/localtime";
+      # };
+    # };
   };
 in
   runCommandNoCC "container" {
-    buildInputs = [dbus];
+    src = image;
+    buildInputs = with pkgs; [
+      docker
+      skopeo
+    ];
   } ''
-    ${systemd}/bin/systemctl --user start docker
-    ${docker}/bin/docker load --input ${image}
-    ${docker}/bin/docker run -t -i build-deterministic-zome
+  echo ${image}
+    docker load --input ${image}
+    docker run build-deterministic-zome
   ''

@@ -19,6 +19,15 @@
 		hcUtils.url = "github:holochain-open-dev/common";
   };
 
+  nixConfig = {
+		extra-substituters = [
+	    "https://holochain-open-dev.cachix.org"
+	  ];	
+		extra-trusted-public-keys = [
+			"holochain-open-dev.cachix.org-1:3Tr+9in6uo44Ga7qiuRIfOTFXog+2+YbyhwI/Z6Cp4U="
+	  ];
+	};
+
   outputs = inputs @ { ... }:
     inputs.holochain.inputs.flake-parts.lib.mkFlake
       {
@@ -33,9 +42,9 @@
 						filterDnas = filterByHolochainPackageType "dna";
 						filterHapps = filterByHolochainPackageType "happ";
 
-						rustZome = { crateCargoToml, holochain, workspacePath, excludedCrates ? [] }: 
+						rustZome = { crateCargoToml,  workspacePath, excludedCrates ? [] }: 
 							let 
-							  system = holochain.legacyPackages.cowsay.system;
+							  system = "x86_64-linux";
 							  pkgs = import inputs.nixpkgs {
 							    inherit system;
 							    overlays = [ (import inputs.rust-overlay) ];

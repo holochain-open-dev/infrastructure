@@ -8,11 +8,69 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  testbuild:
-    strategy: 
-      matrix:
-        os: [ ubuntu-latest, macos-latest ]
-    runs-on: ${{ matrix.os }}
+  build-and-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v18
+        with:
+          install_url: https://releases.nixos.org/nix/nix-2.12.0/install
+          extra_nix_config: |
+            experimental-features = flakes nix-command
+
+      - uses: cachix/cachix-action@v10
+        with:
+          name: holochain-ci
+
+      - name: Install coreutils for macOS
+        if: matrix.os == 'macos-latest'
+        run: brew install coreutils
+
+      - name: Build zomes
+        env:
+          CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
+        run: |
+          cd ./nix/fixture
+          nix flake update
+          nix build -L .#my_zome.meta.debug
+          sha256sum result
+          nix build -L .#my_zome
+          sha256sum result
+
+
+jobs:
+  linux-build-and-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v18
+        with:
+          install_url: https://releases.nixos.org/nix/nix-2.12.0/install
+          extra_nix_config: |
+            experimental-features = flakes nix-command
+
+      - uses: cachix/cachix-action@v10
+        with:
+          name: holochain-ci
+
+      - name: Build zomes
+        env:
+          CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
+        run: |
+          cd ./nix/fixture
+          yes | nix flake update
+          nix build -L .#my_zome.meta.debug
+          nix build -L .#my_zome
+          cachix watch-store holochain-open-dev
+          sha256sum result
+
+  macos-just-get-from-cache:
+    needs: build-and-cache
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
 
@@ -34,9 +92,8 @@ jobs:
       - name: Build zomes
         run: |
           cd ./nix/fixture
-          nix flake update
+          yes | nix flake update
           nix build -L .#my_zome.meta.debug
-          sha256sum result
           nix build -L .#my_zome
           sha256sum result
 
