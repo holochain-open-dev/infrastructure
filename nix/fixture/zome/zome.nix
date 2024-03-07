@@ -8,7 +8,6 @@
     }: {
       packages.my_zome = inputs.hcUtils.outputs.lib.rustZome {
         workspacePath = rootPath;
-        holochain = inputs'.holochain;
 				crateCargoToml = ./Cargo.toml;
       };
       checks.my_zome = inputs.hcUtils.outputs.lib.sweettest {
