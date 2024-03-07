@@ -50,5 +50,5 @@ in
 			holochainPackageType = "zome";
 		};
 	} ''
-	  ${binaryen}/bin/wasm-opt --strip-debug -Oz -o $out ${debug}
+	  cp ${debug} $out
 	''
