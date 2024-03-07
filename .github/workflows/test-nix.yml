@@ -39,8 +39,6 @@ jobs:
           nix build -L .#my_zome
           sha256sum result
 
-
-jobs:
   linux-build-and-cache:
     runs-on: ubuntu-latest
     steps:
