@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-file="/build/source/zome/src/lib.rs"
+# file="/build/source/zome/src/lib.rs"
 # for arg in "$@"; do
 #     if [[ ${arg} == ${CARGO_HOME}/* && -z ${file} ]]; then
 #         file=${arg##${CARGO_HOME}}
@@ -9,13 +9,21 @@ file="/build/source/zome/src/lib.rs"
 # done
 # echo "heyy"
 # echo $file
-args=()
-for arg in "$@"; do
-    if [[ ${arg} == metadata=* ]]; then
-        args+=(metadata="${file}")
-    else
-        args+=("${arg}")
-    fi
-done
+# args=()
+arglist="$@"
+# for i in "${!arglist[@]}"; do
+#     echo ${arglist[$i]}
+#     if [[ ${arglist[$i]} != metadata=* ]]; then
+#         # args+=(metadata="${file}")
+#     # else
+#         if [[ ${arglist[$i + 1]} != metadata=* ]]; then
+#             # args+=(metadata="${file}")
+#         # else
+#             args+=("${arglist[$i]}")
+#         fi
+#     fi
+# done
 
-exec "${args[@]}"
+args=$(echo $@ | sed 's/-C metadata=[^\ ]* / /g')
+
+exec $args
