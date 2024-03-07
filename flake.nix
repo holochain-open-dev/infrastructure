@@ -104,11 +104,25 @@
           }: {
 
             devShells.default = pkgs.mkShell {
-              inputsFrom = [ inputs'.holochain.devShells.holonix ];
+              inputsFrom = [ ];
               packages = with pkgs; [
                 nodejs-18_x
                 # more packages go here
                 cargo-nextest
+							(let 
+
+							  pkgs = import inputs.nixpkgs {
+							    inherit system;
+							    overlays = [ (import inputs.rust-overlay) ];
+							  };
+
+							  rustToolchain = pkgs.rust-bin.nightly."2024-01-29".minimal.override {
+							    # Set the build targets supported by the toolchain,
+							    # wasm32-unknown-unknown is required for trunk.
+							    targets = [ "wasm32-unknown-unknown" ];
+							  };
+						in
+							 rustToolchain)
               ];
             };
           };
