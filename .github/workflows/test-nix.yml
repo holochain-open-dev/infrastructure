@@ -29,7 +29,6 @@ jobs:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
           cd ./nix/fixture
-          yes | nix flake update
           cachix watch-exec holochain-open-dev -- nix build -L .#my_zome.meta.debug
           cachix watch-exec holochain-open-dev -- nix build -L .#my_zome
           sha256sum result
@@ -51,6 +50,10 @@ jobs:
         with:
           name: holochain-ci
 
+      - uses: cachix/cachix-action@v10
+        with:
+          name: holochain-open-dev
+
       - name: Install coreutils for macOS
         if: matrix.os == 'macos-latest'
         run: brew install coreutils
@@ -58,7 +61,6 @@ jobs:
       - name: Build zomes
         run: |
           cd ./nix/fixture
-          yes | nix flake update
           nix build -L .#my_zome.meta.debug
           nix build -L .#my_zome
           sha256sum result
