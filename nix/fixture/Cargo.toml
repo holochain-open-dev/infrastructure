@@ -1,4 +1,4 @@
-cargo-features = ["trim-paths"]
+# cargo-features = ["trim-paths"]
 
 [workspace]
 members = ["zome"]
@@ -12,6 +12,6 @@ serde = "1"
 
 [profile.release]
 opt-level = "z"
-trim-paths = true
+# trim-paths = true
 codegen-units = 1
 # remap-debuginfo = true
