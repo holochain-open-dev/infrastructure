@@ -61,7 +61,20 @@ let
 		#   pname = crate;
 		# 	version = cargoToml.package.version;
 		# });
-		wasm = pkgs.rustPlatform.buildRustPackage {
+	  rustToolchain = pkgs.rust-bin.nightly."2024-01-29".minimal.override {
+	    # Set the build targets supported by the toolchain,
+	    # wasm32-unknown-unknown is required for trunk.
+	    targets = [ "wasm32-unknown-unknown" ];
+	  };
+		rustPlatform = pkgs.makeRustPlatform {
+	    cargo = rustToolchain;
+	    rustc = rustToolchain;
+		};
+
+		wasm = rustPlatform.buildRustPackage {
+			nativeBuildInputs = [
+				pkgs.llvmPackages.bintools
+			];
 	    src = workspacePath;
 			pname = crate;
 			version = cargoToml.package.version;
@@ -70,6 +83,11 @@ let
 			};
 			cargoBuildFlags = "--target wasm32-unknown-unknown";
 			doCheck = false;
+			CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER = "lld";
+	    installPhase = ''
+	      mkdir -p $out/lib
+	      cp target/wasm32-unknown-unknown/release/*.wasm $out/lib/
+	    '';
 		};
 	in
 		runCommandLocal "${crate}-deterministic" {
@@ -77,7 +95,6 @@ let
 				holochainPackageType = "zome";
 			};
 		} ''
-		  ls ${wasm}/lib
 			cp ${wasm}/lib/${crate}.wasm $out 
 		'';
 in
