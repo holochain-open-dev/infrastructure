@@ -51,7 +51,7 @@
 								    overlays = [ (import inputs.rust-overlay) ];
 								  };
 
-								  rustToolchain = pkgs.rust-bin.nightly."2024-01-29".minimal.override {
+								  rustToolchain = pkgs.rust-bin.stable."1.75.0".minimal.override {
 								    # Set the build targets supported by the toolchain,
 								    # wasm32-unknown-unknown is required for trunk.
 								    targets = [ "wasm32-unknown-unknown" ];
@@ -65,7 +65,7 @@
 							    overlays = [ (import inputs.rust-overlay) ];
 							  };
 
-							  rustToolchain = pkgs.rust-bin.nightly."2024-01-29".minimal.override {
+							  rustToolchain = pkgs.rust-bin.stable."1.75.0".minimal.override {
 							    # Set the build targets supported by the toolchain,
 							    # wasm32-unknown-unknown is required for trunk.
 							    targets = [ "wasm32-unknown-unknown" ];
