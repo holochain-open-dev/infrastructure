@@ -7,11 +7,22 @@
 let 
   rootPackageJson = builtins.fromJSON (builtins.readFile "${rootPath}/package.json");
   packageJson = builtins.fromJSON (builtins.readFile "${workspacePath}/package.json");
+
+  # Substract the root path to the workspacePath to get the relative path between them.
+  # Eg:
+  # rootPath = /home/username/project
+  # workspacePath = /home/username/project/workspace 
+  # And produce
+  # npmWorkspace = ./workspace
+  rootPathSplit = pkgs.strings.splitString "/" rootPath;
+  workspacePathSplit = pkgs.strings.splitString "/" workspacePath;
+  npmWorkspace = pkgs.lib.lists.sublist ((builtins.length workspacePathSplit) - (builtins.length rootPathSplit)) (builtins.length workspacePathSplit) workspacePathSplit;
+
   builtNodeModules = pkgs.buildNpmPackage {
     pname = packageJson.name;
     version = "0.0.0";
     src = rootPath;
-    npmWorkspace = workspacePath;
+    inherit npmWorkspace;
     npmDeps = pkgs.importNpmLock {
       npmRoot = rootPath;
     };
