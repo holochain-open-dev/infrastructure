@@ -9,5 +9,5 @@ edition = "2021"
 anyhow = "1.0.81"
 clap = {version ="4.5.2", features = ["derive"]}
 ignore = "0.4"
-serde_json = {version ="1", features = ["std"]}
+serde_json = {version ="1", features = ["std", "preserve_order"]}
 serde = "1"

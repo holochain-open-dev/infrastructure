@@ -11,7 +11,7 @@
       inputs.versions.follows = "versions";
     };
 		hcUtils.url = "path:../..";
-		profiles.url = "github:holochain-open-dev/profiles";
+		profiles.url = "github:holochain-open-dev/profiles/nixify";
   };
 
   outputs = inputs @ { ... }:
@@ -67,8 +67,8 @@
                 ];
 
                 shellHook = ''
-                  replace-npm-dependencies-sources ${builtins.toString (builtins.map (p: "${p.meta.packageName}=${p.outPath}/lib") (builtins.attrValues (allNpmPackages {inherit inputs' self';})))}
-                ''; 
+                  replace-npm-dependencies-sources ${builtins.toString (builtins.map (p: "${p.meta.packageName}=file:${p.outPath}/lib") (builtins.attrValues (allNpmPackages {inherit inputs' self';})))}
+                '';
               };
               # packages.i = inputs'.profiles.packages.profiles_ui;
             };

@@ -1,7 +1,7 @@
 {
   "author": "",
   "dependencies": {
-    "zome": "/nix/store/3l4n96ahxi1jd59srny1vyn59x7qxx75-zome/lib"
+    "zome": "file:/nix/store/aqjds5pi5s3vw0xjmzzlz0phkhz9y8qz-zome/lib"
   },
   "description": "",
   "keywords": [],
