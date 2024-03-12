@@ -16,13 +16,13 @@ let
   # npmWorkspace = ./workspace
   rootPathSplit = pkgs.lib.strings.splitString "/" rootPath;
   workspacePathSplit = pkgs.lib.strings.splitString "/" workspacePath;
-  npmWorkspace = pkgs.lib.lists.sublist ((builtins.length workspacePathSplit) - (builtins.length rootPathSplit)) (builtins.length workspacePathSplit) workspacePathSplit;
+  npmWorkspace = pkgs.lib.lists.sublist (builtins.length rootPathSplit) (builtins.length workspacePathSplit) workspacePathSplit;
 
   builtNodeModules = pkgs.buildNpmPackage {
     pname = packageJson.name;
     version = "0.0.0";
     src = rootPath;
-    inherit npmWorkspace;
+    npmWorkspace = "./${pkgs.lib.strings.concatStringsSep "/" npmWorkspace}";
     npmDeps = pkgs.importNpmLock {
       npmRoot = rootPath;
     };

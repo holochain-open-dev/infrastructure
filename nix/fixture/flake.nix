@@ -43,6 +43,7 @@
         {
           imports = [
   					./happ.nix
+            ./zome/ui.nix
           ];
 
           systems = builtins.attrNames inputs.holochain.devShells;
