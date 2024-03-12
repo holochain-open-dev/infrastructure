@@ -63,14 +63,14 @@
                   # more packages go here
                   cargo-nextest
                 ] ++ [ 
-                  inputs'.hcUtils.packages.sync-npm-dependencies-with-nix 
+                  inputs'.hcUtils.packages.replace-npm-dependencies-sources 
                 ];
 
                 shellHook = ''
-                  sync-npm-dependencies-with-nix ${builtins.trace (builtins.toString (builtins.map (p: "${p.meta.packageName}=${p.outPath}/lib") (builtins.attrValues (allNpmPackages {inherit inputs' self';})))) "hey"}
+                  replace-npm-dependencies-sources ${builtins.toString (builtins.map (p: "${p.meta.packageName}=${p.outPath}/lib") (builtins.attrValues (allNpmPackages {inherit inputs' self';})))}
                 ''; 
               };
-
+              # packages.i = inputs'.profiles.packages.profiles_ui;
             };
         };
 }

@@ -1,7 +1,7 @@
 {
   "author": "",
   "dependencies": {
-    "@holochain-open-dev/profiles": "file:/nix/store/hqsw2yppsm6gr4jdrqmxlrdm48j1397c--holochain-open-dev-profiles-0.0.0/lib"
+    "@holochain-open-dev/profiles": "2221"
   },
   "description": "",
   "keywords": [],

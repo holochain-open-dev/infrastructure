@@ -147,11 +147,11 @@
               ];
             };
 
-						packages.sync-npm-dependencies-with-nix = 
+						packages.replace-npm-dependencies-sources = 
 						  let
 								craneLib = inputs.crane.lib.${system};
 
-								cratePath = ./crates/sync-npm-dependencies-with-nix;
+								cratePath = ./crates/replace-npm-dependencies-sources;
 
 								cargoToml = builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
 							  crate = cargoToml.package.name;
