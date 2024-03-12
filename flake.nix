@@ -115,14 +115,14 @@
 								pkgs.callPackage ./nix/happ.nix {
 					        inherit dnas holochain happManifest;
 					      };
-						ui-package = { system, workspacePath, rootPath }: 
+						npmPackage = { system, workspacePath, rootPath }: 
 							let 
 							  pkgs = import inputs.nixpkgs {
 							    inherit system;
 							    overlays = [ (import inputs.rust-overlay) ];
 							  };
 							in
-								pkgs.callPackage ./nix/ui-package.nix {
+								pkgs.callPackage ./nix/npm-package.nix {
 					        inherit workspacePath rootPath;
 					      };
 			      };
