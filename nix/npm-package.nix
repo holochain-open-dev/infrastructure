@@ -14,8 +14,8 @@ let
   # workspacePath = /home/username/project/workspace 
   # And produce
   # npmWorkspace = ./workspace
-  rootPathSplit = pkgs.strings.splitString "/" rootPath;
-  workspacePathSplit = pkgs.strings.splitString "/" workspacePath;
+  rootPathSplit = pkgs.lib.strings.splitString "/" rootPath;
+  workspacePathSplit = pkgs.lib.strings.splitString "/" workspacePath;
   npmWorkspace = pkgs.lib.lists.sublist ((builtins.length workspacePathSplit) - (builtins.length rootPathSplit)) (builtins.length workspacePathSplit) workspacePathSplit;
 
   builtNodeModules = pkgs.buildNpmPackage {
