@@ -1,0 +1,16 @@
+{
+  "name": "zome",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@holochain-open-dev/profiles": "file:/nix/store/hqsw2yppsm6gr4jdrqmxlrdm48j1397c--holochain-open-dev-profiles-0.0.0/lib/node_modules/@holochain-open-dev/profiles-dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

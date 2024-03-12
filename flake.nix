@@ -41,6 +41,7 @@
 						filterZomes = filterByHolochainPackageType "zome";
 						filterDnas = filterByHolochainPackageType "dna";
 						filterHapps = filterByHolochainPackageType "happ";
+						filterNpmPackages = filterByHolochainPackageType "npm";
 
 						rustZome = { crateCargoToml, holochain,  workspacePath, excludedCrates ? [] }: 
 							let 
@@ -114,6 +115,16 @@
 								pkgs.callPackage ./nix/happ.nix {
 					        inherit dnas holochain happManifest;
 					      };
+						ui-package = { system, workspacePath, rootPath }: 
+							let 
+							  pkgs = import inputs.nixpkgs {
+							    inherit system;
+							    overlays = [ (import inputs.rust-overlay) ];
+							  };
+							in
+								pkgs.callPackage ./nix/ui-package.nix {
+					        inherit workspacePath rootPath;
+					      };
 			      };
 				};
 
@@ -128,27 +139,33 @@
           }: {
 
             devShells.default = pkgs.mkShell {
-              inputsFrom = [ ];
+              inputsFrom = [ inputs'.holochain.devShells.holonix ];
               packages = with pkgs; [
                 nodejs-18_x
                 # more packages go here
                 cargo-nextest
-							(let 
-
-							  pkgs = import inputs.nixpkgs {
-							    inherit system;
-							    overlays = [ (import inputs.rust-overlay) ];
-							  };
-
-							  rustToolchain = pkgs.rust-bin.nightly."2024-01-29".minimal.override {
-							    # Set the build targets supported by the toolchain,
-							    # wasm32-unknown-unknown is required for trunk.
-							    targets = [ "wasm32-unknown-unknown" ];
-							  };
-						in
-							 rustToolchain)
               ];
             };
+
+						packages.sync-npm-dependencies-with-nix = 
+						  let
+								craneLib = inputs.crane.lib.${system};
+
+								cratePath = ./crates/sync-npm-dependencies-with-nix;
+
+								cargoToml = builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
+							  crate = cargoToml.package.name;
+
+								commonArgs = {
+									strictDeps = true;
+									doCheck = false;
+								  src = craneLib.cleanCargoSource (craneLib.path cratePath);
+								};
+							in 
+								craneLib.buildPackage (commonArgs // {
+								  pname = crate;
+									version = cargoToml.package.version;
+								});
           };
       };
 }

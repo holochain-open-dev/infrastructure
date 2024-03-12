@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, allZomes, ... }:
 
 {
   imports = [./zome/zome.nix];
@@ -15,9 +15,8 @@
     }: {
   	  packages = 
         let 
-          allZomes = inputs.hcUtils.lib.filterZomes self'.packages;
-          zomes = {
-          } // allZomes;
+          zomes = (allZomes { inherit self' inputs'; }) // {
+          };
         in 
           {
             my_dna = inputs.hcUtils.outputs.lib.dna {

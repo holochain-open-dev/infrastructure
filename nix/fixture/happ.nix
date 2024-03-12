@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, allDnas, ... }:
 
 {
   imports = [./dna.nix];
@@ -16,9 +16,8 @@
   	  packages = 
 	    let
           happManifest = ./happ.yaml;
-          allDnas = inputs.hcUtils.lib.filterDnas self'.packages;
-				  dnas = {
-          } // allDnas;
+				  dnas = (allDnas { inherit self' inputs'; }) // {
+          };
 			in
 	      {
 	        my_happ = inputs.hcUtils.outputs.lib.happ {
