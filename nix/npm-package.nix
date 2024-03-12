@@ -20,7 +20,8 @@ let
 
   builtNodeModules = pkgs.buildNpmPackage {
     pname = packageJson.name;
-    version = "0.0.0";
+    version = packageJson.version;
+    dontNpmPrune = true;
     src = rootPath;
     npmWorkspace = "./${pkgs.lib.strings.concatStringsSep "/" npmWorkspace}";
     npmDeps = pkgs.importNpmLock {

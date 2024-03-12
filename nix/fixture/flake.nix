@@ -67,7 +67,7 @@
                 ];
 
                 shellHook = ''
-                  sync-npm-dependencies-with-nix ${builtins.trace (allNpmPackages {inherit inputs' self';}) "hey"}
+                  sync-npm-dependencies-with-nix ${builtins.trace (builtins.toString (builtins.map (p: "${p.meta.packageName}=${p.outPath}/lib") (builtins.attrValues (allNpmPackages {inherit inputs' self';})))) "hey"}
                 ''; 
               };
 
