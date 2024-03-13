@@ -28,6 +28,7 @@ fn parse_args() -> Result<HashMap<String, String>> {
 fn main() -> Result<()> {
     let deps_to_replace = parse_args()?;
 
+    let mut announced = false;
     let mut replaced_some_dep = false;
 
     for entry in Walk::new(".").into_iter().filter_map(|e| e.ok()) {
@@ -45,8 +46,17 @@ fn main() -> Result<()> {
                             Value::String(old_source) if old_source.eq(new_source) => {}
                             _ => {
                                 *found_dep = Value::String(new_source.clone());
+
+                                if !announced {
+                                    announced = true;
+                                    println!("");
+                                    println!(
+                                        "Synchronizing npm dependencies with the upstream nix sources..."
+                                    );
+                                }
+
                                 println!(
-                                    "{:?}: setting dependency \"{dep_to_replace}\" to \"{new_source}\"",
+                                    "  - Setting dependency \"{dep_to_replace}\" in file {:?} to \"{new_source}\"",
                                     entry.path()
                                 );
                                 replaced_some_dep = true;
@@ -63,7 +73,9 @@ fn main() -> Result<()> {
     }
 
     if replaced_some_dep {
+        println!("Running npm install...");
         Command::new("npm").arg("install").output()?;
+        println!("Successfully synchronized npm dependencies with nix");
     }
 
     Ok(())

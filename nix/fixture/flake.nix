@@ -21,23 +21,26 @@
         # ... and add the name of the repository here as well
       ];
 
-      # Aggregators: take all the packages from this repository and the upstream
-      # holochain sources and merge them
-      allHolochainPackages = { inputs', self' }: inputs.nixpkgs.lib.attrsets.mergeAttrsList (
-        [ self'.packages ] 
-        ++ builtins.map (s: s.packages) (holochainSources inputs')
+      # Holochain packages coming from the upstream repositories
+      upstreamHolochainPackages  = { inputs' }: inputs.nixpkgs.lib.attrsets.mergeAttrsList (
+        builtins.map (s: s.packages) (holochainSources inputs')
       );
+      # All holochain packages from this _and_ the upstream repositories, combined
+      allHolochainPackages = { inputs', self' }: inputs.nixpkgs.lib.attrsets.mergeAttrsList [ 
+        self'.packages 
+        (upstreamHolochainPackages inputs') 
+      ];
       allZomes = { inputs', self' }: inputs.hcUtils.outputs.lib.filterZomes (allHolochainPackages { inherit inputs' self'; });
       allDnas = { inputs', self' }: inputs.hcUtils.outputs.lib.filterDnas (allHolochainPackages { inherit inputs' self'; });
       allHapps = { inputs', self' }: inputs.hcUtils.outputs.lib.filterHapps (allHolochainPackages { inherit inputs' self'; });
-      allNpmPackages = { inputs', self' }: inputs.hcUtils.outputs.lib.filterNpmPackages (allHolochainPackages { inherit inputs' self'; });   
+      upstreamNpmPackages = { inputs' }: inputs.hcUtils.outputs.lib.filterNpmPackages (upstreamHolochainPackages { inherit inputs'; });   
     in
       inputs.holochain.inputs.flake-parts.lib.mkFlake
         {
           inherit inputs;
           specialArgs = {
             rootPath = ./.;
-            inherit holochainSources allHolochainPackages allZomes allDnas allHapps allNpmPackages;
+            inherit holochainSources allHolochainPackages allZomes allDnas allHapps;
           };
         }
         {
@@ -62,12 +65,14 @@
                   nodejs_20
                   # more packages go here
                   cargo-nextest
-                ] ++ [ 
-                  inputs'.hcUtils.packages.replace-npm-dependencies-sources 
+                  (inputs.hcUtils.lib.syncNpmDependenciesWithNix {
+                    inherit system;
+                    holochainPackages = upstreamNpmPackages {inherit inputs';};
+                  })
                 ];
 
                 shellHook = ''
-                  replace-npm-dependencies-sources ${builtins.toString (builtins.map (p: "${p.meta.packageName}=file:${p.outPath}/lib") (builtins.attrValues (allNpmPackages {inherit inputs' self';})))}
+                  sync-npm-dependencies-with-nix
                 '';
               };
               # packages.i = inputs'.profiles.packages.profiles_ui;
