@@ -10,8 +10,7 @@
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-		hcUtils.url = "path:../..";
-		profiles.url = "github:holochain-open-dev/profiles/nixify";
+		hcUtils.url = "path:../../..";
   };
 
   outputs = inputs @ { ... }:
@@ -45,8 +44,8 @@
         }
         {
           imports = [
-  					./happ.nix
-            ./zome/ui.nix
+            ./module/zome.nix
+            ./module/ui.nix
           ];
 
           systems = builtins.attrNames inputs.holochain.devShells;
@@ -65,14 +64,14 @@
                   nodejs_20
                   # more packages go here
                   cargo-nextest
-                  (inputs.hcUtils.lib.syncNpmDependenciesWithNix {
-                    inherit system;
-                    holochainPackages = upstreamNpmPackages {inherit inputs';};
-                  })
+                  # (inputs.hcUtils.lib.syncNpmDependenciesWithNix {
+                  #   inherit system;
+                  #   holochainPackages = upstreamNpmPackages {inherit inputs';};
+                  # })
                 ];
 
                 shellHook = ''
-                  sync-npm-dependencies-with-nix
+                  # sync-npm-dependencies-with-nix
                 '';
               };
               # packages.i = inputs'.profiles.packages.profiles_ui;

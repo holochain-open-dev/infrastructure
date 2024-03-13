@@ -1,14 +1,11 @@
 {
   "author": "",
-  "dependencies": {
-    "zome": "file:/nix/store/aqjds5pi5s3vw0xjmzzlz0phkhz9y8qz-zome/lib"
-  },
   "description": "",
   "keywords": [],
   "license": "ISC",
   "name": "fixture",
   "version": "1.0.0",
   "workspaces": [
-    "./zome/"
+    "./module/"
   ]
 }

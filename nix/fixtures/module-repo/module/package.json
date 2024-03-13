@@ -1,12 +1,11 @@
 {
-  "name": "zome",
+  "name": "module",
   "author": "",
   "scripts": {
     "build": "",
     "start": "node index.js"
   },
   "dependencies": {
-    "@holochain-open-dev/profiles": "file:/nix/store/cywpx2ixlp41ni71wm22csz536w713k0--holochain-open-dev-profiles/lib"
   },
   "description": "",
   "keywords": [],

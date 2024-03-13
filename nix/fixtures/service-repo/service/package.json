@@ -1,0 +1,17 @@
+{
+  "name": "service",
+  "author": "",
+  "scripts": {
+    "build": "",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "module": "X"
+  },
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "type": "module",
+  "version": "1.0.0"
+}

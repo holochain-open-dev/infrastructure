@@ -40,5 +40,6 @@ in
     cd ${builtNodeModules}/lib/node_modules/${rootPackageJson.name}
     mkdir $out
     mkdir $out/lib
-    ${pkgs.rsync}/bin/rsync -aP --exclude=node_modules ./* $out/lib
+    ${pkgs.rsync}/bin/rsync -aP ./* $out/lib
   ''
+    # ${pkgs.rsync}/bin/rsync -aP --exclude=node_modules ./* $out/lib
