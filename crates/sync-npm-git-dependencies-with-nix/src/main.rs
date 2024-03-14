@@ -49,12 +49,8 @@ fn main() -> Result<()> {
                                     "Error parsing git revision for dependency {dependency_source_str}"
                                 ))?
                                 .as_str();
-                            let query_arguments = captures
-                                .get(5)
-                                .ok_or(anyhow!(
-                                    "Error parsing query arguments for dependency {dependency_source_str}"
-                                ))?
-                                .as_str();
+                            let query_arguments =
+                                captures.get(5).map(|c| c.as_str()).unwrap_or_default();
 
                             for root_node in flake_lock.root.values() {
                                 if let Node::Repo(repo_node) = root_node {

@@ -12,6 +12,7 @@
     };
 		hcUtils.url = "path:../../..";
     profiles.url = "github:holochain-open-dev/profiles/nixify";
+    file-storage.url = "github:holochain-open-dev/file-storage/for-hdk-0.3.0-beta-dev";
   };
 
   outputs = inputs @ { ... }:
