@@ -31,5 +31,6 @@ jobs:
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
-          cachix watch-exec holochain-open-dev -- nix build -L .#sync-npm-git-dependencies-with-nix
+          nix build -L .#sync-npm-git-dependencies-with-nix
+          cachix push holochain-open-dev $(nix path-info .#sync-npm-git-dependencies-with-nix)
           cachix pin holochain-open-dev sync-npm-git-dependencies-with-nix $(nix path-info .#sync-npm-git-dependencies-with-nix)

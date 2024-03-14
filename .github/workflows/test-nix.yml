@@ -26,10 +26,10 @@ jobs:
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
-          cd ./nix/fixture
+          cd ./nix/fixtures/module-repo
           nix flake update
-          cachix watch-exec holochain-open-dev -- nix build -L .#my_zome.meta.debug
-          cachix watch-exec holochain-open-dev -- nix build -L .#my_zome
+          nix build -L .#my_zome
+          cachix push holochain-open-dev $(nix path-info .#my_zome)
           sha256sum result
 
   macos-just-get-from-cache:
@@ -56,9 +56,8 @@ jobs:
 
       - name: Build zomes
         run: |
-          cd ./nix/fixture
+          cd ./nix/fixtures/module-repo
           nix flake update
-          nix build -L .#my_zome.meta.debug
           nix build -L .#my_zome
           sha256sum result
 
