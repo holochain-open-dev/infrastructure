@@ -1,17 +1,21 @@
 {
-  "name": "service",
+  "name": "my-module",
   "author": "",
   "scripts": {
     "build": "",
     "start": "node index.js"
   },
   "dependencies": {
-    "module": "X"
+    "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles#671eb7eeb34a5cbd99af93362e7dd18ece402ffe&path:ui"
+  },
+  "exports": {
+    ".": "./index.js"
   },
   "description": "",
   "keywords": [],
   "license": "ISC",
   "main": "index.js",
+  "module": "index.js",
   "type": "module",
   "version": "1.0.0"
 }

@@ -1,5 +1,5 @@
 [package]
-name = "replace-npm-dependencies-sources"
+name = "sync-npm-git-dependencies-with-nix"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,7 +7,8 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.81"
-clap = {version ="4.5.2", features = ["derive"]}
+parse-flake-lock = { git = "https://github.com/DeterminateSystems/flake-checker", branch = "main" }
 ignore = "0.4"
 serde_json = {version ="1", features = ["std", "preserve_order"]}
 serde = "1"
+regex = "1"

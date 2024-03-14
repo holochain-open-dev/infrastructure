@@ -1,8 +1,6 @@
 { inputs, allZomes, ... }:
 
 {
-  imports = [./zome/zome.nix];
-
   perSystem =
     { inputs'
     , config

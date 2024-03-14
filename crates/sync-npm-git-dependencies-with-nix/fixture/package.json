@@ -1,7 +1,7 @@
 {
   "author": "",
   "dependencies": {
-    "@holochain-open-dev/profiles": "2221"
+    "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles#671eb7eeb34a5cbd99af93362e7dd18ece402ffe&path:ui"
   },
   "description": "",
   "keywords": [],

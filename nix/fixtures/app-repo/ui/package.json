@@ -1,12 +1,12 @@
 {
-  "name": "app",
+  "name": "my-app",
   "author": "",
   "scripts": {
     "build": "",
     "start": "node index.js"
   },
   "dependencies": {
-    "service": "X"
+    "my-service": "file:/nix/store/7bv0giyqfix1lrzsick197qb97kdhpgn-my-service/lib"
   },
   "description": "",
   "keywords": [],

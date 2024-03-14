@@ -17,7 +17,7 @@
   outputs = inputs @ { ... }:
     let 
       holochainSources = inputs': with inputs'; [ 
-        profiles
+        service
         # ... and add the name of the repository here as well
       ];
 
@@ -28,7 +28,7 @@
       # All holochain packages from this _and_ the upstream repositories, combined
       allHolochainPackages = { inputs', self' }: inputs.nixpkgs.lib.attrsets.mergeAttrsList [ 
         self'.packages 
-        (upstreamHolochainPackages inputs') 
+        (upstreamHolochainPackages { inherit inputs';} ) 
       ];
       allZomes = { inputs', self' }: inputs.hcUtils.outputs.lib.filterZomes (allHolochainPackages { inherit inputs' self'; });
       allDnas = { inputs', self' }: inputs.hcUtils.outputs.lib.filterDnas (allHolochainPackages { inherit inputs' self'; });
@@ -45,8 +45,7 @@
         }
         {
           imports = [
-  					./app/happ.nix
-  					./app/ui.nix
+  					./happ/happ.nix
           ];
 
           systems = builtins.attrNames inputs.holochain.devShells;
@@ -65,14 +64,14 @@
                   nodejs_20
                   # more packages go here
                   cargo-nextest
-                  # (inputs.hcUtils.lib.syncNpmDependenciesWithNix {
-                  #   inherit system;
-                  #   holochainPackages = upstreamNpmPackages {inherit inputs';};
-                  # })
+                  (inputs.hcUtils.lib.syncNpmDependenciesWithNix {
+                    inherit system;
+                    holochainPackages = upstreamNpmPackages {inherit inputs';};
+                  })
                 ];
 
                 shellHook = ''
-                  # sync-npm-dependencies-with-nix
+                  sync-npm-dependencies-with-nix
                 '';
               };
               # packages.i = inputs'.profiles.packages.profiles_ui;

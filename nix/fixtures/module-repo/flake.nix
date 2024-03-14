@@ -11,6 +11,7 @@
       inputs.versions.follows = "versions";
     };
 		hcUtils.url = "path:../../..";
+    profiles.url = "github:holochain-open-dev/profiles/nixify";
   };
 
   outputs = inputs @ { ... }:
@@ -27,7 +28,7 @@
       # All holochain packages from this _and_ the upstream repositories, combined
       allHolochainPackages = { inputs', self' }: inputs.nixpkgs.lib.attrsets.mergeAttrsList [ 
         self'.packages 
-        (upstreamHolochainPackages inputs') 
+        (upstreamHolochainPackages { inherit inputs'; }) 
       ];
       allZomes = { inputs', self' }: inputs.hcUtils.outputs.lib.filterZomes (allHolochainPackages { inherit inputs' self'; });
       allDnas = { inputs', self' }: inputs.hcUtils.outputs.lib.filterDnas (allHolochainPackages { inherit inputs' self'; });
@@ -44,8 +45,7 @@
         }
         {
           imports = [
-            ./module/zome.nix
-            ./module/ui.nix
+            ./zome/zome.nix
           ];
 
           systems = builtins.attrNames inputs.holochain.devShells;
@@ -60,18 +60,16 @@
             }: {
               devShells.default = pkgs.mkShell {
                 inputsFrom = [ inputs'.holochain.devShells.holonix ];
-                packages = with pkgs; [
-                  nodejs_20
+                packages = [
+                  pkgs.nodejs_20
                   # more packages go here
-                  cargo-nextest
-                  # (inputs.hcUtils.lib.syncNpmDependenciesWithNix {
-                  #   inherit system;
-                  #   holochainPackages = upstreamNpmPackages {inherit inputs';};
-                  # })
+                  pkgs.cargo-nextest
+                  inputs'.hcUtils.packages.pnpm
+                  inputs'.hcUtils.packages.sync-npm-git-dependencies-with-nix
                 ];
 
                 shellHook = ''
-                  # sync-npm-dependencies-with-nix
+                  sync-npm-git-dependencies-with-nix
                 '';
               };
               # packages.i = inputs'.profiles.packages.profiles_ui;

@@ -1,8 +1,6 @@
 { inputs, allDnas, ... }:
 
 {
-  imports = [./dna.nix];
-
   perSystem =
     { inputs'
     , config

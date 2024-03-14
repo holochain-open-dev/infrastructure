@@ -11,13 +11,13 @@
       inputs.versions.follows = "versions";
     };
 		hcUtils.url = "path:../../..";
-		module.url = "path:../module-repo";
+    profiles.url = "github:holochain-open-dev/profiles/nixify";
   };
 
   outputs = inputs @ { ... }:
     let 
       holochainSources = inputs': with inputs'; [ 
-        module
+        profiles
         # ... and add the name of the repository here as well
       ];
 
@@ -33,7 +33,6 @@
       allZomes = { inputs', self' }: inputs.hcUtils.outputs.lib.filterZomes (allHolochainPackages { inherit inputs' self'; });
       allDnas = { inputs', self' }: inputs.hcUtils.outputs.lib.filterDnas (allHolochainPackages { inherit inputs' self'; });
       allHapps = { inputs', self' }: inputs.hcUtils.outputs.lib.filterHapps (allHolochainPackages { inherit inputs' self'; });
-      upstreamNpmPackages = { inputs' }: inputs.hcUtils.outputs.lib.filterNpmPackages (upstreamHolochainPackages { inherit inputs'; });   
     in
       inputs.holochain.inputs.flake-parts.lib.mkFlake
         {
@@ -44,9 +43,6 @@
           };
         }
         {
-          imports = [
-  					./dna/dna.nix
-          ];
 
           systems = builtins.attrNames inputs.holochain.devShells;
           perSystem =
@@ -58,23 +54,6 @@
             , self'
             , ...
             }: {
-              devShells.default = pkgs.mkShell {
-                inputsFrom = [ inputs'.holochain.devShells.holonix ];
-                packages = with pkgs; [
-                  nodejs_20
-                  # more packages go here
-                  cargo-nextest
-                  (inputs.hcUtils.lib.syncNpmDependenciesWithNix {
-                    inherit system;
-                    holochainPackages = upstreamNpmPackages { inherit inputs'; };
-                  })
-                ];
-
-                shellHook = ''
-                  sync-npm-dependencies-with-nix
-                '';
-              };
-              # packages.i = inputs'.profiles.packages.profiles_ui;
             };
         };
 }

@@ -4,8 +4,5 @@
   "keywords": [],
   "license": "ISC",
   "name": "fixture",
-  "version": "1.0.0",
-  "workspaces": [
-    "./module/"
-  ]
+  "version": "1.0.0"
 }
