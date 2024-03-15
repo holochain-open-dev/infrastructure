@@ -16,7 +16,6 @@
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-		hcUtils.url = "github:holochain-open-dev/common";
   };
 
   nixConfig = {
