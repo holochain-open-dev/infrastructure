@@ -1,4 +1,4 @@
-import { asyncReadable, AsyncReadable, AsyncStatus } from "./async-readable.js";
+import { asyncReadable, AsyncReadable } from "./async-readable.js";
 
 /**
  * Starts executing the given promise, and retries until the promise returns a correct value

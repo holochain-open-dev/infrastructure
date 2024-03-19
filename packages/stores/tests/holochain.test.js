@@ -20,6 +20,7 @@ import {
   collectionStore,
   deletedLinksStore,
   deletesForEntryStore,
+  immutableEntryStore,
   latestVersionOfEntryStore,
   liveLinksStore,
   toPromise,
@@ -92,7 +93,7 @@ test("collection store works", async () => {
     100
   );
 
-  collection.subscribe(() => {});
+  collection.subscribe(() => { });
 
   let collectionLinks = await toPromise(collection);
 
@@ -122,7 +123,7 @@ test("latestVersionOfEntry store works", async () => {
     100
   );
 
-  latestVersion.subscribe(() => {});
+  latestVersion.subscribe(() => { });
 
   let latestRecord = await toPromise(latestVersion);
 
@@ -158,7 +159,7 @@ test("allRevisionsOfEntryStore works", async () => {
     100
   );
 
-  allRevisionsStore.subscribe(() => {});
+  allRevisionsStore.subscribe(() => { });
 
   let latestAllRevisions = await toPromise(allRevisionsStore);
 
@@ -189,7 +190,7 @@ test("deletesForEntry works", async () => {
     100
   );
 
-  deletesStore.subscribe(() => {});
+  deletesStore.subscribe(() => { });
 
   let latestDeletes = await toPromise(deletesStore);
 
@@ -214,7 +215,7 @@ test("liveLinksStore works", async () => {
     100
   );
 
-  linksStore.subscribe(() => {});
+  linksStore.subscribe(() => { });
 
   let latestLinks = await toPromise(linksStore);
 
@@ -244,7 +245,7 @@ test("deleteLinksStore works", async () => {
     100
   );
 
-  deletedStore.subscribe(() => {});
+  deletedStore.subscribe(() => { });
 
   let latestDeletedLinks = await toPromise(deletedStore);
 
@@ -260,4 +261,23 @@ test("deleteLinksStore works", async () => {
   latestDeletedLinks = await toPromise(deletedStore);
 
   assert.equal(latestDeletedLinks.length, 2);
+});
+
+test("immutableEntryStore caches its results", async () => {
+  let entry = fakeRecord(fakeCreateAction());
+  let requests = 0;
+  const store = immutableEntryStore(async () => {
+    requests++;
+    return entry;
+  });
+
+  let unsubs = store.subscribe(() => { });
+
+  await sleep(10);
+
+  unsubs();
+
+  unsubs = store.subscribe(() => { });
+
+  assert.equal(requests, 1);
 });

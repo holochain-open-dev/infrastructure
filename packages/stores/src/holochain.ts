@@ -130,18 +130,30 @@ export class ConflictingUpdatesError extends Error {
 
 /**
  * Fetches the given entry, retrying if there is a failure
- * Makes requests only the first time it is subscribed to, and will stop after it succeeds in fetching the entry
+ * 
+ * Makes requests only the first time it is subscribed to, 
+ * and will stop after it succeeds in fetching the entry
+ *
+ * Whenever it succeeds, it caches the value so that any subsequent requests are cached 
  *
  * Useful for entries that can't be updated
  */
 export function immutableEntryStore<T>(
-  fetch: () => Promise<EntryRecord<T> | undefined>
+  fetch: () => Promise<EntryRecord<T> | undefined>,
+  pollInterval: number = 1000,
+  maxRetries = 4
 ): AsyncReadable<EntryRecord<T>> {
+  let cachedEntry: EntryRecord<T> | undefined = undefined;
   return retryUntilSuccess(async () => {
+    if (cachedEntry) return cachedEntry;
+
     const entry = await fetch();
+
     if (!entry) throw new NotFoundError();
+
+    cachedEntry = entry;
     return entry;
-  });
+  }, pollInterval, maxRetries);
 }
 
 /**
@@ -204,7 +216,7 @@ export function latestVersionOfEntryStore<
         signal.type === "EntryUpdated" &&
         latestVersion &&
         latestVersion.actionHash.toString() ===
-          signal.action.hashed.content.original_action_address.toString()
+        signal.action.hashed.content.original_action_address.toString()
       ) {
         latestVersion = new EntryRecord({
           entry: {
@@ -345,7 +357,7 @@ export function deletesForEntryStore<
       if (
         signal.type === "EntryDeleted" &&
         signal.action.hashed.content.deletes_address.toString() ===
-          originalActionHash.toString()
+        originalActionHash.toString()
       ) {
         deletes = [...deletes, signal.action];
         set(deletes);
@@ -471,7 +483,7 @@ export function liveLinksStore<
         if (
           linkType in signal.link_type &&
           signal.action.hashed.content.base_address.toString() ===
-            innerBaseAddress.toString()
+          innerBaseAddress.toString()
         ) {
           maybeSet([...links, createLinkToLink(signal.action)]);
         }
@@ -479,7 +491,7 @@ export function liveLinksStore<
         if (
           linkType in signal.link_type &&
           signal.create_link_action.hashed.content.base_address.toString() ===
-            innerBaseAddress.toString()
+          innerBaseAddress.toString()
         ) {
           maybeSet(
             links.filter(
@@ -583,7 +595,7 @@ export function deletedLinksStore<
         if (
           linkType in signal.link_type &&
           signal.create_link_action.hashed.content.base_address.toString() ===
-            innerBaseAddress.toString()
+          innerBaseAddress.toString()
         ) {
           const alreadyDeletedTargetIndex = deletedLinks.findIndex(
             ([cl]) =>
