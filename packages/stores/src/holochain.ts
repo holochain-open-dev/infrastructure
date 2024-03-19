@@ -143,7 +143,7 @@ export function immutableEntryStore<T>(
   pollInterval: number = 1000,
   maxRetries = 4
 ): AsyncReadable<EntryRecord<T>> {
-  let cachedEntry: EntryRecord<T> | undefined = undefined;
+  let cachedEntry: EntryRecord<T> | undefined;
   return retryUntilSuccess(async () => {
     if (cachedEntry) return cachedEntry;
 
