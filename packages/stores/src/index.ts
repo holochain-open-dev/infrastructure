@@ -14,5 +14,6 @@ export * from "./to-promise.js";
 export * from "./pipe.js";
 export * from "./manual.js";
 export * from "./race.js";
+export * from "./utils.js";
 
 export * from "./holochain.js";
