@@ -16,7 +16,7 @@
     "build": "npm run lint && tsc",
     "lint": "eslint --ext .ts . --ignore-path .gitignore",
     "test": "vitest run",
-    "publish": "npm run build && npm run publish --tag dev"
+    "publish": "npm run build && npm publish --tag dev"
   },
   "dependencies": {
     "@alenaksu/json-viewer": "^2.0.1",

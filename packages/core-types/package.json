@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "build": "npm run lint && tsc",
-    "publish": "npm run build && npm run publish --tag dev"
+    "publish": "npm run build && npm publish --tag dev"
   },
   "repository": {
     "type": "git",

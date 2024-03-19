@@ -20,7 +20,7 @@
     "build": "npm run lint && tsc && npm run analyze -- --exclude dist",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "analyze": "cem analyze --litelement",
-    "publish": "npm run build && npm run publish --tag dev"
+    "publish": "npm run build && npm publish --tag dev"
   },
   "dependencies": {
     "@holo-host/identicon": "^0.1.0",
