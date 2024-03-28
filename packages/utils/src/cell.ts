@@ -19,7 +19,9 @@ export function roleNameForCellId(
           return role;
         }
       } else if (CellType.Cloned in c) {
-        return c[CellType.Cloned].clone_id ? c[CellType.Cloned].clone_id : role;
+        if (c[CellType.Cloned].cell_id.toString() === cellId.toString()) {
+          return c[CellType.Cloned].clone_id;
+        }
       }
     }
   }
