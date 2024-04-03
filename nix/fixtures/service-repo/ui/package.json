@@ -5,8 +5,7 @@
     "build": "",
     "start": "node index.js"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "description": "",
   "keywords": [],
   "license": "ISC",

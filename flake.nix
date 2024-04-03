@@ -125,16 +125,38 @@
           , system
           , lib
           , ...
-          }: {
+          }: rec {
 
             devShells.default = pkgs.mkShell {
               inputsFrom = [ inputs'.holochain.devShells.holonix ];
               packages = with pkgs; [
-                nodejs-18_x
+                nodejs_20
                 # more packages go here
-                cargo-nextest
               ];
             };
+
+						devShells.synchronized-pnpm = pkgs.mkShell {
+							packages = [
+								(pkgs.writeShellScriptBin "npm" ''
+                  echo "
+                  ERROR: this repository is not managed with npm, but pnpm.
+
+									Don't worry! They are really similar to each other. Here are some helpful reminders:
+                  
+                  If you are trying to run \`npm install\`, you can run \`pnpm install\`
+                  If you are trying to run \`npm install some_dependency\`, you can run \`pnpm add some_dependency\`
+                  If you are trying to run a script like \`npm run build\`, you can run \`pnpm build\`
+                  If you are trying to run a script for a certain workspace like \`npm run build -w ui\`, you can run \`pnpm -F ui build\`"
+                '')
+                pkgs.nodejs_20
+                packages.pnpm
+                packages.sync-npm-git-dependencies-with-nix
+							];
+
+              shellHook = ''
+                sync-npm-git-dependencies-with-nix
+              '';
+						};
 
 						packages.sync-npm-git-dependencies-with-nix = 
 						  let
