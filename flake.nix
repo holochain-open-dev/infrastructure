@@ -139,14 +139,14 @@
 							packages = [
 								(pkgs.writeShellScriptBin "npm" ''
                   echo "
-                  ERROR: this repository is not managed with npm, but pnpm.
+ERROR: this repository is not managed with npm, but pnpm.
 
-									Don't worry! They are really similar to each other. Here are some helpful reminders:
-                  
-                  If you are trying to run \`npm install\`, you can run \`pnpm install\`
-                  If you are trying to run \`npm install some_dependency\`, you can run \`pnpm add some_dependency\`
-                  If you are trying to run a script like \`npm run build\`, you can run \`pnpm build\`
-                  If you are trying to run a script for a certain workspace like \`npm run build -w ui\`, you can run \`pnpm -F ui build\`"
+Don't worry! They are really similar to each other. Here are some helpful reminders:
+              
+If you are trying to run \`npm install\`, you can run \`pnpm install\`
+If you are trying to run \`npm install some_dependency\`, you can run \`pnpm add some_dependency\`
+If you are trying to run a script like \`npm run build\`, you can run \`pnpm build\`
+If you are trying to run a script for a certain workspace like \`npm run build -w ui\`, you can run \`pnpm -F ui build\`"
                 '')
                 pkgs.nodejs_20
                 packages.pnpm
