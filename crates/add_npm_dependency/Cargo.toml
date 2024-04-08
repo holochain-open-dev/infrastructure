@@ -1,0 +1,26 @@
+[package]
+name = "add_npm_dependency"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "add_npm_dependency"
+path = "src/lib.rs"
+
+[[bin]]
+name = "add-npm-dependency"
+path = "src/bin/main.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.81"
+ignore = "0.4"
+serde_json = {version ="1", features = ["std", "preserve_order"]}
+serde = "1"
+clap = {version = "4.5.4", features = ["derive"]}
+regex = "1.10.4"
+thiserror = "1.0.58"
+file_tree_utils = { path = "../file_tree_utils" }
+build-fs-tree = "0.4"
+dialoguer = "0.11"

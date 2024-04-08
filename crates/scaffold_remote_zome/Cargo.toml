@@ -1,0 +1,26 @@
+[package]
+name = "scaffold_remote_zome"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "scaffold_remote_zome"
+path = "src/lib.rs"
+
+[[bin]]
+name = "scaffold-remote-zome"
+path = "src/bin/main.rs"
+
+[dependencies]
+anyhow = "1.0.81"
+ignore = "0.4"
+serde_json = {version ="1", features = ["std", "preserve_order"]}
+serde = "1"
+clap = {version = "4.5.4", features = ["derive"]}
+add_flake_input = { path = "../add_flake_input" }
+file_tree_utils = { path = "../file_tree_utils" }
+add_npm_dependency = { path = "../add_npm_dependency" }
+thiserror = "1"
+build-fs-tree = "0.4"
