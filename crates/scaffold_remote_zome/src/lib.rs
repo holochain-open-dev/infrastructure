@@ -3,12 +3,14 @@ use add_npm_dependency::{add_npm_dependency, AddNpmDependencyError};
 use anyhow::Result;
 use dialoguer::{theme::ColorfulTheme, Select};
 use file_tree_utils::{
-    file_content, find_files, find_files_by_extension, find_files_by_name, map_file, FileTree,
-    FileTreeError,
+    find_files_by_extension, find_files_by_name, insert_file, map_file, FileTree, FileTreeError,
+};
+use holochain_types::prelude::{
+    DnaManifest, DnaManifestCurrentBuilder, ZomeDependency, ZomeLocation,
 };
 use path_clean::PathClean;
 use regex::{Captures, Regex};
-use std::{collections::BTreeMap, path::PathBuf};
+use std::path::PathBuf;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -150,6 +152,50 @@ fn add_zome_to_nixified_dna(
     )?;
 
     println!("Added the integrity zome {integrity_zome_name:?} and the coordinator zome {coordinator_zome_name:?} to {:?}", nixified_dna.dna_nix.0);
+
+    let dna_manifest: DnaManifest = serde_yaml::from_str(nixified_dna.dna_manifest.1.as_str())?;
+
+    let (mut integrity_manifest, mut coordinator_manifest) = match dna_manifest.clone() {
+        DnaManifest::V1(m) => (m.integrity, m.coordinator),
+    };
+    if let Some(integrity_zome) = integrity_zome_name.clone() {
+        integrity_manifest
+            .zomes
+            .push(holochain_types::prelude::ZomeManifest {
+                name: integrity_zome.into(),
+                hash: None,
+                location: ZomeLocation::Bundled(PathBuf::from("<NIX_PACKAGE>")),
+                dependencies: None,
+                dylib: None,
+            });
+    }
+    if let Some(coordinator_zome) = coordinator_zome_name.clone() {
+        coordinator_manifest
+            .zomes
+            .push(holochain_types::prelude::ZomeManifest {
+                name: coordinator_zome.into(),
+                hash: None,
+                location: ZomeLocation::Bundled(PathBuf::from("<NIX_PACKAGE>")),
+                dependencies: integrity_zome_name.clone().map(|name| vec![ZomeDependency { name: name.into() }]),
+                dylib: None,
+            });
+    }
+
+    let new_manifest: DnaManifest = DnaManifestCurrentBuilder::default()
+        .coordinator(coordinator_manifest)
+        .integrity(integrity_manifest)
+        .name(dna_manifest.name())
+        .build()
+        .unwrap()
+        .into();
+
+    insert_file(
+        file_tree,
+        &nixified_dna.dna_manifest.0,
+        &serde_yaml::to_string(&new_manifest)?,
+    )?;
+
+    println!("Added the integrity zome {integrity_zome_name:?} and the coordinator zome {coordinator_zome_name:?} to {:?}", nixified_dna.dna_manifest.0);
 
     Ok(())
 }
@@ -304,6 +350,36 @@ mod tests {
     "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles?path:./ui"
   }
 }"#
+        );
+
+
+        assert_eq!(
+            file_content(
+                &repo,
+                PathBuf::from("dna.yaml").as_path()
+            )
+            .unwrap(),
+            r#"manifest_version: '1'
+name: mydna
+integrity:
+  network_seed: null
+  properties: null
+  origin_time: 1709638576394039
+  zomes:
+  - name: profiles_integrity
+    hash: null
+    bundled: <NIX_PACKAGE>
+    dependencies: null
+    dylib: null
+coordinator:
+  zomes:
+  - name: profiles
+    hash: null
+    bundled: <NIX_PACKAGE>
+    dependencies:
+    - name: profiles_integrity
+    dylib: null
+"#
         );
 
         assert_eq!(
