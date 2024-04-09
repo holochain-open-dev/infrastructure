@@ -87,7 +87,7 @@ fn internal_main() -> Result<()> {
 
     println!(
         "{}",
-        format!("Successfully scaffolded zome {}", args.module_name).green()
+        format!("Successfully scaffolded zome {}", args.module_name.bold()).green()
     );
 
     Ok(())
