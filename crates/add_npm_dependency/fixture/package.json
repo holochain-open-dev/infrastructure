@@ -1,4 +1,6 @@
 {
   "name": "root",
-  "dependencies": {}
+  "dependencies": {
+    "someinputs": "someurl"
+  }
 }

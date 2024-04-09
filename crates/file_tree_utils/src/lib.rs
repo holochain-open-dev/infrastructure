@@ -126,6 +126,12 @@ pub fn find_files_by_name(file_tree: &FileTree, file_name: &Path) -> BTreeMap<Pa
     })
 }
 
+pub fn find_files_by_extension(file_tree: &FileTree, extension: &str) -> BTreeMap<PathBuf, String> {
+    find_files(file_tree, &|file_path, _file_contents| {
+        file_path.extension().is_some_and(|ext| ext.eq(extension))
+    })
+}
+
 pub fn find_files<F: Fn(&PathBuf, &String) -> bool>(
     file_tree: &FileTree,
     find_by_path_and_contents: &F,

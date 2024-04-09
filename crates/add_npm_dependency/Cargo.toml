@@ -24,3 +24,4 @@ thiserror = "1.0.58"
 file_tree_utils = { path = "../file_tree_utils" }
 build-fs-tree = "0.4"
 dialoguer = "0.11"
+colored = "2.1.0"

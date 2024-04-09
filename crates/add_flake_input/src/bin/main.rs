@@ -1,33 +1,45 @@
 use add_flake_input::add_flake_input;
 use anyhow::Result;
+use build_fs_tree::{Build, MergeableFileSystemTree};
 use clap::Parser;
-use std::path::PathBuf;
+use colored::Colorize;
+use std::{ffi::OsString, path::PathBuf, process::ExitCode};
 
 /// Adds a flake input to your flake.nix.
 #[derive(Parser, Debug)]
 pub struct Args {
-    /// The flake.nix to modify.
-    #[clap(long, default_value = "./flake.nix")]
-    pub(crate) flake_path: PathBuf,
     /// The name of the flake input.
     pub input_name: String,
     /// The flake reference to add as an input.
     pub input_url: String,
+
+    /// The path of the file tree to modify.
+    #[clap(long, default_value = "./")]
+    pub(crate) path: PathBuf,
 }
 
-fn main() -> Result<()> {
+fn main() -> ExitCode {
+    if let Err(err) = internal_main() {
+        eprintln!("{}", format!("Error: {err:?}").red());
+        return ExitCode::FAILURE;
+    }
+    ExitCode::SUCCESS
+}
+
+fn internal_main() -> Result<()> {
     let args = Args::parse();
 
-    let flake_path = std::fs::canonicalize(args.flake_path)?;
-    let flake_nix_contents = std::fs::read_to_string(&flake_path)?;
+    let file_tree = file_tree_utils::load_directory_into_memory(&args.path)?;
 
-    let _root = rnix::Root::parse(&flake_nix_contents).ok()?;
+    let file_tree = add_flake_input(file_tree, args.input_name.clone(), args.input_url)?;
 
-    let new_flake_contents =
-        add_flake_input(flake_nix_contents, args.input_name.clone(), args.input_url)?;
+    let file_tree = MergeableFileSystemTree::<OsString, String>::from(file_tree);
 
-    std::fs::write(flake_path, new_flake_contents)?;
+    file_tree.build(&args.path)?;
 
-    println!("Successfully added input {}", args.input_name);
+    println!(
+        "{}",
+        format!("\nSuccessfully added input {}.", args.input_name.bold()).green(),
+    );
     Ok(())
 }

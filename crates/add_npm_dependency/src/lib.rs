@@ -15,7 +15,7 @@ pub enum AddNpmDependencyError {
     DialoguerError(#[from] dialoguer::Error),
 
     #[error("No NPM packages were found in this file tree")]
-    NoNpmPackagesFound,
+    NoNpmPackagesFoundError,
 
     #[error("JSON serialization error: {0}")]
     SerdeJsonError(#[from] serde_json::Error),
@@ -37,7 +37,7 @@ pub fn add_npm_dependency(
     let mut package_jsons = find_files_by_name(&file_tree, PathBuf::from("package.json").as_path());
 
     match package_jsons.len() {
-        0 => Err(AddNpmDependencyError::NoNpmPackagesFound)?,
+        0 => Err(AddNpmDependencyError::NoNpmPackagesFoundError)?,
         1 => {
             let package_json = package_jsons.pop_first().unwrap();
             map_file(
@@ -47,6 +47,7 @@ pub fn add_npm_dependency(
                     add_npm_dependency_to_package(&package_json, &dependency, &dependency_source)
                 },
             )?;
+            println!("Added dependency {dependency} to {:?}.", package_json.0);
         }
         _ => {
             let package_jsons: Vec<(PathBuf, String)> = package_jsons.into_iter().collect();
@@ -80,6 +81,7 @@ pub fn add_npm_dependency(
                     add_npm_dependency_to_package(package_json, &dependency, &dependency_source)
                 },
             )?;
+            println!("Added dependency {dependency} to {:?}.", package_json.0);
         }
     };
 

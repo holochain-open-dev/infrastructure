@@ -2,7 +2,8 @@ use add_npm_dependency::add_npm_dependency;
 use anyhow::Result;
 use build_fs_tree::{Build, MergeableFileSystemTree};
 use clap::Parser;
-use std::{ffi::OsString, path::PathBuf};
+use colored::Colorize;
+use std::{ffi::OsString, path::PathBuf, process::ExitCode};
 
 /// Adds a flake input to your flake.nix.
 #[derive(Parser, Debug)]
@@ -26,7 +27,15 @@ pub struct Args {
     pub select_npm_package_prompt: Option<String>,
 }
 
-fn main() -> Result<()> {
+fn main() -> ExitCode {
+    if let Err(err) = internal_main() {
+        eprintln!("{}", format!("Error: {err:?}").red());
+        return ExitCode::FAILURE;
+    }
+    ExitCode::SUCCESS
+}
+
+fn internal_main() -> Result<()> {
     let args = Args::parse();
 
     let file_tree = file_tree_utils::load_directory_into_memory(&args.path)?;
@@ -44,8 +53,12 @@ fn main() -> Result<()> {
     file_tree.build(&args.path)?;
 
     println!(
-        "Successfully added NPM dependency package {}",
-        args.dependency
+        "{}",
+        format!(
+            "Successfully added NPM dependency package {}",
+            args.dependency.bold()
+        )
+        .green()
     );
     Ok(())
 }

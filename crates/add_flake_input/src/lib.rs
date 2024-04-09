@@ -1,4 +1,6 @@
-use file_tree_utils::FileTreeError;
+use std::path::PathBuf;
+
+use file_tree_utils::{file_content, map_file, FileTree, FileTreeError};
 use regex::{Captures, Regex};
 use thiserror::Error;
 
@@ -9,9 +11,36 @@ pub enum AddFlakeInputError {
 
     #[error(transparent)]
     FileTreeError(#[from] FileTreeError),
+
+    #[error("flake.nix is malformed")]
+    MalformedFlakeNixError,
 }
 
 pub fn add_flake_input(
+    mut file_tree: FileTree,
+    input_name: String,
+    input_ref: String,
+) -> Result<FileTree, AddFlakeInputError> {
+    let flake_nix_path = PathBuf::from("flake.nix");
+    let flake_nix_contents = file_content(&file_tree, flake_nix_path.as_path())?;
+    let Ok(_root) = rnix::Root::parse(&flake_nix_contents).ok() else {
+        return Err(AddFlakeInputError::MalformedFlakeNixError);
+    };
+
+    map_file(
+        &mut file_tree,
+        flake_nix_path.as_path(),
+        |flake_nix_contents| {
+            add_flake_input_to_flake_file(flake_nix_contents, input_name.clone(), input_ref.clone())
+        },
+    )?;
+
+    println!("Added flake input {input_name} to flake.nix.");
+
+    Ok(file_tree)
+}
+
+fn add_flake_input_to_flake_file(
     flake_nix: String,
     input_name: String,
     input_ref: String,
@@ -41,6 +70,7 @@ pub fn add_flake_input(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use build_fs_tree::{dir, file};
 
     #[test]
     fn add_flake_input_test() {
@@ -49,14 +79,15 @@ mod tests {
   };
   outputs = {};
 }"#;
+        let repo: FileTree = dir! {
+            "flake.nix" => file!(flake_contents)
+        };
+
+        let file_tree =
+            add_flake_input(repo, "someinput".to_string(), "someurl".to_string()).unwrap();
 
         assert_eq!(
-            add_flake_input(
-                flake_contents.to_string(),
-                "someinput".to_string(),
-                "someurl".to_string()
-            )
-            .unwrap(),
+            file_content(&file_tree, PathBuf::from("flake.nix").as_path()).unwrap(),
             r#"{
   inputs = {
     someinput.url = "someurl";
@@ -73,13 +104,15 @@ mod tests {
   outputs = {};
 }"#;
 
+        let repo: FileTree = dir! {
+            "flake.nix" => file!(flake_contents)
+        };
+
+        let file_tree =
+            add_flake_input(repo, "someinput".to_string(), "someurl".to_string()).unwrap();
+
         assert_eq!(
-            add_flake_input(
-                flake_contents.to_string(),
-                "someinput".to_string(),
-                "someurl".to_string()
-            )
-            .unwrap(),
+            file_content(&file_tree, PathBuf::from("flake.nix").as_path()).unwrap(),
             r#"{
   inputs.someinput.url = "someurl";
   inputs.somefirstinput.url = "someurl";
