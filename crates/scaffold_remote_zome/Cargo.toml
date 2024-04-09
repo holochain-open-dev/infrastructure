@@ -22,6 +22,7 @@ serde = "1"
 clap = {version = "4.5.4", features = ["derive"]}
 add_flake_input = { path = "../add_flake_input" }
 file_tree_utils = { path = "../file_tree_utils" }
+sync_npm_git_dependencies_with_nix = { path = "../sync_npm_git_dependencies_with_nix" }
 add_npm_dependency = { path = "../add_npm_dependency" }
 thiserror = "1"
 build-fs-tree = "0.4"

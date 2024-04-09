@@ -1,9 +1,17 @@
 [package]
-name = "sync-npm-git-dependencies-with-nix"
+name = "sync_npm_git_dependencies_with_nix"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "sync_npm_git_dependencies_with_nix"
+path = "src/lib.rs"
+
+[[bin]]
+name = "sync-npm-git-dependencies-with-nix"
+path = "src/bin/main.rs"
 
 [dependencies]
 anyhow = "1.0.81"
@@ -12,3 +20,5 @@ ignore = "0.4"
 serde_json = {version ="1", features = ["std", "preserve_order"]}
 serde = "1"
 regex = "1"
+thiserror = "1.0.58"
+colored = "2.1.0"

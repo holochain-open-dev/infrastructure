@@ -1,11 +1,33 @@
 use anyhow::{anyhow, Result};
+use colored::Colorize;
 use ignore::Walk;
-use parse_flake_lock::{FlakeLock, Node};
+use parse_flake_lock::{FlakeLock, FlakeLockParseError, Node};
 use regex::Regex;
 use serde_json::Value;
 use std::{fs::File, io::BufReader, path::Path, process::Command};
+use thiserror::Error;
 
-fn main() -> Result<()> {
+#[derive(Error, Debug)]
+pub enum SynchronizeNpmGitDependenciesWithNixError {
+    #[error(transparent)]
+    FlakeLockParseError(#[from] FlakeLockParseError),
+
+    /// std::io::Error
+    #[error("IO error: {0}")]
+    StdIoError(#[from] std::io::Error),
+
+    #[error("JSON serialization error: {0}")]
+    SerdeJsonError(#[from] serde_json::Error),
+
+    #[error(transparent)]
+    RegexError(#[from] regex::Error),
+
+    #[error("Error parsing git {0} for dependency {1}")]
+    ParseGitRepositoryError(String, String),
+}
+
+pub fn synchronize_npm_git_dependencies_with_nix(
+) -> Result<(), SynchronizeNpmGitDependenciesWithNixError> {
     let flake_lock = FlakeLock::new(Path::new("flake.lock"))?;
 
     let mut announced = false;
@@ -27,27 +49,27 @@ fn main() -> Result<()> {
                         if let Some(captures) = re.captures(&dependency_source_str) {
                             let git_host = captures
                                 .get(1)
-                                .ok_or(anyhow!(
-                                    "Error parsing git username for dependency {dependency_source_str}"
-                                ))?
+                                .ok_or(
+                                    SynchronizeNpmGitDependenciesWithNixError::ParseGitRepositoryError("username".into(), dependency_source_str.clone())
+)?
                                 .as_str();
                             let git_owner = captures
                                 .get(2)
-                                .ok_or(anyhow!(
-                                    "Error parsing git owner for dependency {dependency_source_str}"
-                                ))?
+                                .ok_or(
+                                    SynchronizeNpmGitDependenciesWithNixError::ParseGitRepositoryError("owner".into(), dependency_source_str.clone())
+)?
                                 .as_str();
                             let git_repo = captures
                                 .get(3)
-                                .ok_or(anyhow!(
-                                    "Error parsing git repository for dependency {dependency_source_str}"
-                                ))?
+                                .ok_or(
+                                    SynchronizeNpmGitDependenciesWithNixError::ParseGitRepositoryError("repository".into(), dependency_source_str.clone())
+)?
                                 .as_str();
                             let revision = captures
                                 .get(4)
-                                .ok_or(anyhow!(
-                                    "Error parsing git revision for dependency {dependency_source_str}"
-                                ))?
+                                .ok_or(
+                                    SynchronizeNpmGitDependenciesWithNixError::ParseGitRepositoryError("revision".into(), dependency_source_str.clone())
+)?
                                 .as_str();
                             let query_arguments =
                                 captures.get(5).map(|c| c.as_str()).unwrap_or_default();
@@ -93,7 +115,10 @@ fn main() -> Result<()> {
     if replaced_some_dep {
         println!("Running pnpm install...");
         Command::new("pnpm").arg("install").output()?;
-        println!("Successfully synchronized npm dependencies with nix");
+        println!(
+            "{}",
+            "Successfully synchronized npm dependencies with nix".green()
+        );
     }
 
     Ok(())

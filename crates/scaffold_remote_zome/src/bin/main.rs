@@ -8,6 +8,7 @@ use std::{
     path::{Path, PathBuf},
     process::ExitCode,
 };
+use sync_npm_git_dependencies_with_nix::synchronize_npm_git_dependencies_with_nix;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -90,6 +91,8 @@ fn internal_main() -> Result<()> {
         "{}",
         format!("Successfully scaffolded zome {}", args.module_name.bold()).green()
     );
+
+    synchronize_npm_git_dependencies_with_nix()?;
 
     Ok(())
 }

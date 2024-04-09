@@ -3943,6 +3943,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml",
+ "sync_npm_git_dependencies_with_nix",
  "thiserror",
 ]
 
@@ -4477,15 +4478,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "sync-npm-git-dependencies-with-nix"
+name = "sync_npm_git_dependencies_with_nix"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "colored",
  "ignore",
  "parse-flake-lock",
  "regex",
  "serde",
  "serde_json",
+ "thiserror",
 ]
 
 [[package]]

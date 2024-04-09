@@ -135,19 +135,35 @@
               ];
             };
 
-						devShells.synchronized-pnpm = pkgs.mkShell {
-							packages = [
-								(pkgs.writeShellScriptBin "npm" ''
-                  echo "
-ERROR: this repository is not managed with npm, but pnpm.
+						packages.npm-warning = pkgs.writeShellScriptBin "echo-npm-warning" ''
+							echo "
+-----------------
+
+WARNING: this repository is not managed with npm, but pnpm.
 
 Don't worry! They are really similar to each other. Here are some helpful reminders:
               
 If you are trying to run \`npm install\`, you can run \`pnpm install\`
 If you are trying to run \`npm install some_dependency\`, you can run \`pnpm add some_dependency\`
 If you are trying to run a script like \`npm run build\`, you can run \`pnpm build\`
-If you are trying to run a script for a certain workspace like \`npm run build -w ui\`, you can run \`pnpm -F ui build\`"
-                '')
+If you are trying to run a script for a certain workspace like \`npm run build -w ui\`, you can run \`pnpm -F ui build\`
+
+-----------------
+
+"
+						'';
+
+						devShells.synchronized-pnpm = pkgs.mkShell {
+							packages = [
+							  (pkgs.symlinkJoin {
+								  name = "npm";
+								  paths = [ pkgs.nodejs_20 ];
+								  buildInputs = [ pkgs.makeWrapper  ];
+								  postBuild = ''
+								    wrapProgram $out/bin/npm \
+										  --run ${packages.npm-warning}/bin/echo-npm-warning
+								  '';
+								})
                 pkgs.nodejs_20
                 packages.pnpm
                 packages.sync-npm-git-dependencies-with-nix
@@ -162,7 +178,7 @@ If you are trying to run a script for a certain workspace like \`npm run build -
 						  let
 								craneLib = inputs.crane.lib.${system};
 
-								cratePath = ./crates/sync-npm-git-dependencies-with-nix;
+								cratePath = ./crates/sync_npm_git_dependencies_with_nix;
 
 								cargoToml = builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
 							  crate = cargoToml.package.name;
