@@ -43,10 +43,6 @@ struct Args {
     #[arg(long)]
     local_npm_package_to_add_the_dependency_to: Option<String>,
 
-    // DNA in the local repository which the scaffolded zome should be added to
-    #[arg(long)]
-    dna_to_add_the_zome_to: Option<String>,
-
     /// The path of the file tree to modify.
     #[clap(long, default_value = "./.")]
     pub path: PathBuf,
