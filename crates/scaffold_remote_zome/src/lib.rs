@@ -84,7 +84,7 @@ pub fn scaffold_remote_zome(
     )?;
 
     let npm_dependency_source = format!(
-        "{remote_zome_git_url}{}?path:{}",
+        "{remote_zome_git_url}{}&path:{}",
         remote_zome_git_branch
             .map(|b| format!("#{b}"))
             .unwrap_or_default(),
@@ -374,7 +374,7 @@ mod tests {
             "github:holochain-open-dev/profiles".into(),
             Some("nixify".into()),
             "@holochain-open-dev/profiles".into(),
-            PathBuf::from("./ui"),
+            PathBuf::from("ui"),
             None,
             Some("package1".into()),
         )
@@ -389,7 +389,7 @@ mod tests {
             r#"{
   "name": "package1",
   "dependencies": {
-    "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles#nixify?path:./ui"
+    "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles#nixify&path:ui"
   }
 }"#
         );
