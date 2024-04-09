@@ -21,10 +21,6 @@ pub struct Args {
     /// The path of the file tree to modify.
     #[clap(long, default_value = "./.")]
     pub path: PathBuf,
-
-    /// The path of the file tree to modify.
-    #[clap(long)]
-    pub select_npm_package_prompt: Option<String>,
 }
 
 fn main() -> ExitCode {
@@ -45,7 +41,7 @@ fn internal_main() -> Result<()> {
         args.dependency.clone(),
         args.dependency_source,
         args.package_to_add_the_dependency_to,
-        args.select_npm_package_prompt,
+        None,
     )?;
 
     let file_tree = MergeableFileSystemTree::<OsString, String>::from(file_tree);

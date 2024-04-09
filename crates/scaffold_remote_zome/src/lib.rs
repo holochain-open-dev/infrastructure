@@ -91,9 +91,37 @@ pub fn scaffold_remote_zome(
         remote_npm_package_path.to_str().unwrap()
     );
 
-    let file_tree = add_npm_dependency(file_tree, remote_npm_package_name, npm_dependency_source, local_npm_package_to_add_the_ui_to, Some(format!("Multiple NPM packages were found in this project, choose one to add the UI package for the {module_name} zome:")))?;
+    let m = module_name.clone();
+
+    let clo = move |packages| select_npm_package(m.clone(), packages);
+
+    let file_tree = add_npm_dependency(file_tree, remote_npm_package_name, npm_dependency_source, local_npm_package_to_add_the_ui_to, Some(Box::new(clo)))?;
 
     Ok(file_tree)
+}
+
+fn select_npm_package(module_name: String, npm_packages: Vec<String>) -> Result<usize, AddNpmDependencyError> {
+    let mut i = 0;
+    let mut found = false;
+
+    while !found {
+        let package = &npm_packages[i];
+        if !(package.ends_with("-dev") || package.contains("test")) {
+            found = true;
+        } else {
+            i += 1;
+        }
+    }
+
+    let default = i;
+    
+    Ok(Select::with_theme(&ColorfulTheme::default())
+        .with_prompt(
+        format!(    
+"Multiple NPM packages were found in this project, choose one to add the UI package for the {module_name} zome:"))
+        .default(default)
+        .items(&npm_packages[..])
+        .interact()?)
 }
 
 #[derive(Debug, Clone)]
@@ -240,12 +268,13 @@ fn get_or_choose_dna(
                     .ok_or(AddNpmDependencyError::NpmPackageNotFoundError(
                         local_dna.clone(),
                     ))?,
-                None => Select::with_theme(&ColorfulTheme::default())
+                None => {
+                    Select::with_theme(&ColorfulTheme::default())
                     .with_prompt(format!("Multiple DNAs were found in this repository, choose one to scaffold the {module_name} zome into:",
                     ))
                     .default(0)
                     .items(&dna_names[..])
-                    .interact()?,
+                    .interact()?},
             };
 
             let nixified_dna = &nixified_dnas[dna_index];

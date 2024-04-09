@@ -27,12 +27,22 @@ pub enum AddNpmDependencyError {
     NpmPackageNotFoundError(String),
 }
 
+fn default_select_npm_package(npm_packages: Vec<String>) -> Result<usize, AddNpmDependencyError> {
+    Ok(Select::with_theme(&ColorfulTheme::default())
+        .with_prompt("Multiple NPM packages were found in this repository, choose one:")
+        .default(0)
+        .items(&npm_packages[..])
+        .interact()?)
+}
+
 pub fn add_npm_dependency(
     mut file_tree: FileTree,
     dependency: String,
     dependency_source: String,
     package_to_add_the_dependency_to: Option<String>,
-    select_npm_package_prompt: Option<String>,
+    custom_select_npm_package: Option<
+        Box<dyn Fn(Vec<String>) -> Result<usize, AddNpmDependencyError>>,
+    >,
 ) -> Result<FileTree, AddNpmDependencyError> {
     let mut package_jsons = find_files_by_name(&file_tree, PathBuf::from("package.json").as_path());
 
@@ -63,13 +73,10 @@ pub fn add_npm_dependency(
                     .ok_or(AddNpmDependencyError::NpmPackageNotFoundError(
                         package_to_add_to.clone(),
                     ))?,
-                None => Select::with_theme(&ColorfulTheme::default())
-                    .with_prompt(select_npm_package_prompt.unwrap_or(
-                        "Multiple NPM packages were found in this repository, choose one:".into(),
-                    ))
-                    .default(0)
-                    .items(&packages_names[..])
-                    .interact()?,
+                None => match custom_select_npm_package {
+                    Some(selector) => selector(packages_names)?,
+                    None => default_select_npm_package(packages_names)?,
+                },
             };
 
             let package_json = &package_jsons[package_index];
