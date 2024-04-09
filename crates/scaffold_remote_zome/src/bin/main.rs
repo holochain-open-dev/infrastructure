@@ -6,7 +6,7 @@ use scaffold_remote_zome::scaffold_remote_zome;
 use std::{
     ffi::OsString,
     path::{Path, PathBuf},
-    process::ExitCode,
+    process::{Command, ExitCode},
 };
 use sync_npm_git_dependencies_with_nix::synchronize_npm_git_dependencies_with_nix;
 
@@ -91,6 +91,9 @@ fn internal_main() -> Result<()> {
         "{}",
         format!("Successfully scaffolded zome {}", args.module_name.bold()).green()
     );
+
+    println!("Running nix flake update...");
+    Command::new("nix").args(["flake", "update"]).output()?;
 
     synchronize_npm_git_dependencies_with_nix()?;
 
