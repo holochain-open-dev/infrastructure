@@ -27,6 +27,10 @@ struct Args {
     #[arg(long)]
     remote_zome_git_url: String,
 
+    /// Branch for the git repository of the zome that's being scaffolded
+    #[arg(long)]
+    remote_zome_git_branch: Option<String>,
+
     /// Name of the UI package for the zome that's being scaffolded
     #[arg(long)]
     remote_npm_package_name: String,
@@ -67,6 +71,7 @@ fn internal_main() -> Result<()> {
         args.integrity_zome_name.clone(),
         args.coordinator_zome_name.clone(),
         args.remote_zome_git_url,
+        args.remote_zome_git_branch,
         args.remote_npm_package_name,
         args.remote_npm_package_path,
         args.local_dna_to_add_the_zome_to,

@@ -58,13 +58,20 @@ pub fn scaffold_remote_zome(
     integrity_zome_name: Option<String>,
     coordinator_zome_name: Option<String>,
     remote_zome_git_url: String,
+    remote_zome_git_branch: Option<String>,
     remote_npm_package_name: String,
     remote_npm_package_path: PathBuf,
     local_dna_to_add_the_zome_to: Option<String>,
     local_npm_package_to_add_the_ui_to: Option<String>,
 ) -> Result<FileTree, ScaffoldRemoteZomeError> {
-    let mut file_tree =
-        add_flake_input(file_tree, module_name.clone(), remote_zome_git_url.clone())?;
+    let nix_git_url = format!(
+        "{remote_zome_git_url}{}",
+        remote_zome_git_branch
+            .clone()
+            .map(|b| format!("/{b}"))
+            .unwrap_or_default()
+    );
+    let mut file_tree = add_flake_input(file_tree, module_name.clone(), nix_git_url.clone())?;
 
     let dna = get_or_choose_dna(&file_tree, &module_name, local_dna_to_add_the_zome_to)?;
 
@@ -77,7 +84,10 @@ pub fn scaffold_remote_zome(
     )?;
 
     let npm_dependency_source = format!(
-        "{remote_zome_git_url}?path:{}",
+        "{remote_zome_git_url}{}?path:{}",
+        remote_zome_git_branch
+            .map(|b| format!("#{b}"))
+            .unwrap_or_default(),
         remote_npm_package_path.to_str().unwrap()
     );
 
@@ -176,7 +186,9 @@ fn add_zome_to_nixified_dna(
                 name: coordinator_zome.into(),
                 hash: None,
                 location: ZomeLocation::Bundled(PathBuf::from("<NIX_PACKAGE>")),
-                dependencies: integrity_zome_name.clone().map(|name| vec![ZomeDependency { name: name.into() }]),
+                dependencies: integrity_zome_name
+                    .clone()
+                    .map(|name| vec![ZomeDependency { name: name.into() }]),
                 dylib: None,
             });
     }
@@ -331,6 +343,7 @@ mod tests {
             Some("profiles_integrity".into()),
             Some("profiles".into()),
             "github:holochain-open-dev/profiles".into(),
+            Some("nixify".into()),
             "@holochain-open-dev/profiles".into(),
             PathBuf::from("./ui"),
             None,
@@ -347,18 +360,13 @@ mod tests {
             r#"{
   "name": "package1",
   "dependencies": {
-    "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles?path:./ui"
+    "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles#nixify?path:./ui"
   }
 }"#
         );
 
-
         assert_eq!(
-            file_content(
-                &repo,
-                PathBuf::from("dna.yaml").as_path()
-            )
-            .unwrap(),
+            file_content(&repo, PathBuf::from("dna.yaml").as_path()).unwrap(),
             r#"manifest_version: '1'
 name: mydna
 integrity:
@@ -388,7 +396,7 @@ coordinator:
   description = "Template for Holochain app development";
   
   inputs = {
-    profiles.url = "github:holochain-open-dev/profiles";
+    profiles.url = "github:holochain-open-dev/profiles/nixify";
     nixpkgs.follows = "holochain/nixpkgs";
 
     versions.url = "github:holochain/holochain?dir=versions/weekly";
