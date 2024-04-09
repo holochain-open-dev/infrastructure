@@ -1,4 +1,4 @@
-{ inputs, allZomes, ... }:
+{ inputs, ... }:
 
 {
   perSystem =
@@ -11,18 +11,10 @@
     , options
     , ...
     }: {
-  	  packages = 
-        let 
-          zomes = (allZomes { inherit self' inputs'; }) // {
-          };
-        in 
-          {
-            my_dna = inputs.hcUtils.outputs.lib.dna {
-              dnaManifest = ./dna.yaml;
-              inherit zomes;
-              holochain = inputs'.holochain;
-            };
-          };
+  	  packages.my_dna = inputs.hcUtils.outputs.lib.dna {
+        dnaManifest = ./dna.yaml;
+        holochain = inputs'.holochain;
+        zomes = {};
+      };
   	};
 }
-

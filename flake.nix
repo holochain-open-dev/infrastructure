@@ -133,20 +133,6 @@
                 nodejs_20
                 # more packages go here
               ];
-							
-	            LIBCLANG_PATH = "${pkgs.libclang.lib}/lib";
-	            NIX_CFLAGS_COMPILE = lib.optionalString pkgs.stdenv.isDarwin "-I${pkgs.libcxx.dev}/include/c++/v1";
-
-	            nativeBuildInputs = with pkgs; [ pkg-config clang ];
-	            buildInputs = with pkgs; [
-	              nixpkgs-fmt
-	              gcc.cc.lib
-	            ]
-	            ++ lib.optionals (pkgs.stdenv.isDarwin) (with pkgs; with darwin.apple_sdk.frameworks; [
-	              libiconv
-	              Security
-	              SystemConfiguration
-	            ]);
             };
 
 						devShells.synchronized-pnpm = pkgs.mkShell {
