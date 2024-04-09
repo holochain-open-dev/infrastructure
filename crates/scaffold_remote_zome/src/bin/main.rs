@@ -41,7 +41,7 @@ struct Args {
 
     /// NPM package for the local repository in which the UI for the zome should be scaffolded
     #[arg(long)]
-    local_npm_package_to_add_the_dependency_to: Option<String>,
+    local_npm_package_to_add_the_ui_to: Option<String>,
 
     /// The path of the file tree to modify.
     #[clap(long, default_value = "./.")]
@@ -70,7 +70,7 @@ fn internal_main() -> Result<()> {
         args.remote_npm_package_name,
         args.remote_npm_package_path,
         args.local_dna_to_add_the_zome_to,
-        args.local_npm_package_to_add_the_dependency_to,
+        args.local_npm_package_to_add_the_ui_to,
     )?;
 
     let file_tree = MergeableFileSystemTree::<OsString, String>::from(file_tree);

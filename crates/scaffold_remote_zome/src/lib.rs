@@ -61,7 +61,7 @@ pub fn scaffold_remote_zome(
     remote_npm_package_name: String,
     remote_npm_package_path: PathBuf,
     local_dna_to_add_the_zome_to: Option<String>,
-    local_npm_package_to_add_the_dependency_to: Option<String>,
+    local_npm_package_to_add_the_ui_to: Option<String>,
 ) -> Result<FileTree, ScaffoldRemoteZomeError> {
     let mut file_tree =
         add_flake_input(file_tree, module_name.clone(), remote_zome_git_url.clone())?;
@@ -81,7 +81,7 @@ pub fn scaffold_remote_zome(
         remote_npm_package_path.to_str().unwrap()
     );
 
-    let file_tree = add_npm_dependency(file_tree, remote_npm_package_name, npm_dependency_source, local_npm_package_to_add_the_dependency_to, Some(format!("Multiple NPM packages were found in this project, choose one to add the UI package for the {module_name} zome:")))?;
+    let file_tree = add_npm_dependency(file_tree, remote_npm_package_name, npm_dependency_source, local_npm_package_to_add_the_ui_to, Some(format!("Multiple NPM packages were found in this project, choose one to add the UI package for the {module_name} zome:")))?;
 
     Ok(file_tree)
 }
