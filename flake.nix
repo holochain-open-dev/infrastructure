@@ -178,6 +178,26 @@ If you are trying to run a script for a certain workspace like \`npm run build -
 									version = cargoToml.package.version;
 								});
 
+						packages.scaffold-remote-zome = 
+						  let
+								craneLib = inputs.crane.lib.${system};
+
+								cratePath = ./crates/scaffold_remote_zome;
+
+								cargoToml = builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
+							  crate = cargoToml.package.name;
+
+								commonArgs = {
+									strictDeps = true;
+									doCheck = false;
+								  src = craneLib.cleanCargoSource (craneLib.path cratePath);
+								};
+							in 
+								craneLib.buildPackage (commonArgs // {
+								  pname = crate;
+									version = cargoToml.package.version;
+								});
+
             packages.pnpm = pkgs.stdenv.mkDerivation {
               pname ="pnpm";
               version ="pnpm-9";
