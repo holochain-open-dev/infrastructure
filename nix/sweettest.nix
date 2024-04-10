@@ -36,7 +36,7 @@ let
   cargoArtifacts = craneLib.buildDepsOnly commonArgs;
 in craneLib.cargoNextest (commonArgs // {
   inherit cargoArtifacts;
-	cargoExtraArgs = "-p ${crate} --locked";
+  cargoNextestExtraArgs = "-p ${crate} --locked";
 
   DNA_PATH = dna;
 })
