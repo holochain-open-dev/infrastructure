@@ -148,6 +148,8 @@ If you are trying to run \`npm install some_dependency\`, you can run \`pnpm add
 If you are trying to run a script like \`npm run build\`, you can run \`pnpm build\`
 If you are trying to run a script for a certain workspace like \`npm run build -w ui\`, you can run \`pnpm -F ui build\`
 
+The npm command that you just ran will continue now, but it is recommended that you do all commands in this repository with pnpm.
+
 -----------------
 
 "
