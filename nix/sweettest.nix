@@ -12,7 +12,7 @@ let
 	cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
   crate = cargoToml.package.name;
 	
-  buildInputs = (with pkgs; [ openssl holochain.packages.opensslStatic sqlcipher ])
+  buildInputs = (with pkgs; [ openssl holochain.packages.opensslStatic sqlcipher glib ])
     ++ (lib.optionals pkgs.stdenv.isDarwin
     (with pkgs.darwin.apple_sdk_11_0.frameworks; [
       AppKit
