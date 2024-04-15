@@ -197,7 +197,6 @@ The npm command that you just ran will continue now, but it is recommended that 
 								  ]));
 								commonArgs = {
 								  inherit buildInputs;
-									strictDeps = true;
 									doCheck = false;
 								  src = craneLib.cleanCargoSource (craneLib.path ./.);
 							    nativeBuildInputs = (with pkgs; [ makeWrapper perl pkg-config inputs'.holochain.packages.goWrapper ])

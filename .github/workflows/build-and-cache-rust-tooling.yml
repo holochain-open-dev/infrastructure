@@ -1,4 +1,4 @@
-name: "build-sync-npm-git-dependencies-with-nix"
+name: "build-and-cache-rust-tooling"
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
@@ -29,10 +29,18 @@ jobs:
         with:
           name: holochain-open-dev
 
-      - name: Build zomes
+      - name: Build sync-npm-git-dependencies-with-nix
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
           nix build -L .#sync-npm-git-dependencies-with-nix
           cachix push holochain-open-dev $(nix path-info .#sync-npm-git-dependencies-with-nix)
           cachix pin holochain-open-dev sync-npm-git-dependencies-with-nix $(nix path-info .#sync-npm-git-dependencies-with-nix)
+
+      - name: Build scaffold-remote-zome
+        env:
+          CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
+        run: |
+          nix build -L .#scaffold-remote-zome
+          cachix push holochain-open-dev $(nix path-info .#scaffold-remote-zome)
+          cachix pin holochain-open-dev scaffold-remote-zome $(nix path-info .#scaffold-remote-zome)
