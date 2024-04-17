@@ -1,9 +1,9 @@
-name: "build-and-cache-rust-tooling"
+name: "build-scaffold-remote-zome"
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
   push: 
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
   build-and-cache:
