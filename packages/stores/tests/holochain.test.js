@@ -84,6 +84,27 @@ test("liveLinks only updates once if no new links exist", async () => {
   });
 });
 
+test("liveLinks makes the request again after being unsubscribed from", async () => {
+  const links = [await fakeLink()];
+  let requests = 0;
+  const store = liveLinksStore(
+    new ZomeClient(new ZomeMock("", "")),
+    await fakeEntryHash(),
+    async () => {
+      requests += 1;
+      return links;
+    },
+    ""
+  );
+
+  await toPromise(store);
+  await toPromise(store);
+  await toPromise(store);
+  await toPromise(store);
+
+  assert.equal(requests, 4)
+});
+
 test("collection store works", async () => {
   const links = [await fakeLink()];
   const collection = collectionStore(

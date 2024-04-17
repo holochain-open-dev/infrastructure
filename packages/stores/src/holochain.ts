@@ -65,6 +65,7 @@ export function collectionStore<
     let links: Link[];
 
     const maybeSet = (newLinksValue: Link[]) => {
+      if (!active) return;
       const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
         sortLinksByTimestampAscending
       );
@@ -81,6 +82,7 @@ export function collectionStore<
     };
 
     const fetch = async () => {
+      if (!active) return;
       const nlinks = await fetchCollection().finally(() => {
         if (active) {
           setTimeout(() => fetch(), pollIntervalMs);
@@ -177,6 +179,7 @@ export function latestVersionOfEntryStore<
     let active = true;
     let latestVersion: EntryRecord<T> | undefined;
     const fetch = async () => {
+      if (!active) return;
       try {
         const nlatestVersion = await fetchLatestVersion();
         if (nlatestVersion) {
@@ -209,6 +212,7 @@ export function latestVersionOfEntryStore<
     };
     fetch();
     const unsubs = client.onSignal((originalSignal) => {
+      if (!active) return;
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
       const signal = originalSignal as ActionCommittedSignal<any, any>;
 
@@ -262,6 +266,8 @@ export function allRevisionsOfEntryStore<
     let active = true;
     let allRevisions: Array<EntryRecord<T>>;
     const fetch = async () => {
+      if (!active) return;
+
       const nAllRevisions = await fetchAllRevisions().finally(() => {
         if (active) {
           setTimeout(() => fetch(), pollIntervalMs);
@@ -280,6 +286,7 @@ export function allRevisionsOfEntryStore<
     };
     await fetch();
     const unsubs = client.onSignal(async (originalSignal) => {
+      if (!active) return;
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
       const signal = originalSignal as ActionCommittedSignal<any, any>;
 
@@ -333,6 +340,7 @@ export function deletesForEntryStore<
     let active = true;
     let deletes: Array<SignedActionHashed<Delete>>;
     const fetch = async () => {
+      if (!active) return;
       const ndeletes = await fetchDeletes().finally(() => {
         if (active) {
           setTimeout(() => fetch(), pollIntervalMs);
@@ -351,6 +359,7 @@ export function deletesForEntryStore<
     };
     await fetch();
     const unsubs = client.onSignal((originalSignal) => {
+      if (!active) return;
       if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
       const signal = originalSignal as ActionCommittedSignal<any, any>;
 
@@ -450,6 +459,7 @@ export function liveLinksStore<
     let active = true;
 
     const maybeSet = (newLinksValue: Link[]) => {
+      if (!active) return;
       const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
         sortLinksByTimestampAscending
       );
@@ -466,6 +476,7 @@ export function liveLinksStore<
       }
     };
     const fetch = async () => {
+      if (!active) return;
       const nlinks = await fetchLinks().finally(() => {
         if (active) {
           setTimeout(() => fetch(), pollIntervalMs);
@@ -550,6 +561,7 @@ export function deletedLinksStore<
         [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
       >
     ) => {
+      if (!active) return;
       const orderedNewLinks = newDeletedLinks.sort(
         sortDeletedLinksByTimestampAscending
       );
@@ -579,6 +591,7 @@ export function deletedLinksStore<
       }
     };
     const fetch = async () => {
+      if (!active) return;
       const ndeletedLinks = await fetchDeletedLinks().finally(() => {
         if (active) {
           setTimeout(() => fetch(), pollIntervalMs);
