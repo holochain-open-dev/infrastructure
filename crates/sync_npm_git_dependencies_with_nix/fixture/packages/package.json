@@ -1,0 +1,18 @@
+{
+  "author": "",
+  "dependencies": {
+    "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles#35cd7a2ef18ca6866d317943ba2b3150209378b5&path:ui",
+    "@holochain-open-dev/file-storage": "github:holochain-open-dev/file-storage#61675f7176e567b40dc6b342f58fc7f4c881182d"
+  },
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "zome",
+  "scripts": {
+    "build": "",
+    "start": "node index.js"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}
