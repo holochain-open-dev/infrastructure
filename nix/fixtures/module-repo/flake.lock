@@ -670,7 +670,7 @@
       },
       "locked": {
         "lastModified": 0,
-        "narHash": "sha256-pSa+8sWQ6CDTSxkEbcAV5BgQa4L8dUTMwvtL8sGmlXY=",
+        "narHash": "sha256-n5tsuDjYVmhHHZj7lFfO+VFaEFuFQyTZ61wKFDrlYrU=",
         "path": "../../..",
         "type": "path"
       },
@@ -1773,16 +1773,17 @@
       },
       "locked": {
         "dir": "versions/weekly",
-        "lastModified": 1713509737,
-        "narHash": "sha256-w3gU0t5ELF6F2Sw/ZMgGRWTpxy/g0ZXnUZK1bZfqrgs=",
+        "lastModified": 1713315590,
+        "narHash": "sha256-hWeNAq+F1rAoYulPFqpQOo0cjeMZVvKXLohnP0MOc9Y=",
         "owner": "holochain",
         "repo": "holochain",
-        "rev": "d08d66a1293ea4bb2185f49f5af55be1fb4fbda1",
+        "rev": "d8715775f359211b7031f4bdca1cc89db679ed10",
         "type": "github"
       },
       "original": {
         "dir": "versions/weekly",
         "owner": "holochain",
+        "ref": "holochain-0.3.0-beta-dev.46",
         "repo": "holochain",
         "type": "github"
       }
