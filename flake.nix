@@ -10,7 +10,7 @@
     };
     nixpkgs.follows = "holochain/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/weekly";
+    versions.url = "github:holochain/holochain/holochain-0.3.0-beta-dev.46?dir=versions/weekly";
 
     holochain = {
       url = "github:holochain/holochain";
@@ -45,7 +45,7 @@
 						rustZome = { crateCargoToml, holochain,  workspacePath, excludedCrates ? [] }: 
 							let 
 							  deterministicCraneLib = let 
-									system = "x86_64-linux";
+									system = "aarch64-darwin";
 								  pkgs = import inputs.nixpkgs {
 								    inherit system;
 								    overlays = [ (import inputs.rust-overlay) ];
@@ -59,7 +59,7 @@
 								in
 					        inputs.crane.lib.${system}.overrideToolchain rustToolchain;
 
-							  system = holochain.legacyPackages.cowsay.system;
+							  system = holochain.devShells.holonix.system;
 							  pkgs = import inputs.nixpkgs {
 							    inherit system;
 							    overlays = [ (import inputs.rust-overlay) ];
