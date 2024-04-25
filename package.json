@@ -6,6 +6,7 @@
     "packages/core-types",
     "packages/elements",
     "packages/stores",
+    "packages/signals",
     "sites/*"
   ],
   "engines": {
