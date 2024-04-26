@@ -8,19 +8,25 @@ import {
   JoinAsyncOptions,
 } from "async-signals";
 
+type SignalValue<T> = T extends AsyncSignal<infer U>
+  ? U
+  : T extends AsyncSignal<infer U>
+  ? U
+  : never;
+
 /**
  * Joins all the results in a HoloHashMap of `AsyncSignals`
  */
-export function joinAsyncMap<K extends HoloHash, T, V extends AsyncSignal<any>>(
+export function joinAsyncMap<K extends HoloHash, V extends AsyncSignal<any>>(
   map: ReadonlyMap<K, V>,
   joinOptions?: JoinAsyncOptions
-): AsyncSignal<ReadonlyMap<K, T>> {
+): AsyncSignal<ReadonlyMap<K, SignalValue<V>>> {
   const signalArray = Array.from(map.entries()).map(
     ([key, signal]) =>
-      new AsyncComputed<[K, T]>(() => {
+      new AsyncComputed<[K, SignalValue<V>]>(() => {
         const result = signal.get();
         if (result.status !== "completed") return result;
-        const value = [key, result.value] as [K, T];
+        const value = [key, result.value] as [K, SignalValue<V>];
         return {
           status: "completed",
           value,
@@ -33,10 +39,10 @@ export function joinAsyncMap<K extends HoloHash, T, V extends AsyncSignal<any>>(
     const result = arraySignal.get();
     if (result.status !== "completed") return result;
 
-    const value = new HoloHashMap<K, T>(result.value);
+    const value = new HoloHashMap<K, SignalValue<V>>(result.value);
     return {
       status: "completed",
       value,
-    } as AsyncResult<ReadonlyMap<K, T>>;
+    } as AsyncResult<ReadonlyMap<K, SignalValue<V>>>;
   });
 }
