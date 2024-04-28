@@ -16,3 +16,4 @@ export * from "./join-map.js";
 export * from "./utils.js";
 export * from "./holochain.js";
 export * from "./watch.js";
+export * from "./map-completed.js";
