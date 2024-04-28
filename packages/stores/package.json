@@ -6,9 +6,7 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "exports": {
     ".": "./dist/index.js",
     "./dist/*": "./dist/*"
@@ -23,7 +21,7 @@
   "dependencies": {
     "@alenaksu/json-viewer": "^2.0.1",
     "@holochain-open-dev/utils": "^0.300.0-dev.0",
-    "@holochain/client": "^0.17.0-dev.7",
+    "@holochain/client": "^0.17.0-dev.12",
     "@scoped-elements/cytoscape": "^0.2.0",
     "@shoelace-style/shoelace": "^2.11.2",
     "lit": "^3.0.2",

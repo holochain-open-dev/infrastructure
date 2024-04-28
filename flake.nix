@@ -10,7 +10,7 @@
     };
     nixpkgs.follows = "holochain/nixpkgs";
 
-    versions.url = "github:holochain/holochain/holochain-0.3.0-beta-dev.46?dir=versions/weekly";
+    versions.url = "github:holochain/holochain?dir=versions/weekly";
 
     holochain = {
       url = "github:holochain/holochain";

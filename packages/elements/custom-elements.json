@@ -312,14 +312,6 @@
             "name": "*",
             "package": "\"./date-utils.js\""
           }
-        },
-        {
-          "kind": "js",
-          "name": "*",
-          "declaration": {
-            "name": "*",
-            "package": "\"./render-async-status.js\""
-          }
         }
       ]
     },
@@ -423,56 +415,6 @@
           "declaration": {
             "name": "onSubmit",
             "module": "src/on-submit.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/render-async-status.ts",
-      "declarations": [
-        {
-          "kind": "function",
-          "name": "withSpinnerAndDisplayError",
-          "parameters": [
-            {
-              "name": "renderers",
-              "type": {
-                "text": "{\n  complete: (value: T) => TemplateResult;\n  error: ((error: any) => TemplateResult) | { label: string; tooltip: boolean };\n}"
-              }
-            }
-          ],
-          "description": "Renders the async status with an <sl-spinner> on pending, and <display-error> on error"
-        },
-        {
-          "kind": "function",
-          "name": "renderAsyncStatus",
-          "parameters": [
-            {
-              "name": "renderers",
-              "type": {
-                "text": "{\n  complete: (value: T) => TemplateResult;\n  error: (error: any) => TemplateResult;\n  pending: () => TemplateResult;\n}"
-              }
-            }
-          ],
-          "description": "Renders the given AsyncStatus with the given renderers"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "withSpinnerAndDisplayError",
-          "declaration": {
-            "name": "withSpinnerAndDisplayError",
-            "module": "src/render-async-status.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "renderAsyncStatus",
-          "declaration": {
-            "name": "renderAsyncStatus",
-            "module": "src/render-async-status.ts"
           }
         }
       ]

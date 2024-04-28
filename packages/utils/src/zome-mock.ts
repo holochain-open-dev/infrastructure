@@ -1,8 +1,8 @@
 import {
   AgentPubKey,
-  AppAgentClient,
-  AppAgentEvents,
-  AppAgentNetworkInfoRequest,
+  AppClient,
+  AppEvents,
+  AppNetworkInfoRequest,
   AppCreateCloneCellRequest,
   AppInfo,
   AppSignalCb,
@@ -23,7 +23,7 @@ const sleep = (ms: number) =>
     setTimeout(() => r(null), ms);
   });
 
-export class ZomeMock implements AppAgentClient {
+export class ZomeMock implements AppClient {
   emitter = new Emittery();
 
   constructor(
@@ -85,7 +85,7 @@ export class ZomeMock implements AppAgentClient {
     throw new Error("Method not implemented");
   }
 
-  networkInfo(_args: AppAgentNetworkInfoRequest): Promise<NetworkInfoResponse> {
+  networkInfo(_args: AppNetworkInfoRequest): Promise<NetworkInfoResponse> {
     throw new Error("Method not implemented");
   }
 
@@ -94,7 +94,7 @@ export class ZomeMock implements AppAgentClient {
     return (this as any)[req.fn_name](req.payload);
   }
 
-  on<Name extends keyof AppAgentEvents>(
+  on<Name extends keyof AppEvents>(
     eventName: Name | readonly Name[],
     listener: AppSignalCb
   ): UnsubscribeFunction {

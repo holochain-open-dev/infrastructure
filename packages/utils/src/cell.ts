@@ -1,6 +1,6 @@
 import {
-  AppAgentClient,
-  AppAgentWebsocket,
+  AppClient,
+  AppWebsocket,
   AppInfo,
   AppSignal,
   CellId,
@@ -29,13 +29,13 @@ export function roleNameForCellId(
 }
 
 export async function isSignalFromCellWithRole(
-  client: AppAgentClient,
+  client: AppClient,
   roleName: RoleName,
   signal: AppSignal
 ): Promise<boolean> {
-  if ((client as AppAgentWebsocket).cachedAppInfo) {
+  if ((client as AppWebsocket).cachedAppInfo) {
     const role = roleNameForCellId(
-      (client as AppAgentWebsocket).cachedAppInfo,
+      (client as AppWebsocket).cachedAppInfo,
       signal.cell_id
     );
     if (role) {
