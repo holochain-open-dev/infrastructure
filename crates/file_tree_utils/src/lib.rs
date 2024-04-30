@@ -28,7 +28,10 @@ pub type FileTree = FileSystemTree<OsString, String>;
 pub fn load_directory_into_memory(path: &Path) -> Result<FileTree, FileTreeError> {
     let mut file_tree: FileTree = dir! {};
 
-    for result in WalkBuilder::new(path).hidden(false).build() {
+    let mut builder = WalkBuilder::new(path);
+    builder.add_ignore(".git/");
+
+    for result in builder.hidden(false).build() {
         let dir_entry = result?
             .path()
             .iter()

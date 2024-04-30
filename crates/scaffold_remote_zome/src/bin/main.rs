@@ -1,11 +1,11 @@
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use build_fs_tree::{Build, MergeableFileSystemTree};
 use clap::Parser;
 use colored::Colorize;
 use scaffold_remote_zome::scaffold_remote_zome;
 use std::{
     ffi::OsString,
-    path::{Path, PathBuf},
+    path::PathBuf,
     process::{Command, ExitCode},
 };
 use sync_npm_git_dependencies_with_nix::synchronize_npm_git_dependencies_with_nix;
