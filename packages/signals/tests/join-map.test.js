@@ -1,7 +1,8 @@
 import { expect, it } from "vitest";
-import { fromPromise } from "async-signals";
+import { AsyncComputed, fromPromise } from "async-signals";
 import { fromUint8Array, toUint8Array } from "js-base64";
 import { Signal } from "signal-polyfill";
+import { mapValues } from "@holochain-open-dev/utils";
 
 import { joinAsyncMap } from "../src";
 
@@ -43,7 +44,9 @@ it("joinAsyncMap", async () => {
     lazyMap.get(h);
   }
 
-  const j = joinAsyncMap(lazyMap);
+  const j = new AsyncComputed(() =>
+    joinAsyncMap(mapValues(lazyMap, (s) => s.get()))
+  );
   const w = new Signal.subtle.Watcher(() => {});
   w.watch(j);
 
@@ -72,9 +75,14 @@ it("joinAsyncMap with error filtering", async () => {
     lazyMap.get(h);
   }
 
-  const j = joinAsyncMap(lazyMap, {
-    errors: "filter_out",
-  });
+  const j = new AsyncComputed(() =>
+    joinAsyncMap(
+      mapValues(lazyMap, (s) => s.get()),
+      {
+        errors: "filter_out",
+      }
+    )
+  );
 
   const w = new Signal.subtle.Watcher(() => {});
   w.watch(j);

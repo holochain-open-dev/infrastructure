@@ -1,48 +1,31 @@
-import { HoloHashMap } from "@holochain-open-dev/utils";
-import { HoloHash } from "@holochain/client";
-import {
-  AsyncComputed,
-  AsyncResult,
-  AsyncSignal,
-  joinAsync,
-  JoinAsyncOptions,
-} from "async-signals";
+import { HoloHashMap } from '@holochain-open-dev/utils';
+import { HoloHash } from '@holochain/client';
+import { AsyncResult, JoinAsyncOptions, joinAsync } from 'async-signals';
 
-type SignalValue<T> = T extends AsyncSignal<infer U>
-  ? U
-  : T extends AsyncSignal<infer U>
-  ? U
-  : never;
+type AsyncResultValue<T> = T extends AsyncResult<infer U> ? U : never;
 
 /**
  * Joins all the results in a HoloHashMap of `AsyncSignals`
  */
-export function joinAsyncMap<K extends HoloHash, V extends AsyncSignal<any>>(
-  map: ReadonlyMap<K, V>,
-  joinOptions?: JoinAsyncOptions
-): AsyncSignal<ReadonlyMap<K, SignalValue<V>>> {
-  const signalArray = Array.from(map.entries()).map(
-    ([key, signal]) =>
-      new AsyncComputed<[K, SignalValue<V>]>(() => {
-        const result = signal.get();
-        if (result.status !== "completed") return result;
-        const value = [key, result.value] as [K, SignalValue<V>];
-        return {
-          status: "completed",
-          value,
-        };
-      })
-  );
-  const arraySignal = joinAsync(signalArray, joinOptions);
+export function joinAsyncMap<K extends HoloHash, V extends AsyncResult<any>>(
+	map: ReadonlyMap<K, V>,
+	joinOptions?: JoinAsyncOptions,
+): AsyncResult<ReadonlyMap<K, AsyncResultValue<V>>> {
+	const resultsArray = Array.from(map.entries()).map(([key, result]) => {
+		if (result.status !== 'completed') return result;
+		const value = [key, result.value] as [K, AsyncResultValue<V>];
+		return {
+			status: 'completed',
+			value,
+		} as AsyncResult<[K, AsyncResultValue<V>]>;
+	});
+	const arrayResult = joinAsync(resultsArray, joinOptions);
 
-  return new AsyncComputed(() => {
-    const result = arraySignal.get();
-    if (result.status !== "completed") return result;
+	if (arrayResult.status !== 'completed') return arrayResult;
 
-    const value = new HoloHashMap<K, SignalValue<V>>(result.value);
-    return {
-      status: "completed",
-      value,
-    } as AsyncResult<ReadonlyMap<K, SignalValue<V>>>;
-  });
+	const value = new HoloHashMap<K, AsyncResultValue<V>>(arrayResult.value);
+	return {
+		status: 'completed',
+		value,
+	} as AsyncResult<ReadonlyMap<K, AsyncResultValue<V>>>;
 }
