@@ -1,8 +1,7 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use dialoguer::{theme::ColorfulTheme, Select};
-use file_tree_utils::{find_files_by_name, insert_file, map_file, FileTree, FileTreeError};
-use regex::{Captures, Regex};
+use file_tree_utils::{find_files_by_name, map_file, FileTree, FileTreeError};
 use serde_json::{Map, Value};
 use thiserror::Error;
 

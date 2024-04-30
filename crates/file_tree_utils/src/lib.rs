@@ -1,5 +1,4 @@
 use build_fs_tree::{dir, file, FileSystemTree};
-use ignore::WalkBuilder;
 use include_dir::Dir;
 use std::collections::BTreeMap;
 use std::ffi::OsString;
@@ -28,10 +27,21 @@ pub type FileTree = FileSystemTree<OsString, String>;
 pub fn load_directory_into_memory(path: &Path) -> Result<FileTree, FileTreeError> {
     let mut file_tree: FileTree = dir! {};
 
-    let mut builder = WalkBuilder::new(path);
-    builder.add_ignore(".git/");
-
-    for result in builder.hidden(false).build() {
+    for result in ignore::WalkBuilder::new(path)
+        .hidden(false)
+        .filter_entry(|e| {
+            !e.path()
+                .to_str()
+                .expect("DirEntry is none")
+                .contains("/.git/")
+                && !e
+                    .path()
+                    .to_str()
+                    .expect("DirEntry is none")
+                    .ends_with("/.git")
+        })
+        .build()
+    {
         let dir_entry = result?
             .path()
             .iter()

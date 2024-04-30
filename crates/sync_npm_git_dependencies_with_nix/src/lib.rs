@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use colored::Colorize;
 use ignore::Walk;
 use parse_flake_lock::{FlakeLock, FlakeLockParseError, Node};
