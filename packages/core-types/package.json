@@ -1,51 +1,33 @@
 {
-  "name": "@holochain-open-dev/core-types",
-  "version": "0.300.0-dev.0",
-  "description": "Typescript types for holochain core",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "type": "module",
-  "files": [
-    "dist/**/*"
-  ],
-  "scripts": {
-    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
-    "build": "npm run lint && tsc",
-    "publish": "npm run build && npm publish --tag dev"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/holochain-open-dev/core-types.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@holochain/client": "^0.17.0-dev.7"
-  },
-  "devDependencies": {
-    "@types/libsodium-wrappers": "^0.7.10",
-    "@types/node": "^16.11.10",
-    "@types/ws": "^8.2.0",
-    "@typescript-eslint/eslint-plugin": "^4.15.0",
-    "@typescript-eslint/parser": "^4.15.0",
-    "eslint": "^7.19.0",
-    "eslint-plugin-html": "^6.1.1",
-    "eslint-plugin-import": "^2.22.1",
-    "gh-pages": "^3.1.0",
-    "typescript": "^4.5.5"
-  },
-  "eslintConfig": {
-    "extends": [
-      "@open-wc/eslint-config",
-      "eslint-config-prettier"
-    ]
-  },
-  "prettier": {
-    "singleQuote": true,
-    "arrowParens": "avoid"
-  },
-  "bugs": {
-    "url": "https://github.com/holochain-open-dev/core-types/issues"
-  },
-  "homepage": "https://github.com/holochain-open-dev/core-types#readme"
+	"name": "@holochain-open-dev/core-types",
+	"version": "0.300.0-dev.0",
+	"description": "Typescript types for holochain core",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"type": "module",
+	"files": ["dist/**/*"],
+	"scripts": {
+		"lint": "eslint src",
+		"build": "npm run lint && tsc",
+		"publish": "npm run build && npm publish --tag dev"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/holochain-open-dev/core-types.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@holochain/client": "^0.17.0-dev.7"
+	},
+	"devDependencies": {
+		"@types/libsodium-wrappers": "^0.7.10",
+		"@types/node": "^16.11.10",
+		"@types/ws": "^8.2.0",
+		"typescript": "^5.4.0"
+	},
+	"bugs": {
+		"url": "https://github.com/holochain-open-dev/core-types/issues"
+	},
+	"homepage": "https://github.com/holochain-open-dev/core-types#readme"
 }

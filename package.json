@@ -1,20 +1,25 @@
 {
-  "name": "@holochain-open-dev/common-dev",
-  "private": true,
-  "workspaces": [
-    "packages/utils",
-    "packages/core-types",
-    "packages/elements",
-    "packages/stores",
-    "packages/signals",
-    "sites/*"
-  ],
-  "engines": {
-    "npm": ">=7.0.0"
-  },
-  "devDependencies": {
-    "@open-wc/eslint-config": "^9.2.2",
-    "eslint-config-prettier": "^8.6.0",
-    "prettier": "^2.8.4"
-  }
+	"name": "@holochain-open-dev/common-dev",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"packages/utils",
+		"packages/core-types",
+		"packages/elements",
+		"packages/stores",
+		"packages/signals",
+		"sites/*"
+	],
+	"engines": {
+		"npm": ">=7.0.0"
+	},
+	"devDependencies": {
+		"@trivago/prettier-plugin-sort-imports": "^4.3.0",
+		"@eslint/js": "^8.0.0",
+		"eslint": "^8.0.0",
+		"eslint-config-prettier": "^9.1.0",
+		"prettier": "^3.2.5",
+		"typescript-eslint": "^7.7.0",
+		"typescript": "^5.4.5"
+	}
 }

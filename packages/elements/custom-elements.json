@@ -134,7 +134,7 @@
           "name": "hashProperty",
           "return": {
             "type": {
-              "text": "PropertyDeclaration<Object | null, unknown>"
+              "text": "PropertyDeclaration<object | null, unknown>"
             }
           },
           "parameters": [
