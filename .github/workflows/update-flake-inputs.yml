@@ -36,7 +36,7 @@ jobs:
         with:
           filters: |
             flake_lock:
-              - 'flake.lock'
+              - '**/*/flake.lock'
             package_json:
               - '**/*/package.json'
 
