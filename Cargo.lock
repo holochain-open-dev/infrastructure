@@ -3051,7 +3051,7 @@ dependencies = [
 [[package]]
 name = "parse-flake-lock"
 version = "0.1.0"
-source = "git+https://github.com/DeterminateSystems/flake-checker?branch=main#d3e0cd215d84349b2b1893f3ca58845039ca2694"
+source = "git+https://github.com/DeterminateSystems/flake-checker?branch=main#358b3de4d41c7ddee4f5f2b3d841c68d08e107f3"
 dependencies = [
  "serde",
  "serde_json",
