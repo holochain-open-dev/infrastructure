@@ -8,7 +8,7 @@
     };
     nixpkgs.follows = "holochain/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/0_3_rc";
+    versions.url = "github:holochain/holochain?dir=versions/weekly";
 
     holochain = {
       url = "github:holochain/holochain";
