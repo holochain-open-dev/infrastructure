@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@holochain/client": "^0.17.0-dev.7"
+    "@holochain/client": "^0.18.0-dev.0"
   },
   "devDependencies": {
     "@types/libsodium-wrappers": "^0.7.10",
