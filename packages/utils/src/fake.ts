@@ -30,7 +30,7 @@ export async function fakeCreateAction(
     entry_type: {
       App: {
         entry_index: 0,
-        visibility: { Public: null },
+        visibility: "Public",
         zome_index: 0,
       },
     },
@@ -86,7 +86,7 @@ export async function fakeUpdateEntry(
     entry_type: {
       App: {
         entry_index: 0,
-        visibility: { Public: null },
+        visibility: "Public",
         zome_index: 0,
       },
     },

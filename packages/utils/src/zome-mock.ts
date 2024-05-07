@@ -46,7 +46,7 @@ export class ZomeMock implements AppClient {
     return {
       agent_pub_key: this.myPubKey,
       installed_app_id: "test-app",
-      status: { running: null },
+      status: "running",
       cell_info: {
         [this.roleName]: [
           {
