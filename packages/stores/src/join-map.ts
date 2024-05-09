@@ -42,4 +42,3 @@ export function joinAsyncMap<H extends HoloHash, T extends AsyncReadable<any>>(
 		entries => new HoloHashMap<H, AsyncStoreValue<T>>(entries),
 	);
 }
-type A = AsyncStoreValue<AsyncReadable<number>>;
