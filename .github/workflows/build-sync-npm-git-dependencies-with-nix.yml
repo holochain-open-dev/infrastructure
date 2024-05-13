@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-cache:
+  build-sync-npm-git-dependencies-with-nix:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -30,9 +30,13 @@ jobs:
           name: holochain-open-dev
 
       - name: Build sync-npm-git-dependencies-with-nix
+        run: |
+          nix build -L .#sync-npm-git-dependencies-with-nix
+
+      - name: Cache sync-npm-git-dependencies-with-nix
+        if: github.event_name != 'pull_request'
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
-          nix build -L .#sync-npm-git-dependencies-with-nix
           cachix push holochain-open-dev $(nix path-info .#sync-npm-git-dependencies-with-nix)
           cachix pin holochain-open-dev sync-npm-git-dependencies-with-nix $(nix path-info .#sync-npm-git-dependencies-with-nix)

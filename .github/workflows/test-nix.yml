@@ -59,4 +59,3 @@ jobs:
           nix flake update
           nix build -L .#my_zome
           sha256sum result
-
