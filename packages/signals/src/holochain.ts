@@ -109,11 +109,11 @@ export function collectionSignal<
           const signal = originalSignal as ActionCommittedSignal<any, any>;
 
           if (signal.type === "LinkCreated") {
-            if (linkType == signal.link_type) {
+            if (linkType === signal.link_type) {
               maybeSet([...links, createLinkToLink(signal.action)]);
             }
           } else if (signal.type === "LinkDeleted") {
-            if (linkType == signal.link_type) {
+            if (linkType === signal.link_type) {
               maybeSet(
                 links.filter(
                   (link) =>
@@ -634,7 +634,7 @@ export function liveLinksSignal<
 
           if (hcSignal.type === "LinkCreated") {
             if (
-              linkType == hcSignal.link_type &&
+              linkType === hcSignal.link_type &&
               hcSignal.action.hashed.content.base_address.toString() ===
                 innerBaseAddress.toString()
             ) {
@@ -643,7 +643,7 @@ export function liveLinksSignal<
             }
           } else if (hcSignal.type === "LinkDeleted") {
             if (
-              linkType == hcSignal.link_type &&
+              linkType === hcSignal.link_type &&
               hcSignal.create_link_action.hashed.content.base_address.toString() ===
                 innerBaseAddress.toString()
             ) {
@@ -785,7 +785,7 @@ export function deletedLinksSignal<
 
           if (hcSignal.type === "LinkDeleted") {
             if (
-              linkType == hcSignal.link_type &&
+              linkType === hcSignal.link_type &&
               hcSignal.create_link_action.hashed.content.base_address.toString() ===
                 innerBaseAddress.toString()
             ) {
