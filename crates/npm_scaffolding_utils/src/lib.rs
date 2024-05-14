@@ -289,15 +289,15 @@ impl PackageManager {
 		let workspace_selection = match workspace {
 			None => format!(""),
 			Some(workspace_name) => match self {
-				PackageManager::Npm => format!("-w {workspace_name}"),
-				PackageManager::Pnpm => format!("-F {workspace_name}"),
-				PackageManager::Yarn => format!("-w {workspace_name}"),
+				PackageManager::Npm => format!(" -w {workspace_name}"),
+				PackageManager::Pnpm => format!(" -F {workspace_name}"),
+				PackageManager::Yarn => format!(" -w {workspace_name}"),
 			}
 		};
 		match self {
-			PackageManager::Npm => format!("npm run {workspace_selection} {script}"),
-			PackageManager::Pnpm => format!("pnpm {workspace_selection} {script}"),
-			PackageManager::Yarn=> format!("yarn {workspace_selection} {script}")
+			PackageManager::Npm => format!("npm run{workspace_selection} {script}"),
+			PackageManager::Pnpm => format!("pnpm{workspace_selection} {script}"),
+			PackageManager::Yarn=> format!("yarn{workspace_selection} {script}")
 		}
 	}
 }
