@@ -1692,6 +1692,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "holochain_scaffolding_utils"
+version = "0.1.0"
+dependencies = [
+ "dialoguer",
+ "file_tree_utils",
+ "holochain_types",
+ "mr_bundle",
+ "serde",
+ "serde_yaml",
+ "thiserror",
+]
+
+[[package]]
 name = "holochain_secure_primitive"
 version = "0.3.0-beta-dev.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"

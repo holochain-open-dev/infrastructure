@@ -1,0 +1,15 @@
+[package]
+name = "holochain_scaffolding_utils"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+serde = "1"
+thiserror = "1.0.22"
+file_tree_utils = { path = "../file_tree_utils" }
+holochain_types = "0.3.0-beta-dev"
+dialoguer = "0.11"
+serde_yaml = "=0.9.33"
+mr_bundle = "0.3.0-beta-dev"
