@@ -40,7 +40,7 @@ pub fn add_flake_input(
     Ok(file_tree)
 }
 
-fn add_flake_input_to_flake_file(
+pub fn add_flake_input_to_flake_file(
     flake_nix: String,
     input_name: String,
     input_ref: String,
