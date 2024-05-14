@@ -23,10 +23,10 @@ pub enum GetOrChooseWebAppManifestError {
 
 pub fn get_or_choose_web_app_manifest(
     file_tree: &FileTree,
-) -> Result<WebAppManifest, GetOrChooseWebAppManifestError> {
+) -> Result<(PathBuf, WebAppManifest), GetOrChooseWebAppManifestError> {
     let web_app_manifests = find_web_app_manifests(&file_tree)?;
 
-    let (app_manifest_path, app_manifest) = match web_app_manifests.len() {
+    let app_manifest = match web_app_manifests.len() {
         0 => Err(GetOrChooseWebAppManifestError::WebAppManifestNotFound),
         1 => web_app_manifests
             .into_iter()
