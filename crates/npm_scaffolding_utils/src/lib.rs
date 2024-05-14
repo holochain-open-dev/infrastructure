@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use dialoguer::{theme::ColorfulTheme, Select};
-use file_tree_utils::{find_files_by_name, map_file, FileTree, FileTreeError};
+use file_tree_utils::{find_files_by_name, map_file, FileTree, FileTreeError, file_exists, file_content};
 use serde_json::{Map, Value};
 use thiserror::Error;
 
@@ -221,6 +221,83 @@ pub fn add_npm_script_to_package(
     );
 
     Ok(serde_json::to_string_pretty(&json)?)
+}
+
+pub fn get_name_of_root_package(file_tree: &FileTree) -> Result<String, NpmScaffoldingUtilsError> {
+    let root_package_json_path = PathBuf::from("package.json");
+    let content = file_content(file_tree, root_package_json_path.as_path())?;
+
+    let mut json: serde_json::Value = serde_json::from_str(content.as_str())?;
+
+    let Some(map) = json.as_object_mut() else {
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
+            root_package_json_path,
+            String::from("package.json did not file_contentcontain a json object at the root level"),
+        ));
+    };
+    let Some(Value::String(name)) = map.get("name") else {
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
+            root_package_json_path,
+            String::from("package.json did not file_contentcontain a name field at the root level"),
+        ));
+    };
+
+    Ok(name.clone())
+}
+
+#[derive(Debug,Clone, Copy)]
+pub enum PackageManager {
+	Npm,
+	Pnpm,
+	Yarn
+}
+impl ToString for PackageManager {
+	fn to_string(&self) -> String {
+      format!("{self:?}")
+  }
+}
+
+impl PackageManager {
+	pub fn all_package_managers() -> Vec<PackageManager> {
+		vec![PackageManager::Npm, PackageManager::Pnpm, PackageManager::Yarn]
+	}
+	pub fn run_script_command(&self, script: String, workspace: Option<String>) -> String {
+		let workspace_selection = match workspace {
+			None => format!(""),
+			Some(workspace_name) => match self {
+				PackageManager::Npm => format!("-w {workspace_name}"),
+				PackageManager::Pnpm => format!("-F {workspace_name}"),
+				PackageManager::Yarn => format!("-w {workspace_name}"),
+			}
+		};
+		match self {
+			PackageManager::Npm => format!("npm run {workspace_selection} {script}"),
+			PackageManager::Pnpm => format!("pnpm {workspace_selection} {script}"),
+			PackageManager::Yarn=> format!("yarn {workspace_selection} {script}")
+		}
+	}
+}
+
+pub fn guess_or_choose_package_manager(file_tree: &FileTree) -> Result<PackageManager, NpmScaffoldingUtilsError> {
+	if file_exists(&file_tree, PathBuf::from("package-lock.json").as_path()) {
+		return Ok(PackageManager::Npm);
+	}
+	if file_exists(&file_tree, PathBuf::from("pnpm-lock.yaml").as_path()) {
+		return Ok(PackageManager::Pnpm);
+	}
+	if file_exists(&file_tree, PathBuf::from("yarn.lock").as_path()) {
+		return Ok(PackageManager::Yarn);
+	}
+let package_managers = PackageManager::all_package_managers();
+	
+    let index = Select::with_theme(&ColorfulTheme::default())
+        .with_prompt(
+        format!(    
+"Could not guess which package manager you are using for this app. Please select the package manager you are using:"))
+        .items(&package_managers[..])
+        .interact()?;
+
+      Ok(package_managers[index])
 }
 
 #[cfg(test)]
