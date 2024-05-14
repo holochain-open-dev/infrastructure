@@ -153,6 +153,39 @@ pub fn add_npm_dependency_to_package(
     Ok(serde_json::to_string_pretty(&json)?)
 }
 
+pub fn add_npm_dev_dependency_to_package(
+    package_json: &(PathBuf, String),
+    dev_dependency: &String,
+    dev_dependency_source: &String,
+) -> Result<String, AddNpmDependencyError> {
+    let mut json: serde_json::Value = serde_json::from_str(package_json.1.as_str())?;
+
+    let Some(map) = json.as_object_mut() else {
+        return Err(AddNpmDependencyError::MalformedJsonError(
+            package_json.0.clone(),
+            String::from("package.json did not contain a json object at the root level"),
+        ));
+    };
+
+    let mut stub = serde_json::Value::Object(Map::new());
+
+    let dependencies_value = map.get_mut("devDependencies").unwrap_or(&mut stub);
+
+    let Some(dependencies) = dependencies_value.as_object_mut() else {
+        return Err(AddNpmDependencyError::MalformedJsonError(
+            package_json.0.to_path_buf(),
+            String::from(r#"the "devDependencies" property is not a json object"#),
+        ));
+    };
+
+    dependencies.insert(
+        dev_dependency.clone(),
+        serde_json::Value::String(dev_dependency_source.clone()),
+    );
+
+    Ok(serde_json::to_string_pretty(&json)?)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
