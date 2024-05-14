@@ -3,40 +3,6 @@
 version = 3
 
 [[package]]
-name = "add_flake_input"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "build-fs-tree",
- "clap 4.5.4",
- "colored",
- "file_tree_utils",
- "ignore",
- "regex",
- "rnix",
- "serde",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
-name = "add_npm_dependency"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "build-fs-tree",
- "clap 4.5.4",
- "colored",
- "dialoguer",
- "file_tree_utils",
- "ignore",
- "regex",
- "serde",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2753,6 +2719,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "nix_scaffolding_utils"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "build-fs-tree",
+ "clap 4.5.4",
+ "colored",
+ "file_tree_utils",
+ "ignore",
+ "regex",
+ "rnix",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "nom"
 version = "7.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2767,6 +2750,23 @@ name = "normalize-line-endings"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "61807f77802ff30975e01f4f071c8ba10c022052f98b3294119f3e615d13e5be"
+
+[[package]]
+name = "npm_scaffolding_utils"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "build-fs-tree",
+ "clap 4.5.4",
+ "colored",
+ "dialoguer",
+ "file_tree_utils",
+ "ignore",
+ "regex",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
 
 [[package]]
 name = "ntapi"
@@ -3941,8 +3941,6 @@ dependencies = [
 name = "scaffold_remote_zome"
 version = "0.1.0"
 dependencies = [
- "add_flake_input",
- "add_npm_dependency",
  "anyhow",
  "build-fs-tree",
  "clap 4.5.4",
@@ -3951,6 +3949,8 @@ dependencies = [
  "file_tree_utils",
  "holochain_types",
  "ignore",
+ "nix_scaffolding_utils",
+ "npm_scaffolding_utils",
  "path-clean",
  "regex",
  "serde",
