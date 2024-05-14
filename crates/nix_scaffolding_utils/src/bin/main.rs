@@ -1,8 +1,8 @@
-use add_flake_input::add_flake_input;
 use anyhow::Result;
 use build_fs_tree::{Build, MergeableFileSystemTree};
 use clap::Parser;
 use colored::Colorize;
+use nix_scaffolding_utils::add_flake_input;
 use std::{ffi::OsString, path::PathBuf, process::ExitCode};
 
 /// Adds a flake input to your flake.nix.

@@ -6,7 +6,7 @@ use serde_json::{Map, Value};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
-pub enum AddNpmDependencyError {
+pub enum NpmScaffoldingUtilsError {
     #[error(transparent)]
     FileTreeError(#[from] FileTreeError),
 
@@ -26,7 +26,9 @@ pub enum AddNpmDependencyError {
     NpmPackageNotFoundError(String),
 }
 
-fn default_select_npm_package(npm_packages: Vec<String>) -> Result<usize, AddNpmDependencyError> {
+fn default_select_npm_package(
+    npm_packages: Vec<String>,
+) -> Result<usize, NpmScaffoldingUtilsError> {
     Ok(Select::with_theme(&ColorfulTheme::default())
         .with_prompt("Multiple NPM packages were found in this repository, choose one:")
         .default(0)
@@ -40,13 +42,13 @@ pub fn add_npm_dependency(
     dependency_source: String,
     package_to_add_the_dependency_to: Option<String>,
     custom_select_npm_package: Option<
-        Box<dyn Fn(Vec<String>) -> Result<usize, AddNpmDependencyError>>,
+        Box<dyn Fn(Vec<String>) -> Result<usize, NpmScaffoldingUtilsError>>,
     >,
-) -> Result<FileTree, AddNpmDependencyError> {
+) -> Result<FileTree, NpmScaffoldingUtilsError> {
     let mut package_jsons = find_files_by_name(&file_tree, PathBuf::from("package.json").as_path());
 
     match package_jsons.len() {
-        0 => Err(AddNpmDependencyError::NoNpmPackagesFoundError)?,
+        0 => Err(NpmScaffoldingUtilsError::NoNpmPackagesFoundError)?,
         1 => {
             let package_json = package_jsons.pop_first().unwrap();
             map_file(
@@ -63,13 +65,13 @@ pub fn add_npm_dependency(
             let packages_names = package_jsons
                 .iter()
                 .map(|package_json| get_npm_package_name(package_json))
-                .collect::<Result<Vec<String>, AddNpmDependencyError>>()?;
+                .collect::<Result<Vec<String>, NpmScaffoldingUtilsError>>()?;
 
             let package_index = match package_to_add_the_dependency_to {
                 Some(package_to_add_to) => packages_names
                     .iter()
                     .position(|package_name| package_name.eq(&package_to_add_to))
-                    .ok_or(AddNpmDependencyError::NpmPackageNotFoundError(
+                    .ok_or(NpmScaffoldingUtilsError::NpmPackageNotFoundError(
                         package_to_add_to.clone(),
                     ))?,
                 None => match custom_select_npm_package {
@@ -94,24 +96,26 @@ pub fn add_npm_dependency(
     Ok(file_tree)
 }
 
-fn get_npm_package_name(package_json: &(PathBuf, String)) -> Result<String, AddNpmDependencyError> {
+fn get_npm_package_name(
+    package_json: &(PathBuf, String),
+) -> Result<String, NpmScaffoldingUtilsError> {
     let json: serde_json::Value = serde_json::from_str(package_json.1.as_str())?;
     let Some(map) = json.as_object() else {
-        return Err(AddNpmDependencyError::MalformedJsonError(
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
             package_json.0.to_path_buf(),
             String::from("package.json did not contain a json object at the root level"),
         ));
     };
 
     let Some(name) = map.get("name") else {
-        return Err(AddNpmDependencyError::MalformedJsonError(
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
             package_json.0.to_path_buf(),
             String::from(r#"package.json did not contain a "name" property at the root level"#),
         ));
     };
 
     let Value::String(name) = name else {
-        return Err(AddNpmDependencyError::MalformedJsonError(
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
             package_json.0.to_path_buf(),
             String::from(r#"the "name" property is not a string"#),
         ));
@@ -124,11 +128,11 @@ pub fn add_npm_dependency_to_package(
     package_json: &(PathBuf, String),
     dependency: &String,
     dependency_source: &String,
-) -> Result<String, AddNpmDependencyError> {
+) -> Result<String, NpmScaffoldingUtilsError> {
     let mut json: serde_json::Value = serde_json::from_str(package_json.1.as_str())?;
 
     let Some(map) = json.as_object_mut() else {
-        return Err(AddNpmDependencyError::MalformedJsonError(
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
             package_json.0.clone(),
             String::from("package.json did not contain a json object at the root level"),
         ));
@@ -139,7 +143,7 @@ pub fn add_npm_dependency_to_package(
     let dependencies_value = map.get_mut("dependencies").unwrap_or(&mut stub);
 
     let Some(dependencies) = dependencies_value.as_object_mut() else {
-        return Err(AddNpmDependencyError::MalformedJsonError(
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
             package_json.0.to_path_buf(),
             String::from(r#"the "dependencies" property is not a json object"#),
         ));
@@ -157,11 +161,11 @@ pub fn add_npm_dev_dependency_to_package(
     package_json: &(PathBuf, String),
     dev_dependency: &String,
     dev_dependency_source: &String,
-) -> Result<String, AddNpmDependencyError> {
+) -> Result<String, NpmScaffoldingUtilsError> {
     let mut json: serde_json::Value = serde_json::from_str(package_json.1.as_str())?;
 
     let Some(map) = json.as_object_mut() else {
-        return Err(AddNpmDependencyError::MalformedJsonError(
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
             package_json.0.clone(),
             String::from("package.json did not contain a json object at the root level"),
         ));
@@ -172,7 +176,7 @@ pub fn add_npm_dev_dependency_to_package(
     let dependencies_value = map.get_mut("devDependencies").unwrap_or(&mut stub);
 
     let Some(dependencies) = dependencies_value.as_object_mut() else {
-        return Err(AddNpmDependencyError::MalformedJsonError(
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
             package_json.0.to_path_buf(),
             String::from(r#"the "devDependencies" property is not a json object"#),
         ));
@@ -181,6 +185,39 @@ pub fn add_npm_dev_dependency_to_package(
     dependencies.insert(
         dev_dependency.clone(),
         serde_json::Value::String(dev_dependency_source.clone()),
+    );
+
+    Ok(serde_json::to_string_pretty(&json)?)
+}
+
+pub fn add_npm_script_to_package(
+    package_json: &(PathBuf, String),
+    script_name: &String,
+    script: &String,
+) -> Result<String, NpmScaffoldingUtilsError> {
+    let mut json: serde_json::Value = serde_json::from_str(package_json.1.as_str())?;
+
+    let Some(map) = json.as_object_mut() else {
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
+            package_json.0.clone(),
+            String::from("package.json did not contain a json object at the root level"),
+        ));
+    };
+
+    let mut stub = serde_json::Value::Object(Map::new());
+
+    let scripts_value = map.get_mut("scripts").unwrap_or(&mut stub);
+
+    let Some(scripts) = scripts_value.as_object_mut() else {
+        return Err(NpmScaffoldingUtilsError::MalformedJsonError(
+            package_json.0.to_path_buf(),
+            String::from(r#"The "scripts" property is not a json object"#),
+        ));
+    };
+
+    scripts.insert(
+        script_name.clone(),
+        serde_json::Value::String(script.clone()),
     );
 
     Ok(serde_json::to_string_pretty(&json)?)

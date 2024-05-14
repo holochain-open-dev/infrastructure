@@ -1,5 +1,5 @@
-use add_flake_input::{add_flake_input, AddFlakeInputError};
-use add_npm_dependency::{add_npm_dependency, AddNpmDependencyError};
+use nix_scaffolding_utils::{add_flake_input, AddFlakeInputError};
+use npm_scaffolding_utils::{add_npm_dependency, NpmScaffoldingUtilsError};
 use anyhow::Result;
 use dialoguer::{theme::ColorfulTheme, Select};
 use file_tree_utils::{
@@ -16,7 +16,7 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum ScaffoldRemoteZomeError {
     #[error(transparent)]
-    AddNpmDependencyError(#[from] AddNpmDependencyError),
+    AddNpmDependencyError(#[from] NpmScaffoldingUtilsError),
 
     #[error(transparent)]
     IoError(#[from] std::io::Error),
@@ -100,7 +100,7 @@ pub fn scaffold_remote_zome(
     Ok(file_tree)
 }
 
-fn select_npm_package(module_name: String, npm_packages: Vec<String>) -> Result<usize, AddNpmDependencyError> {
+fn select_npm_package(module_name: String, npm_packages: Vec<String>) -> Result<usize, NpmScaffoldingUtilsError> {
     let mut i = 0;
     let mut found = false;
 
@@ -265,7 +265,7 @@ fn get_or_choose_dna(
                 Some(local_dna) => dna_names
                     .iter()
                     .position(|dna_name| dna_name.eq(&local_dna))
-                    .ok_or(AddNpmDependencyError::NpmPackageNotFoundError(
+                    .ok_or(NpmScaffoldingUtilsError::NpmPackageNotFoundError(
                         local_dna.clone(),
                     ))?,
                 None => {

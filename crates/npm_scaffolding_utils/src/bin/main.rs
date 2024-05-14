@@ -1,8 +1,8 @@
-use add_npm_dependency::add_npm_dependency;
 use anyhow::Result;
 use build_fs_tree::{Build, MergeableFileSystemTree};
 use clap::Parser;
 use colored::Colorize;
+use npm_scaffolding_utils::add_npm_dependency;
 use std::{ffi::OsString, path::PathBuf, process::ExitCode};
 
 /// Adds a flake input to your flake.nix.
