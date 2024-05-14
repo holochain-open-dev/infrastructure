@@ -189,9 +189,12 @@ pub fn add_npm_dev_dependency_to_package(
         ));
     };
 
-    let mut stub = serde_json::Value::Object(Map::new());
+    if !map.contains_key("devDependencies") {
+        let stub = serde_json::Value::Object(Map::new());
+        map.insert("devDependencies".into(), stub);
+    }
 
-    let dependencies_value = map.get_mut("devDependencies").unwrap_or(&mut stub);
+    let dependencies_value = map.get_mut("devDependencies").unwrap();
 
     let Some(dependencies) = dependencies_value.as_object_mut() else {
         return Err(NpmScaffoldingUtilsError::MalformedJsonError(
@@ -222,9 +225,12 @@ pub fn add_npm_script_to_package(
         ));
     };
 
-    let mut stub = serde_json::Value::Object(Map::new());
+    if !map.contains_key("scripts") {
+        let stub = serde_json::Value::Object(Map::new());
+        map.insert("scripts".into(), stub);
+    }
 
-    let scripts_value = map.get_mut("scripts").unwrap_or(&mut stub);
+    let scripts_value = map.get_mut("scripts").unwrap();
 
     let Some(scripts) = scripts_value.as_object_mut() else {
         return Err(NpmScaffoldingUtilsError::MalformedJsonError(
@@ -338,6 +344,23 @@ mod tests {
             r#"{
   "name": "single",
   "dependencies": {
+    "some-dep": "some-url"
+  }
+}"#
+        );
+    }
+
+    #[test]
+    fn single_package_dev_dependency_test() {
+        let content =
+            add_npm_dev_dependency_to_package(&(PathBuf::from("package.json"),empty_package_json("single")), &String::from("some-dep"), &String::from("some-url")) .unwrap();
+
+        assert_eq!(
+            content,
+            r#"{
+  "name": "single",
+  "dependencies": {},
+  "devDependencies": {
     "some-dep": "some-url"
   }
 }"#
