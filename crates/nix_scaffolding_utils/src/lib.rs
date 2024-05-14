@@ -5,7 +5,7 @@ use regex::{Captures, Regex};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
-pub enum AddFlakeInputError {
+pub enum NixScaffoldingUtilsError {
     #[error(transparent)]
     RegexError(#[from] regex::Error),
 
@@ -20,11 +20,11 @@ pub fn add_flake_input(
     mut file_tree: FileTree,
     input_name: String,
     input_ref: String,
-) -> Result<FileTree, AddFlakeInputError> {
+) -> Result<FileTree, NixScaffoldingUtilsError> {
     let flake_nix_path = PathBuf::from("flake.nix");
     let flake_nix_contents = file_content(&file_tree, flake_nix_path.as_path())?;
     let Ok(_root) = rnix::Root::parse(&flake_nix_contents).ok() else {
-        return Err(AddFlakeInputError::MalformedFlakeNixError);
+        return Err(NixScaffoldingUtilsError::MalformedFlakeNixError);
     };
 
     map_file(
@@ -44,7 +44,7 @@ pub fn add_flake_input_to_flake_file(
     flake_nix: String,
     input_name: String,
     input_ref: String,
-) -> Result<String, AddFlakeInputError> {
+) -> Result<String, NixScaffoldingUtilsError> {
     let re = Regex::new(r"(?<before>.*)inputs(?<white1>\s*)=(?<white2>\s*)\{\n(?<after>.*)")?;
 
     if re.is_match(&flake_nix) {

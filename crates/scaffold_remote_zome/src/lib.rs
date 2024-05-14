@@ -1,4 +1,4 @@
-use nix_scaffolding_utils::{add_flake_input, AddFlakeInputError};
+use nix_scaffolding_utils::{add_flake_input, NixScaffoldingUtilsError};
 use npm_scaffolding_utils::{add_npm_dependency, NpmScaffoldingUtilsError};
 use anyhow::Result;
 use dialoguer::{theme::ColorfulTheme, Select};
@@ -16,7 +16,7 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum ScaffoldRemoteZomeError {
     #[error(transparent)]
-    AddNpmDependencyError(#[from] NpmScaffoldingUtilsError),
+    NpmScaffoldingUtilsError(#[from] NpmScaffoldingUtilsError),
 
     #[error(transparent)]
     IoError(#[from] std::io::Error),
@@ -25,7 +25,7 @@ pub enum ScaffoldRemoteZomeError {
     RegexError(#[from] regex::Error),
 
     #[error(transparent)]
-    AddFlakeInputError(#[from] AddFlakeInputError),
+    NixScaffoldingUtilsError(#[from] NixScaffoldingUtilsError),
 
     #[error(transparent)]
     DialoguerError(#[from] dialoguer::Error),
