@@ -120,7 +120,7 @@ fn get_npm_package_name(package_json: &(PathBuf, String)) -> Result<String, AddN
     Ok(name.clone())
 }
 
-fn add_npm_dependency_to_package(
+pub fn add_npm_dependency_to_package(
     package_json: &(PathBuf, String),
     dependency: &String,
     dependency_source: &String,
