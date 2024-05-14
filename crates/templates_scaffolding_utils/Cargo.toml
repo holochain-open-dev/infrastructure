@@ -20,3 +20,4 @@ thiserror = "1.0.58"
 file_tree_utils = { path = "../file_tree_utils" }
 build-fs-tree = "0.4"
 handlebars ="5.1.2"
+convert_case = "0.6.0"

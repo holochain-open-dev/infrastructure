@@ -1,9 +1,10 @@
 use std::{collections::BTreeMap, path::PathBuf};
 
+use convert_case::{Case, Casing};
 use file_tree_utils::{
     file_content, find_files, flatten_file_tree, unflatten_file_tree, FileTree, FileTreeError,
 };
-use handlebars::Handlebars;
+use handlebars::{handlebars_helper, Handlebars};
 use regex::Regex;
 use serde::Serialize;
 use thiserror::Error;
@@ -216,4 +217,26 @@ pub fn render_template_file_tree_and_merge_with_existing<'a, T: Serialize>(
     let file_tree = unflatten_file_tree(&flattened_app_file_tree)?;
 
     Ok(file_tree)
+}
+
+pub fn register_case_helpers<'a>(mut h: Handlebars<'a>) -> Handlebars<'a> {
+    handlebars_helper!(title_case: |s: String| s.to_case(Case::Title));
+    h.register_helper("title_case", Box::new(title_case));
+
+    handlebars_helper!(lower_case: |s: String| s.to_case(Case::Lower));
+    h.register_helper("lower_case", Box::new(lower_case));
+
+    handlebars_helper!(snake_case: |s: String| s.to_case(Case::Snake));
+    h.register_helper("snake_case", Box::new(snake_case));
+
+    handlebars_helper!(kebab_case: |s: String| s.to_case(Case::Kebab));
+    h.register_helper("kebab_case", Box::new(kebab_case));
+
+    handlebars_helper!(camel_case: |s: String| s.to_case(Case::Camel));
+    h.register_helper("camel_case", Box::new(camel_case));
+
+    handlebars_helper!(pascal_case: |s: String| s.to_case(Case::Pascal));
+    h.register_helper("pascal_case", Box::new(pascal_case));
+
+    h
 }
