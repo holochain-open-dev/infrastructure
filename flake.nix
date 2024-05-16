@@ -24,9 +24,34 @@
   };
 
   outputs = inputs@{ ... }:
-    inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } rec {
       flake = {
         lib = rec {
+          holochainAppDeps = {
+            buildInputs = { pkgs, lib }:
+              (with pkgs; [
+                openssl
+                inputs.holochain.outputs.packages.${pkgs.system}.opensslStatic
+                sqlcipher
+                glib
+              ]) ++ (lib.optionals pkgs.stdenv.isDarwin
+                (with pkgs.darwin.apple_sdk_11_0.frameworks; [
+                  AppKit
+                  CoreFoundation
+                  CoreServices
+                  Security
+                  IOKit
+                ]));
+            nativeBuildInputs = { pkgs, lib }:
+              (with pkgs; [
+                makeWrapper
+                perl
+                pkg-config
+                inputs.holochain.outputs.packages.${pkgs.system}.goWrapper
+              ]) ++ lib.optionals pkgs.stdenv.isDarwin
+              (with pkgs; [ xcbuild libiconv ]);
+          };
+
           filterByHolochainPackageType = holochainPackageType: packages:
             inputs.nixpkgs.lib.filterAttrs (key: value:
               (builtins.hasAttr "meta" value)
@@ -174,33 +199,23 @@
             builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
           crate = cargoToml.package.name;
 
-          buildInputs = (with pkgs; [
-            openssl
-            inputs'.holochain.packages.opensslStatic
-            sqlcipher
-          ]) ++ (lib.optionals pkgs.stdenv.isDarwin
-            (with pkgs.darwin.apple_sdk_11_0.frameworks; [
-              AppKit
-              CoreFoundation
-              CoreServices
-              Security
-              IOKit
-            ]));
           commonArgs = {
-            inherit buildInputs;
-            doCheck = false;
             src = craneLib.cleanCargoSource (craneLib.path ./.);
-            nativeBuildInputs = (with pkgs; [
-              makeWrapper
-              perl
-              pkg-config
-              inputs'.holochain.packages.goWrapper
-            ]) ++ lib.optionals pkgs.stdenv.isDarwin
-              (with pkgs; [ xcbuild libiconv ]);
+            doCheck = false;
+            buildInputs =
+              flake.lib.holochainAppDeps.buildInputs { inherit pkgs lib; };
+            nativeBuildInputs = flake.lib.holochainAppDeps.nativeBuildInputs {
+              inherit pkgs lib;
+            };
           };
+          cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
+            pname = "workspace";
+            version = "workspace";
+          });
         in craneLib.buildPackage (commonArgs // {
           pname = crate;
           version = cargoToml.package.version;
+          inherit cargoArtifacts;
         });
 
         packages.scaffold-remote-zome = let
@@ -212,33 +227,23 @@
             builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
           crate = cargoToml.package.name;
 
-          buildInputs = (with pkgs; [
-            openssl
-            inputs'.holochain.packages.opensslStatic
-            sqlcipher
-          ]) ++ (lib.optionals pkgs.stdenv.isDarwin
-            (with pkgs.darwin.apple_sdk_11_0.frameworks; [
-              AppKit
-              CoreFoundation
-              CoreServices
-              Security
-              IOKit
-            ]));
           commonArgs = {
-            inherit buildInputs;
-            doCheck = false;
             src = craneLib.cleanCargoSource (craneLib.path ./.);
-            nativeBuildInputs = (with pkgs; [
-              makeWrapper
-              perl
-              pkg-config
-              inputs'.holochain.packages.goWrapper
-            ]) ++ lib.optionals pkgs.stdenv.isDarwin
-              (with pkgs; [ xcbuild libiconv ]);
+            doCheck = false;
+            buildInputs =
+              flake.lib.holochainAppDeps.buildInputs { inherit pkgs lib; };
+            nativeBuildInputs = flake.lib.holochainAppDeps.nativeBuildInputs {
+              inherit pkgs lib;
+            };
           };
+          cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
+            pname = "workspace";
+            version = "workspace";
+          });
         in craneLib.buildPackage (commonArgs // {
           pname = crate;
           version = cargoToml.package.version;
+          inherit cargoArtifacts;
         });
 
         packages.pnpm = pkgs.stdenv.mkDerivation {
