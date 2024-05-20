@@ -9,6 +9,8 @@ use regex::Regex;
 use serde::Serialize;
 use thiserror::Error;
 
+pub mod helpers;
+
 #[derive(Error, Debug)]
 pub enum TemplatesScaffoldingUtilsError {
     #[error(transparent)]
