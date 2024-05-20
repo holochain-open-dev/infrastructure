@@ -242,3 +242,26 @@ pub fn register_case_helpers<'a>(mut h: Handlebars<'a>) -> Handlebars<'a> {
 
     h
 }
+
+#[cfg(test)]
+mod tests {
+    use handlebars::{no_escape, Context, Handlebars};
+    use serde_json::json;
+
+    #[test]
+    fn test_render_with_quotes_quotes() {
+        let mut h = Handlebars::new();
+        h.register_escape_fn(no_escape);
+
+        let code = r#""With quotes""#;
+        let value = json!({"previous_file_content": code});
+        println!("value, {value:?}");
+        let context = Context::from(value);
+        let template = r#"{{previous_file_content}}"#;
+
+        assert_eq!(
+            h.render_template_with_context(template, &context).unwrap(),
+            code
+        );
+    }
+}
