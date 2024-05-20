@@ -93,7 +93,7 @@
                 targets = [ "wasm32-unknown-unknown" ];
               };
               craneLib =
-                inputs.crane.lib.${system}.overrideToolchain rustToolchain;
+                (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
 
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
@@ -112,7 +112,7 @@
                 targets = [ "wasm32-unknown-unknown" ];
               };
               craneLib =
-                inputs.crane.lib.${system}.overrideToolchain rustToolchain;
+                (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
             in pkgs.callPackage ./nix/sweettest.nix {
               inherit holochain dna craneLib workspacePath crateCargoToml;
             };
@@ -191,7 +191,7 @@
         };
 
         packages.sync-npm-git-dependencies-with-nix = let
-          craneLib = inputs.crane.lib.${system};
+          craneLib = inputs.crane.mkLib pkgs;
 
           cratePath = ./crates/sync_npm_git_dependencies_with_nix;
 
@@ -219,7 +219,7 @@
         });
 
         packages.scaffold-remote-zome = let
-          craneLib = inputs.crane.lib.${system};
+          craneLib = inputs.crane.mkLib pkgs;
 
           cratePath = ./crates/scaffold_remote_zome;
 
