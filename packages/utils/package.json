@@ -19,8 +19,7 @@
 		"build": "npm run lint && tsc --incremental",
 		"build:watch": "tsc --watch --preserveWatchOutput",
 		"lint": "eslint src",
-		"test": "vitest run",
-		"publish": "npm run build && npm publish --tag dev"
+		"test": "vitest run"
 	},
 	"dependencies": {
 		"@holochain/client": "^0.17.0-rc",
