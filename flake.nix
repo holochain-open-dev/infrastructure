@@ -71,13 +71,12 @@
                 #                system =;
                 system = holochain.devShells.holonix.system;
                 pkgs = import inputs.nixpkgs {
-                  localSystem = system;
-                  crossSystem = "x86_64-linux";
+                  system = "x86_64-linux";
                   overlays = [ (import inputs.rust-overlay) ];
                 };
 
                 rustToolchain =
-                  pkgs.pkgsBuildHost.rust-bin.stable."1.77.2".minimal.override {
+                  pkgs.rust-bin.stable."1.77.2".minimal.override {
                     # Set the build targets supported by the toolchain,
                     # wasm32-unknown-unknown is required for trunk.
                     targets = [ "wasm32-unknown-unknown" ];
