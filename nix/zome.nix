@@ -36,23 +36,25 @@ let
   });
   debug = runCommandLocal "${crate}-debug" {
     meta = { holochainPackageType = "zome"; };
-  } "cp ${wasm}/lib/${crate}.wasm $out \n";
+  } ''
+    cp ${wasm}/lib/${crate}.wasm $out 
+  '';
 
   deterministicWasm = let
-	wasmDeps = deterministicCraneLib.buildDepsOnly (commonArgs // {
-            inherit cargoExtraArgs;
-            pname = "happ-workspace";
-            version = "workspace";
-          });
+    wasmDeps = deterministicCraneLib.buildDepsOnly (commonArgs // {
+      inherit cargoExtraArgs;
+      pname = "happ-workspace";
+      version = "workspace";
+    });
 
     wasm = deterministicCraneLib.buildPackage (commonArgs // {
-        cargoArtifacts = wasmDeps;
-		      cargoToml = crateCargoToml;
+      cargoArtifacts = wasmDeps;
+      cargoToml = crateCargoToml;
       cargoLock = workspacePath + /Cargo.lock;
       cargoExtraArgs = "-p ${crate} --locked";
       pname = crate;
       version = cargoToml.package.version;
-      });
+    });
   in runCommandLocal "${crate}-deterministic" {
     meta = { holochainPackageType = "zome"; };
   } "	cp ${wasm}/lib/${crate}.wasm $out \n";
@@ -62,4 +64,6 @@ in runCommandNoCC crate {
     holochainPackageType = "zome";
   };
   buildInputs = [ binaryen ];
-} "wasm-opt --strip-debug -Oz -o $out ${deterministicWasm}\n"
+} ''
+  wasm-opt --strip-debug -Oz -o $out ${deterministicWasm}
+''
