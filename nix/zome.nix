@@ -2,9 +2,12 @@
 	runCommandLocal,
 	runCommandNoCC,
 	binaryen,
-  deterministicCraneLib,
-  craneLib,
-  workspacePath,
+    deterministicCraneLib,
+    craneLib,
+    workspacePath,
+    system,
+	lib,
+	pkgs,
 	crateCargoToml,
 	excludedCrates
 }:
@@ -45,20 +48,43 @@ let
 
 	deterministicWasm = 
 	let 
-	  wasmDeps = deterministicCraneLib.buildDepsOnly (commonArgs // {
+	  deterministicCommonArgs = (commonArgs // {
+			cargoToml = crateCargoToml;
+			cargoLock = workspacePath + /Cargo.lock;
+			cargoExtraArgs = "-p ${crate} --locked";
+		    pname = crate;
+			version = cargoToml.package.version;
+		});
+
+      wasm = if system == "x86_64-linux" then 
+	  	    (deterministicCraneLib.buildPackage (deterministicCommonArgs // {
+				cargoArtifacts = deterministicCraneLib.buildDepsOnly (deterministicCommonArgs // {
 			inherit cargoExtraArgs;
 			pname = "happ-workspace";
 			version = "workspace";
 		});
-
-    wasm = deterministicCraneLib.buildPackage (commonArgs // {
-			cargoToml = crateCargoToml;
-			cargoLock = workspacePath + /Cargo.lock;
-			cargoArtifacts = wasmDeps;
-			cargoExtraArgs = "-p ${crate} --locked";
-		  pname = crate;
-			version = cargoToml.package.version;
-		});
+			})) 
+		else let 
+		    crossDeterministicCommonArgs = (deterministicCommonArgs // {
+				CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUNNER = "qemu-system-x86_64";
+				depsBuildBuild = [
+					pkgs.qemu
+				];
+				nativeBuildInputs = [
+					pkgs.pkg-config
+				] ++ lib.optionals pkgs.stdenv.buildPlatform.isDarwin [
+					pkgs.libiconv
+					pkgs.darwin.apple_sdk_11_0.frameworks.CoreFoundation
+				];
+			});
+			cargoArtifacts = deterministicCraneLib.buildDepsOnly (crossDeterministicCommonArgs // {
+				inherit cargoExtraArgs;
+				pname = "happ-workspace";
+				version = "workspace";
+			});
+		  in (deterministicCraneLib.buildPackage (deterministicCommonArgs // {
+			inherit cargoArtifacts;
+		}));
 	in
 		runCommandLocal "${crate}-deterministic" {
 			meta = {
