@@ -68,19 +68,20 @@
             { crateCargoToml, holochain, workspacePath, excludedCrates ? [ ] }:
             let
               deterministicCraneLib = let
-#                system =;
-                              system = holochain.devShells.holonix.system;
+                #                system =;
+                system = holochain.devShells.holonix.system;
                 pkgs = import inputs.nixpkgs {
                   localSystem = system;
                   crossSystem = "x86_64-linux";
                   overlays = [ (import inputs.rust-overlay) ];
                 };
 
-                rustToolchain = (if system == "x86_64-linux" then pkgs else pkgs.pkgsBuildHost).rust-bin.stable."1.77.2".minimal.override {
-                  # Set the build targets supported by the toolchain,
-                  # wasm32-unknown-unknown is required for trunk.
-                  targets = [ "wasm32-unknown-unknown" ];
-                };
+                rustToolchain =
+                  pkgs.pkgsBuildHost.rust-bin.stable."1.77.2".minimal.override {
+                    # Set the build targets supported by the toolchain,
+                    # wasm32-unknown-unknown is required for trunk.
+                    targets = [ "wasm32-unknown-unknown" ];
+                  };
               in (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
 
               system = holochain.devShells.holonix.system;

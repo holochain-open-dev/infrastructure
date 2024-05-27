@@ -2,6 +2,7 @@ use std::path::PathBuf;
 
 use dialoguer::{theme::ColorfulTheme, Select};
 use file_tree_utils::{find_files_by_name, map_file, FileTree, FileTreeError, file_exists, file_content};
+use serde::{Serialize, Deserialize};
 use serde_json::{Map, Value};
 use thiserror::Error;
 
@@ -269,7 +270,7 @@ pub fn get_name_of_root_package(file_tree: &FileTree) -> Result<String, NpmScaff
     Ok(name.clone())
 }
 
-#[derive(Debug,Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum PackageManager {
 	Npm,
 	Pnpm,
