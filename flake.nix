@@ -1,6 +1,6 @@
 {
   inputs = {
-    crane.url = "github:ipetkov/crane";
+    crane.url = "github:ipetkov/crane/109987da061a1bf452f435f1653c47511587d919";
 
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
