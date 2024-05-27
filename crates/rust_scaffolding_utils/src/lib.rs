@@ -1,13 +1,9 @@
 use std::path::PathBuf;
 
-use dialoguer::{theme::ColorfulTheme, Select};
-use file_tree_utils::{
-    file_content, file_exists, find_files_by_name, map_file, FileTree, FileTreeError,
-};
-use thiserror::Error;
+use file_tree_utils::FileTreeError;
 
-#[derive(Error, Debug)]
-pub enum RustScaffoldingUtilsError {
+#[derive(thiserror::Error, Debug)]
+pub enum Error {
     #[error(transparent)]
     FileTreeError(#[from] FileTreeError),
 
@@ -27,34 +23,34 @@ pub enum RustScaffoldingUtilsError {
 pub fn add_member_to_workspace(
     cargo_toml: &(PathBuf, String),
     new_workspace_member: String,
-) -> Result<String, RustScaffoldingUtilsError> {
+) -> Result<String, Error> {
     let mut workspace_cargo_toml: toml::Value = toml::from_str(cargo_toml.1.as_str())?;
 
     let workspace_table = workspace_cargo_toml
         .as_table_mut()
-        .ok_or(RustScaffoldingUtilsError::MalformedCargoTomlError(
+        .ok_or(Error::MalformedCargoTomlError(
             cargo_toml.0.clone(),
             String::from("file does not conform to toml"),
         ))?
         .get_mut("workspace")
-        .ok_or(RustScaffoldingUtilsError::MalformedCargoTomlError(
+        .ok_or(Error::MalformedCargoTomlError(
             cargo_toml.0.clone(),
             String::from("no workspace table found in workspace root"),
         ))?
         .as_table_mut()
-        .ok_or(RustScaffoldingUtilsError::MalformedCargoTomlError(
+        .ok_or(Error::MalformedCargoTomlError(
             cargo_toml.0.clone(),
             String::from("workspace key is not a table"),
         ))?;
 
     let members = workspace_table
         .get_mut("members")
-        .ok_or(RustScaffoldingUtilsError::MalformedCargoTomlError(
+        .ok_or(Error::MalformedCargoTomlError(
             cargo_toml.0.clone(),
             String::from("should have a members field in the workspace table"),
         ))?
         .as_array_mut()
-        .ok_or(RustScaffoldingUtilsError::MalformedCargoTomlError(
+        .ok_or(Error::MalformedCargoTomlError(
             cargo_toml.0.clone(),
             String::from("the members field in the workspace table should be an array"),
         ))?;

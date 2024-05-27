@@ -4,9 +4,8 @@ use dialoguer::{theme::ColorfulTheme, Select};
 use file_tree_utils::{find_files_by_name, FileTree, FileTreeError};
 use holochain_types::{app::AppManifest, web_app::WebAppManifest};
 use mr_bundle::Manifest;
-use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error(transparent)]
     FileTreeError(#[from] FileTreeError),
