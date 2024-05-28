@@ -18,7 +18,7 @@ let
       pname = crate;
       version = "deps";
 
-      cargoVendorDir = (zomeCargoDeps { inherit craneLib; }).cargoVendorDir;
+      # cargoVendorDir = (zomeCargoDeps { inherit craneLib; }).cargoVendorDir;
       cargoArtifacts = (zomeCargoDeps { inherit craneLib; }).cargoArtifacts;
     });
 
