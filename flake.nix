@@ -107,12 +107,11 @@
 
             in cargoArtifacts;
 
-          holochainCargoDeps = { pkgs, lib, craneLib, debug ? false }:
+          holochainCargoArtifacts = { pkgs, src, lib, craneLib, debug ? false }:
             let
               commonArgs = {
                 doCheck = false;
-                src = craneLib.cleanCargoSource
-                  (craneLib.path ./nix/reference-happ);
+                inherit src;
                 buildInputs = [ pkgs.mold ]
                   ++ holochainAppDeps.buildInputs { inherit pkgs lib; };
                 nativeBuildInputs =
@@ -130,7 +129,7 @@
                 version = "for-holochain-0_3_rc";
               });
 
-            in { inherit cargoArtifacts cargoVendorDir; };
+            in cargoArtifacts;
 
           rustZome = { crateCargoToml, holochain, workspacePath }:
             let
@@ -162,7 +161,7 @@
               craneLib = holochainCraneLib { inherit system; };
             in pkgs.callPackage ./nix/sweettest.nix {
               inherit holochain dna craneLib workspacePath crateCargoToml
-                holochainCargoDeps;
+                holochainCargoArtifacts;
               nativeBuildInputs = holochainAppDeps.nativeBuildInputs {
                 inherit pkgs;
                 lib = pkgs.lib;
