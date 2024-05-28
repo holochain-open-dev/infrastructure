@@ -29,11 +29,8 @@ let
     cargoToml = crateCargoToml;
   };
 
-  wasm = craneLib.buildPackage (buildPackageCommonArgs // {
-    cargoVendorDir = (zomeCargoDeps { inherit craneLib; }).cargoVendorDir;
-    inherit cargoArtifacts;
-    # inherit cargoVendorDir;
-  });
+  wasm = craneLib.buildPackage
+    (buildPackageCommonArgs // { inherit cargoArtifacts; });
 
   deterministicWasm = let
     wasm = deterministicCraneLib.buildPackage (commonArgs // {
