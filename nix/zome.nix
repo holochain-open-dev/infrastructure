@@ -11,25 +11,27 @@ let
     src = craneLib.cleanCargoSource (craneLib.path workspacePath);
     CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
     cargoLock = workspacePath + /Cargo.lock;
+  };
+
+  cargoArtifacts = (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
+    (commonArgs // {
+      pname = crate;
+      version = "deps";
+
+      cargoArtifacts = (zomeCargoDeps { inherit craneLib; }).cargoArtifacts;
+    });
+
+  buildPackageCommonArgs = commonArgs // {
     cargoExtraArgs = "-p ${crate} --locked";
     pname = crate;
     version = cargoToml.package.version;
     cargoToml = crateCargoToml;
   };
 
-  cargoVendorDir = craneLib.vendorMultipleCargoDeps {
-    cargoConfigs = [
-      (builtins.trace
-        (zomeCargoDeps { inherit craneLib; }).cargoVendorDir.outPath
-        ((zomeCargoDeps { inherit craneLib; }).cargoVendorDir + ./config.toml))
-    ];
-    cargoLockList =
-      [ ./reference-happ/Cargo.lock (workspacePath + /Cargo.lock) ];
-  };
-
-  wasm = craneLib.buildPackage (commonArgs // {
-    cargoArtifacts = (zomeCargoDeps { inherit craneLib; }).cargoArtifacts;
-    inherit cargoVendorDir;
+  wasm = craneLib.buildPackage (buildPackageCommonArgs // {
+    cargoVendorDir = (zomeCargoDeps { inherit craneLib; }).cargoVendorDir;
+    inherit cargoArtifacts;
+    # inherit cargoVendorDir;
   });
 
   deterministicWasm = let

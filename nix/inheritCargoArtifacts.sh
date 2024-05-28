@@ -1,111 +1,103 @@
-prepareAndInstallCargoArtifactsDir
-  
-compressAndInstallCargoArtifactsDir() {
-  local dir="${1:?destination directory not defined}"
-  local cargoTargetDir="${2:?cargoTargetDir not defined}"
-  local prevArtifacts="${3}"
+inheritCargoArtifacts
 
-  mkdir -p "${dir}"
-
-  local dest="${dir}/target.tar.zst"
-  (
-    export SOURCE_DATE_EPOCH=1
-
-    dynTar() (
-      cd "${cargoTargetDir}"
-      if [ -n "${doCompressAndInstallFullArchive}" ]; then
-        >&2 echo "compressing and installing full archive of ${cargoTargetDir} to ${dest} as requested"
-        tar "$@" .
-      elif [ "$(uname -s)" == "Darwin" ]; then
-        # https://github.com/rust-lang/rust/issues/115982
-        >&2 echo "incremental zstd compression not currently supported on Darwin: https://github.com/rust-lang/rust/issues/115982"
-        >&2 echo "doing a full archive install of ${cargoTargetDir} to ${dest}"
-        tar "$@" .
-      elif [ -z "${prevArtifacts}" ]; then
-        >&2 echo "no previous artifacts found, compressing and installing full archive of ${cargoTargetDir} to ${dest}"
-        tar "$@" .
-      else
-        >&2 echo "linking previous artifacts ${prevArtifacts} to ${dest}"
-        ln -s "${prevArtifacts}" "${dest}.prev"
-        touch -d @${SOURCE_DATE_EPOCH} "${TMPDIR}/.crane.source-date-epoch"
-        tar \
-          --null \
-          --no-recursion \
-          -T <(find . -newer "${TMPDIR}/.crane.source-date-epoch" -print0) \
-          "$@"
-      fi
-    )
-
-    dynTar \
-      --sort=name \
-      --mtime="@${SOURCE_DATE_EPOCH}" \
-      --owner=0 \
-      --group=0 \
-      --mode=u+w \
-      --numeric-owner \
-      --pax-option=exthdr.name=%d/PaxHeaders/%f,delete=atime,delete=ctime \
-      -c | zstd "-T${NIX_BUILD_CORES:-0}" -o "${dest}" ${zstdCompressionExtraArgs:-}
-  )
-}
-
-dedupAndInstallCargoArtifactsDir() {
-  local dest="${1:?destination directory not defined}"
-  local cargoTargetDir="${2:?cargoTargetDir not defined}"
-  local prevCargoTargetDir="${3:?prevCargoTargetDir not defined}"
-
-  mkdir -p "${dest}"
-
-  if [ -d "${prevCargoTargetDir}" ]; then
-    echo "symlinking duplicates in ${cargoTargetDir} to ${prevCargoTargetDir}"
-
-    while read -r fullTargetFile; do
-      # Strip the common prefix of the current target directory
-      local targetFile="${fullTargetFile#"${cargoTargetDir}"}"
-      # Join the path and ensure we don't have a duplicate `/` separator
-      local candidateOrigFile="${prevCargoTargetDir}/${targetFile#/}"
-
-      if cmp --silent "${candidateOrigFile}" "${fullTargetFile}"; then
-        ln --symbolic --force --logical "${candidateOrigFile}" "${fullTargetFile}"
-      fi
-    done < <(find "${cargoTargetDir}" -type f)
-  fi
-
-  echo installing "${cargoTargetDir}" to "${dest}"
-  mv "${cargoTargetDir}" --target-directory="${dest}"
-}
-
-prepareAndInstallCargoArtifactsDir() {
+inheritCargoArtifacts() {
   # Allow for calling with customized parameters
   # or fall back to defaults if none are provided
-  local dir="${1:-${out}}"
+  local preparedArtifacts="${1:-${cargoArtifacts:?not defined}}"
   local cargoTargetDir="${2:-${CARGO_TARGET_DIR:-target}}"
-  local mode="${3:-${installCargoArtifactsMode:-use-zstd}}"
-  local prevCargoArtifacts="${4:-${cargoArtifacts:""}}"
 
-  mkdir -p "${dir}"
+  if [ -d "${preparedArtifacts}" ]; then
+    local candidateTarZst="${preparedArtifacts}/target.tar.zst"
+    local candidateTargetDir="${preparedArtifacts}/target"
 
-  case "${mode}" in
-    "use-zstd")
-      local prevCandidateTarZst="${prevCargoArtifacts}/target.tar.zst"
-      if [ -f "${prevCandidateTarZst}" ]; then
-        local prevCargoArtifacts="${prevCandidateTarZst}"
-      fi
-      compressAndInstallCargoArtifactsDir "${dir}" "${cargoTargetDir}" "${prevCargoArtifacts}"
-      ;;
+    if [ -f "${candidateTarZst}" ]; then
+      local preparedArtifacts="${candidateTarZst}"
+    elif [ -d "${candidateTargetDir}" ]; then
+      local preparedArtifacts="${candidateTargetDir}"
+    fi
+  fi
 
-    "use-symlink")
-      # Placeholder if previous artifacts aren't present
-      local prevCargoTargetDir="/dev/null"
-      if [ -n "${prevCargoArtifacts}" ] && [ -d "${prevCargoArtifacts}/target" ]; then
-        local prevCargoTargetDir="${prevCargoArtifacts}/target"
-      fi
+  mkdir -p "${cargoTargetDir}"
+  if [ -f "${preparedArtifacts}" ]; then
 
-      dedupAndInstallCargoArtifactsDir "${dir}" "${cargoTargetDir}" "${prevCargoTargetDir}"
-      ;;
+    local prevArtifactsCandidate="${preparedArtifacts}.prev"
+    if [ -f "${prevArtifactsCandidate:-}" ]; then
+      inheritCargoArtifacts "$(realpath "${prevArtifactsCandidate}")" "$cargoTargetDir"
+    fi
 
-    *)
-      echo "unknown mode: \"${mode}\""
-      false
-      ;;
-  esac
+    echo "decompressing cargo artifacts from ${preparedArtifacts} to ${cargoTargetDir}"
+    mkdir -p "${cargoTargetDir}"
+    zstd -d "${preparedArtifacts}" --stdout | \
+      tar -x -C "${cargoTargetDir}"
+  elif [ -d "${preparedArtifacts}" ]; then
+    echo "copying cargo artifacts from ${preparedArtifacts} to ${cargoTargetDir}"
+
+    if [ -n "${doNotLinkInheritedArtifacts}" ]; then
+      echo 'will deep copy artifacts (instead of symlinking) as requested'
+
+      # Notes:
+      # - --dereference to follow and deeply resolve any symlinks
+      # - --no-target-directory to avoid nesting (i.e. `./target/target`)
+      # - preserve timestamps to avoid rebuilding
+      # - no-preserve ownership (root) so we can make the files writable
+      cp -r "${preparedArtifacts}" \
+        --dereference \
+        --no-target-directory "${cargoTargetDir}" \
+        --preserve=timestamps \
+        --no-preserve=ownership
+
+      # Keep existing permissions (e.g. exectuable), but also make things writable
+      # since the store is read-only and cargo would otherwise choke
+      chmod -R u+w "${cargoTargetDir}"
+
+      # NB: cargo also doesn't like it if `.cargo-lock` files remain with a
+      # timestamp in the distant past so we need to delete them here
+      find "${cargoTargetDir}" -name '.cargo-lock' -delete
+    else
+      # Dependency .rlib and .rmeta files are content addressed and thus are not written to after
+      # being built (since changing `Cargo.lock` would rebuild everything anyway), which makes them
+      # good candidates for symlinking (esp. since they can make up 60-70% of the artifact directory
+      # on most projects). Thus we ignore them when copying all other artifacts below as we will
+      # symlink them afterwards. Note that we scope these checks to the `/deps` subdirectory; the
+      # workspace's own .rlib and .rmeta files appear one directory up (and these may require being
+      # writable depending on how the actual workspace build is being invoked, so we'll leave them
+      # alone).
+      #
+      # NB: keep the executable bit only if set on the original file
+      # but make all files writable as sometimes read-only files will make the build choke
+      #
+      # NB: cargo also doesn't like it if `.cargo-lock` files remain with a
+      # timestamp in the distant past so we avoid copying them here
+      rsync \
+        --recursive \
+        --links \
+        --times \
+        --chmod=u+w \
+        --executability \
+        --exclude 'deps/*.rlib' \
+        --exclude 'deps/*.rmeta' \
+        --exclude '.cargo-lock' \
+        "${preparedArtifacts}/" \
+        "${cargoTargetDir}/"
+
+      local linkCandidates=$(mktemp linkCandidatesXXXX.txt)
+      find "${preparedArtifacts}" \
+        '(' -path '*/deps/*.rlib' -or -path '*/deps/*.rmeta' ')' \
+        -printf "%P\n" \
+        >"${linkCandidates}"
+
+      # Next create any missing directories up front so we can avoid redundant checks later
+      cat "${linkCandidates}" \
+        | xargs --no-run-if-empty -n1 dirname \
+        | sort -u \
+        | (cd "${cargoTargetDir}"; xargs --no-run-if-empty mkdir -p)
+
+      # Lastly do the actual symlinking
+      cat "${linkCandidates}" \
+        | xargs -P ${NIX_BUILD_CORES} -I '##{}##' ln -s "${preparedArtifacts}/##{}##" "${cargoTargetDir}/##{}##"
+    fi
+  else
+    echo unable to copy cargo artifacts, \"${preparedArtifacts}\" looks invalid
+    false
+  fi
 }
