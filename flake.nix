@@ -92,24 +92,20 @@
                 (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
             in craneLib;
 
-          zomeCargoDeps = { craneLib, debug ? false }:
+          zomeCargoArtifacts = { craneLib, src, debug ? false }:
             let
               commonArgs = {
                 doCheck = false;
-                src = craneLib.cleanCargoSource
-                  (craneLib.path ./nix/reference-happ);
+                inherit src;
                 CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
                 CARGO_PROFILE = if debug then "debug" else "release";
               };
-
-              cargoVendorDir = craneLib.vendorCargoDeps commonArgs;
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-                inherit cargoVendorDir;
                 pname = "zome";
                 version = "for-holochain-0_3_rc";
               });
 
-            in { inherit cargoArtifacts cargoVendorDir; };
+            in cargoArtifacts;
 
           holochainCargoDeps = { pkgs, lib, craneLib, debug ? false }:
             let
@@ -157,7 +153,7 @@
 
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
-                workspacePath zomeCargoDeps;
+                workspacePath zomeCargoArtifacts;
             };
           sweettest = { holochain, dna, workspacePath, crateCargoToml }:
             let
@@ -244,42 +240,42 @@
           '';
         };
 
-        devShells.zomeDev = let
-          configureCargoVendoredDepsHook =
-            pkgs.writeShellScriptBin "configureCargoVendoredDeps"
-            (builtins.readFile ./nix/configureCargoVendoredDepsHook.sh);
-          inheritCargoArtifacts =
-            pkgs.writeShellScriptBin "inheritCargoArtifacts"
-            (builtins.readFile ./nix/inheritCargoArtifacts.sh);
-          craneLib = flake.lib.holochainCraneLib { inherit system; };
-          zomeDeps = flake.lib.zomeCargoDeps { inherit craneLib; };
-        in pkgs.mkShell {
-          packages = [ configureCargoVendoredDepsHook inheritCargoArtifacts ];
+        # devShells.zomeDev = let
+        #   configureCargoVendoredDepsHook =
+        #     pkgs.writeShellScriptBin "configureCargoVendoredDeps"
+        #     (builtins.readFile ./nix/configureCargoVendoredDepsHook.sh);
+        #   inheritCargoArtifacts =
+        #     pkgs.writeShellScriptBin "inheritCargoArtifacts"
+        #     (builtins.readFile ./nix/inheritCargoArtifacts.sh);
+        #   craneLib = flake.lib.holochainCraneLib { inherit system; };
+        #   zomeDeps = flake.lib.zomeCargoDeps { inherit craneLib; };
+        # in pkgs.mkShell {
+        #   packages = [ configureCargoVendoredDepsHook inheritCargoArtifacts ];
 
-          shellHook = ''
-            cargoVendorDir=${zomeDeps.cargoVendorDir} configureCargoVendoredDeps
-            cargoArtifacts=${zomeDeps.cargoArtifacts} inheritCargoArtifacts
-          '';
-        };
+        #   shellHook = ''
+        #     cargoVendorDir=${zomeDeps.cargoVendorDir} configureCargoVendoredDeps
+        #     cargoArtifacts=${zomeDeps.cargoArtifacts} inheritCargoArtifacts
+        #   '';
+        # };
 
-        devShells.sweettestDev = let
-          configureCargoVendoredDepsHook =
-            pkgs.writeShellScriptBin "configureCargoVendoredDeps"
-            (builtins.readFile ./nix/configureCargoVendoredDepsHook.sh);
-          inheritCargoArtifacts =
-            pkgs.writeShellScriptBin "inheritCargoArtifacts"
-            (builtins.readFile ./nix/inheritCargoArtifacts.sh);
-          craneLib = flake.lib.holochainCraneLib { inherit system; };
-          holochainDeps =
-            pkgs.callPackage flake.lib.holochainCargoDeps { inherit craneLib; };
-        in pkgs.mkShell {
-          packages = [ configureCargoVendoredDepsHook inheritCargoArtifacts ];
+        # devShells.sweettestDev = let
+        #   configureCargoVendoredDepsHook =
+        #     pkgs.writeShellScriptBin "configureCargoVendoredDeps"
+        #     (builtins.readFile ./nix/configureCargoVendoredDepsHook.sh);
+        #   inheritCargoArtifacts =
+        #     pkgs.writeShellScriptBin "inheritCargoArtifacts"
+        #     (builtins.readFile ./nix/inheritCargoArtifacts.sh);
+        #   craneLib = flake.lib.holochainCraneLib { inherit system; };
+        #   holochainDeps =
+        #     pkgs.callPackage flake.lib.holochainCargoDeps { inherit craneLib; };
+        # in pkgs.mkShell {
+        #   packages = [ configureCargoVendoredDepsHook inheritCargoArtifacts ];
 
-          shellHook = ''
-            cargoVendorDir=${holochainDeps.cargoVendorDir} configureCargoVendoredDeps
-            cargoArtifacts=${holochainDeps.cargoArtifacts} inheritCargoArtifacts
-          '';
-        };
+        #   shellHook = ''
+        #     cargoVendorDir=${holochainDeps.cargoVendorDir} configureCargoVendoredDeps
+        #     cargoArtifacts=${holochainDeps.cargoArtifacts} inheritCargoArtifacts
+        #   '';
+        # };
 
         packages.sync-npm-git-dependencies-with-nix = let
           craneLib = inputs.crane.mkLib pkgs;

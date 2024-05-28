@@ -1,43 +1,32 @@
-{ pkgs, runCommandLocal, runCommandNoCC, binaryen, deterministicCraneLib
-, craneLib, workspacePath, crateCargoToml, zomeCargoDeps }:
+{ zomeCargoArtifacts, pkgs, runCommandLocal, runCommandNoCC, binaryen
+, deterministicCraneLib, craneLib, workspacePath, crateCargoToml }:
 
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
   crate = cargoToml.package.name;
 
+  src = craneLib.cleanCargoSource (craneLib.path workspacePath);
   commonArgs = {
-    strictDeps = true;
     doCheck = false;
-    src = craneLib.cleanCargoSource (craneLib.path workspacePath);
+    inherit src;
     CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
-    cargoLock = workspacePath + /Cargo.lock;
-  };
-
-  cargoArtifacts = (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
-    (commonArgs // {
-      pname = crate;
-      version = "deps";
-
-      # cargoVendorDir = (zomeCargoDeps { inherit craneLib; }).cargoVendorDir;
-      cargoArtifacts = (zomeCargoDeps { inherit craneLib; }).cargoArtifacts;
-    });
-
-  buildPackageCommonArgs = commonArgs // {
     cargoExtraArgs = "-p ${crate} --locked";
     pname = crate;
     version = cargoToml.package.version;
     cargoToml = crateCargoToml;
+    cargoLock = workspacePath + /Cargo.lock;
   };
 
-  wasm = craneLib.buildPackage
-    (buildPackageCommonArgs // { inherit cargoArtifacts; });
+  wasm = craneLib.buildPackage (commonArgs // {
+    cargoArtifacts = zomeCargoArtifacts { inherit craneLib src; };
+  });
 
   deterministicWasm = let
     wasm = deterministicCraneLib.buildPackage (commonArgs // {
-      cargoArtifacts =
-        (zomeCargoDeps { craneLib = deterministicCraneLib; }).cargoArtifacts;
-      cargoVendorDir =
-        (zomeCargoDeps { craneLib = deterministicCraneLib; }).cargoVendorDir;
+      cargoArtifacts = zomeCargoArtifacts {
+        inherit src;
+        craneLib = deterministicCraneLib;
+      };
     });
   in runCommandLocal "${crate}-deterministic" {
     meta = { holochainPackageType = "zome"; };
