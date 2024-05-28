@@ -18,6 +18,11 @@ let
   };
 
   cargoVendorDir = craneLib.vendorMultipleCargoDeps {
+    cargoConfigs = [
+      (builtins.trace
+        (zomeCargoDeps { inherit craneLib; }).cargoVendorDir.outPath
+        ((zomeCargoDeps { inherit craneLib; }).cargoVendorDir + ./config.toml))
+    ];
     cargoLockList =
       [ ./reference-happ/Cargo.lock (workspacePath + /Cargo.lock) ];
   };
@@ -25,7 +30,6 @@ let
   wasm = craneLib.buildPackage (commonArgs // {
     cargoArtifacts = (zomeCargoDeps { inherit craneLib; }).cargoArtifacts;
     inherit cargoVendorDir;
-    # = (zomeCargoDeps { inherit craneLib; }).cargoVendorDir;
   });
 
   deterministicWasm = let

@@ -240,6 +240,9 @@ pub fn register_case_helpers<'a>(mut h: Handlebars<'a>) -> Handlebars<'a> {
     handlebars_helper!(pascal_case: |s: String| s.to_case(Case::Pascal));
     h.register_helper("pascal_case", Box::new(pascal_case));
 
+    handlebars_helper!(flat_case: |s: String| s.to_case(Case::Flat));
+    h.register_helper("flat_case", Box::new(flat_case));
+
     h
 }
 
