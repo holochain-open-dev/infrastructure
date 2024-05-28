@@ -1,17 +1,9 @@
-{ crateNameFromCargoToml
-, lib
-, mkCargoDerivation
-, mkDummySrc
-, vendorCargoDeps
-}:
+{ crateNameFromCargoToml, lib, mkCargoDerivation, mkDummySrc, vendorCargoDeps }:
 
 { cargoBuildCommand ? "cargoWithProfile build"
-, cargoCheckCommand ? "cargoWithProfile check"
-, cargoExtraArgs ? "--locked"
-, cargoTestCommand ? "cargoWithProfile test"
-, cargoTestExtraArgs ? "--no-run"
-, ...
-}@args:
+, cargoCheckCommand ? "cargoWithProfile check", cargoExtraArgs ? "--locked"
+, cargoTestCommand ? "cargoWithProfile test", cargoTestExtraArgs ? "--no-run"
+, ... }@args:
 let
   crateName = crateNameFromCargoToml args;
   cleanedArgs = builtins.removeAttrs args [
@@ -29,18 +21,15 @@ let
   # Run tests by default to ensure we cache any dev-dependencies
   doCheck = args.doCheck or true;
 
-  cargoCheckExtraArgs = args.cargoCheckExtraArgs or (if doCheck then "--all-targets" else "");
+  cargoCheckExtraArgs =
+    args.cargoCheckExtraArgs or (if doCheck then "--all-targets" else "");
 
-  dummySrc =
-    if args ? dummySrc then
-      lib.warnIf
-        (args ? src && args.src != null)
-        "buildDepsOnly will ignore `src` when `dummySrc` is specified"
-        args.dummySrc
-    else
-      mkDummySrc args;
-in
-mkCargoDerivation (cleanedArgs // {
+  dummySrc = if args ? dummySrc then
+    lib.warnIf (args ? src && args.src != null)
+    "buildDepsOnly will ignore `src` when `dummySrc` is specified" args.dummySrc
+  else
+    mkDummySrc args;
+in mkCargoDerivation (cleanedArgs // {
   inherit doCheck;
 
   src = dummySrc;
@@ -48,7 +37,6 @@ mkCargoDerivation (cleanedArgs // {
   pname = args.pname or crateName.pname;
   version = args.version or crateName.version;
 
-  cargoArtifacts = null;
   cargoVendorDir = args.cargoVendorDir or (vendorCargoDeps args);
 
   # First we run `cargo check` to cache cargo's internal artifacts, fingerprints, etc. for all deps.
