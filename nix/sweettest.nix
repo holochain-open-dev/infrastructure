@@ -17,4 +17,6 @@ in craneLib.cargoNextest {
   cargoNextestExtraArgs = "-p ${crate} --locked -j 1";
 
   DNA_PATH = dna;
+
+  meta = { inherit cargoArtifacts; };
 }
