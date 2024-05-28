@@ -1,16 +1,7 @@
 { runCommandLocal, runCommandNoCC, binaryen, deterministicCraneLib, craneLib
-, workspacePath, system, lib, pkgs, crateCargoToml, excludedCrates }:
+, workspacePath, crateCargoToml, zomeCargoDeps }:
 
 let
-  cargoExtraArgs = "--workspace ${
-      if excludedCrates != null then
-        builtins.concatStringsSep " "
-        (builtins.map (excludedCrate: "--exclude ${excludedCrate}")
-          excludedCrates)
-      else
-        ""
-    }";
-
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
   crate = cargoToml.package.name;
 
@@ -19,51 +10,40 @@ let
     doCheck = false;
     src = craneLib.cleanCargoSource (craneLib.path workspacePath);
     CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
-  };
-
-  wasmDeps = craneLib.buildDepsOnly (commonArgs // {
-    inherit cargoExtraArgs;
-    pname = "happ-workspace";
-    version = "workspace";
-  });
-  wasm = craneLib.buildPackage (commonArgs // {
-    cargoToml = crateCargoToml;
     cargoLock = workspacePath + /Cargo.lock;
-    cargoArtifacts = wasmDeps;
     cargoExtraArgs = "-p ${crate} --locked";
     pname = crate;
     version = cargoToml.package.version;
+    cargoToml = crateCargoToml;
+  };
+
+  wasm = craneLib.buildPackage (commonArgs // {
+    cargoArtifacts = (zomeCargoDeps { inherit craneLib; }).cargoArtifacts;
+    cargoVendorDir = (zomeCargoDeps { inherit craneLib; }).cargoVendorDir;
   });
-  debug = runCommandLocal "${crate}-debug" {
-    meta = { holochainPackageType = "zome"; };
-  } ''
-    cp ${wasm}/lib/${crate}.wasm $out 
-  '';
 
   deterministicWasm = let
-    wasmDeps = deterministicCraneLib.buildDepsOnly (commonArgs // {
-      inherit cargoExtraArgs;
-      pname = "happ-workspace";
-      version = "workspace";
-    });
-
     wasm = deterministicCraneLib.buildPackage (commonArgs // {
-      cargoArtifacts = wasmDeps;
-      cargoToml = crateCargoToml;
-      cargoLock = workspacePath + /Cargo.lock;
-      cargoExtraArgs = "-p ${crate} --locked";
-      pname = crate;
-      version = cargoToml.package.version;
+      cargoArtifacts =
+        (zomeCargoDeps { craneLib = deterministicCraneLib; }).cargoArtifacts;
+      cargoVendorDir =
+        (zomeCargoDeps { craneLib = deterministicCraneLib; }).cargoVendorDir;
     });
   in runCommandLocal "${crate}-deterministic" {
     meta = { holochainPackageType = "zome"; };
   } "	cp ${wasm}/lib/${crate}.wasm $out \n";
-in runCommandNoCC crate {
-  meta = {
-    inherit debug;
-    holochainPackageType = "zome";
-  };
-  buildInputs = [ binaryen ];
-} ''
-  wasm-opt --strip-debug -Oz -o $out ${deterministicWasm}
-''
+  release = runCommandNoCC crate {
+    meta = { holochainPackageType = "zome"; };
+    buildInputs = [ binaryen ];
+  } ''
+    wasm-opt --strip-debug -Oz -o $out ${deterministicWasm}
+  '';
+  debug = runCommandLocal "${crate}-debug" {
+    meta = {
+      holochainPackageType = "zome";
+      inherit release;
+    };
+  } ''
+    cp ${wasm}/lib/${crate}.wasm $out 
+  '';
+in debug

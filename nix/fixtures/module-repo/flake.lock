@@ -158,7 +158,7 @@
     "crane_2": {
       "inputs": {
         "nixpkgs": [
-          "hcUtils",
+          "hc-infra",
           "holochain",
           "nixpkgs"
         ]
@@ -631,6 +631,29 @@
     },
     "hc-infra": {
       "inputs": {
+        "crane": "crane",
+        "holochain": "holochain",
+        "nixpkgs": [
+          "hc-infra",
+          "holochain",
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay_2",
+        "versions": "versions"
+      },
+      "locked": {
+        "lastModified": 0,
+        "narHash": "sha256-r8WIVGCOpw31Y4k2xt/UYmm1vlV6s9oLplzC/Fzo91k=",
+        "path": "../../..",
+        "type": "path"
+      },
+      "original": {
+        "path": "../../..",
+        "type": "path"
+      }
+    },
+    "hc-infra_2": {
+      "inputs": {
         "crane": "crane_4",
         "holochain": "holochain_4",
         "nixpkgs": [
@@ -656,29 +679,6 @@
         "type": "github"
       }
     },
-    "hcUtils": {
-      "inputs": {
-        "crane": "crane",
-        "holochain": "holochain",
-        "nixpkgs": [
-          "hcUtils",
-          "holochain",
-          "nixpkgs"
-        ],
-        "rust-overlay": "rust-overlay_2",
-        "versions": "versions"
-      },
-      "locked": {
-        "lastModified": 0,
-        "narHash": "sha256-1DBVfnVsoF0BKhgZVmIA6lqDDp2RIyyaOUi9P1Ej9ME=",
-        "path": "../../..",
-        "type": "path"
-      },
-      "original": {
-        "path": "../../..",
-        "type": "path"
-      }
-    },
     "holochain": {
       "inputs": {
         "cargo-chef": "cargo-chef",
@@ -689,17 +689,17 @@
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "holochain": [
-          "hcUtils",
+          "hc-infra",
           "holochain",
           "empty"
         ],
         "lair": [
-          "hcUtils",
+          "hc-infra",
           "holochain",
           "empty"
         ],
         "launcher": [
-          "hcUtils",
+          "hc-infra",
           "holochain",
           "empty"
         ],
@@ -709,12 +709,12 @@
         "repo-git": "repo-git",
         "rust-overlay": "rust-overlay",
         "scaffolding": [
-          "hcUtils",
+          "hc-infra",
           "holochain",
           "empty"
         ],
         "versions": [
-          "hcUtils",
+          "hc-infra",
           "versions"
         ]
       },
@@ -1385,7 +1385,7 @@
     },
     "profiles": {
       "inputs": {
-        "hc-infra": "hc-infra",
+        "hc-infra": "hc-infra_2",
         "holochain": "holochain_6",
         "nixpkgs": [
           "profiles",
@@ -1459,7 +1459,7 @@
     },
     "root": {
       "inputs": {
-        "hcUtils": "hcUtils",
+        "hc-infra": "hc-infra",
         "holochain": "holochain_3",
         "nixpkgs": [
           "holochain",
@@ -1473,7 +1473,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": [
-          "hcUtils",
+          "hc-infra",
           "holochain",
           "nixpkgs"
         ]
@@ -1496,16 +1496,16 @@
       "inputs": {
         "flake-utils": "flake-utils_2",
         "nixpkgs": [
-          "hcUtils",
+          "hc-infra",
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1716776264,
-        "narHash": "sha256-fYzMk5o//g5Wt1g0FyOC8/XVllbGdVdzdylXxcanakU=",
+        "lastModified": 1716862669,
+        "narHash": "sha256-7oTPM9lcdwiI1cpRC313B+lHawocgpY5F07N+Rbm5Uk=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "8ef3f6a8f5af867ab5f75fc86fbd934a6351820b",
+        "rev": "47b2d15658b37716393b2463a019000dbd6ce4bc",
         "type": "github"
       },
       "original": {

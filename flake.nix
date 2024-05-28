@@ -64,8 +64,81 @@
           filterHapps = filterByHolochainPackageType "happ";
           filterNpmPackages = filterByHolochainPackageType "npm";
 
-          rustZome =
-            { crateCargoToml, holochain, workspacePath, excludedCrates ? [ ] }:
+          holochainPkgs = { system }:
+            let
+
+              pkgs = import inputs.nixpkgs {
+                inherit system;
+                overlays = [ (import inputs.rust-overlay) ];
+              };
+            in pkgs;
+
+          holochainRustToolchain = { system }:
+            let
+              pkgs = holochainPkgs { inherit system; };
+
+              rustToolchain = pkgs.rust-bin.stable."1.77.2".minimal.override {
+                # Set the build targets supported by the toolchain,
+                # wasm32-unknown-unknown is required for trunk.
+                targets = [ "wasm32-unknown-unknown" ];
+              };
+            in rustToolchain;
+
+          holochainCraneLib = { system }:
+            let
+              pkgs = holochainPkgs { inherit system; };
+              rustToolchain = holochainRustToolchain { inherit system; };
+              craneLib =
+                (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
+            in craneLib;
+
+          zomeCargoDeps = { craneLib, debug ? false }:
+            let
+              commonArgs = {
+                doCheck = false;
+                src = craneLib.cleanCargoSource
+                  (craneLib.path ./nix/reference-happ);
+                CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
+                CARGO_PROFILE = if debug then "debug" else "release";
+              };
+
+              cargoVendorDir = craneLib.vendorCargoDeps commonArgs;
+              cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
+                inherit cargoVendorDir;
+                pname = "zome";
+                version = "for-holochain-0_3_rc";
+              });
+
+            in { inherit cargoArtifacts cargoVendorDir; };
+
+          holochainCargoDeps = { pkgs, lib, craneLib, debug ? false }:
+            let
+              commonArgs = {
+                doCheck = false;
+                src = craneLib.cleanCargoSource
+                  (craneLib.path ./nix/reference-happ);
+                buildInputs = [ pkgs.mold ]
+                  ++ holochainAppDeps.buildInputs { inherit pkgs lib; };
+                nativeBuildInputs =
+                  holochainAppDeps.nativeBuildInputs { inherit pkgs lib; };
+                CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
+                  " -Clink-arg=-fuse-ld=mold";
+                # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
+                #   " -Clink-arg=-fuse-ld=mold -Clink-arg=-fuse-ld=mold";
+                CARGO_PROFILE = if debug then "debug" else "release";
+              };
+
+              cargoVendorDir = craneLib.vendorCargoDeps commonArgs;
+              cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
+                inherit cargoVendorDir;
+                cargoExtraArgs = " --tests ";
+                pname = "sweettest";
+                version = "for-holochain-0_3_rc";
+              });
+
+            in { inherit cargoArtifacts cargoVendorDir; };
+
+          rustZome = { crateCargoToml, holochain, workspacePath }:
             let
               deterministicCraneLib = let
                 pkgs = import inputs.nixpkgs {
@@ -81,57 +154,41 @@
               in (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
 
               system = holochain.devShells.holonix.system;
-              pkgs = import inputs.nixpkgs {
-                inherit system;
-                overlays = [ (import inputs.rust-overlay) ];
-              };
-
-              rustToolchain = pkgs.rust-bin.stable."1.77.2".minimal.override {
-                # Set the build targets supported by the toolchain,
-                # wasm32-unknown-unknown is required for trunk.
-                targets = [ "wasm32-unknown-unknown" ];
-              };
-              craneLib =
-                (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
+              pkgs = holochainPkgs { inherit system; };
+              craneLib = holochainCraneLib { inherit system; };
 
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
-                excludedCrates workspacePath;
+                workspacePath zomeCargoDeps;
             };
           sweettest = { holochain, dna, workspacePath, crateCargoToml }:
             let
               system = holochain.devShells.holonix.system;
-              pkgs = import inputs.nixpkgs {
-                inherit system;
-                overlays = [ (import inputs.rust-overlay) ];
-              };
-              rustToolchain = pkgs.rust-bin.stable."1.77.2".minimal.override {
-                # Set the build targets supported by the toolchain,
-                # wasm32-unknown-unknown is required for trunk.
-                targets = [ "wasm32-unknown-unknown" ];
-              };
-              craneLib =
-                (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
+              pkgs = holochainPkgs { inherit system; };
+              craneLib = holochainCraneLib { inherit system; };
             in pkgs.callPackage ./nix/sweettest.nix {
-              inherit holochain dna craneLib workspacePath crateCargoToml;
+              inherit holochain dna craneLib workspacePath crateCargoToml
+                holochainCargoDeps;
+              nativeBuildInputs = holochainAppDeps.nativeBuildInputs {
+                inherit pkgs;
+                lib = pkgs.lib;
+              };
+              buildInputs = [ pkgs.mold ] ++ holochainAppDeps.buildInputs {
+                inherit pkgs;
+                lib = pkgs.lib;
+              };
             };
           dna = { holochain, dnaManifest, zomes }:
             let
               system = holochain.devShells.holonix.system;
-              pkgs = import inputs.nixpkgs {
-                inherit system;
-                overlays = [ (import inputs.rust-overlay) ];
-              };
+              pkgs = holochainPkgs { inherit system; };
             in pkgs.callPackage ./nix/dna.nix {
               inherit zomes holochain dnaManifest;
             };
           happ = { holochain, happManifest, dnas }:
             let
               system = holochain.devShells.holonix.system;
-              pkgs = import inputs.nixpkgs {
-                inherit system;
-                overlays = [ (import inputs.rust-overlay) ];
-              };
+              pkgs = holochainPkgs { inherit system; };
             in pkgs.callPackage ./nix/happ.nix {
               inherit dnas holochain happManifest;
             };
@@ -186,6 +243,43 @@
 
           shellHook = ''
             sync-npm-git-dependencies-with-nix
+          '';
+        };
+
+        devShells.zomeDev = let
+          configureCargoVendoredDepsHook =
+            pkgs.writeShellScriptBin "configureCargoVendoredDeps"
+            (builtins.readFile ./nix/configureCargoVendoredDepsHook.sh);
+          inheritCargoArtifacts =
+            pkgs.writeShellScriptBin "inheritCargoArtifacts"
+            (builtins.readFile ./nix/inheritCargoArtifacts.sh);
+          craneLib = flake.lib.holochainCraneLib { inherit system; };
+          zomeDeps = flake.lib.zomeCargoDeps { inherit craneLib; };
+        in pkgs.mkShell {
+          packages = [ configureCargoVendoredDepsHook inheritCargoArtifacts ];
+
+          shellHook = ''
+            cargoVendorDir=${zomeDeps.cargoVendorDir} configureCargoVendoredDeps
+            cargoArtifacts=${zomeDeps.cargoArtifacts} inheritCargoArtifacts
+          '';
+        };
+
+        devShells.sweettestDev = let
+          configureCargoVendoredDepsHook =
+            pkgs.writeShellScriptBin "configureCargoVendoredDeps"
+            (builtins.readFile ./nix/configureCargoVendoredDepsHook.sh);
+          inheritCargoArtifacts =
+            pkgs.writeShellScriptBin "inheritCargoArtifacts"
+            (builtins.readFile ./nix/inheritCargoArtifacts.sh);
+          craneLib = flake.lib.holochainCraneLib { inherit system; };
+          holochainDeps =
+            pkgs.callPackage flake.lib.holochainCargoDeps { inherit craneLib; };
+        in pkgs.mkShell {
+          packages = [ configureCargoVendoredDepsHook inheritCargoArtifacts ];
+
+          shellHook = ''
+            cargoVendorDir=${holochainDeps.cargoVendorDir} configureCargoVendoredDeps
+            cargoArtifacts=${holochainDeps.cargoArtifacts} inheritCargoArtifacts
           '';
         };
 
