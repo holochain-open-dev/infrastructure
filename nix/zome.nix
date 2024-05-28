@@ -1,5 +1,5 @@
-{ runCommandLocal, runCommandNoCC, binaryen, deterministicCraneLib, craneLib
-, workspacePath, crateCargoToml, zomeCargoDeps }:
+{ pkgs, runCommandLocal, runCommandNoCC, binaryen, deterministicCraneLib
+, craneLib, workspacePath, crateCargoToml, zomeCargoDeps }:
 
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
@@ -17,9 +17,15 @@ let
     cargoToml = crateCargoToml;
   };
 
+  cargoVendorDir = craneLib.vendorMultipleCargoDeps {
+    cargoLockList =
+      [ ./reference-happ/Cargo.lock (workspacePath + /Cargo.lock) ];
+  };
+
   wasm = craneLib.buildPackage (commonArgs // {
     cargoArtifacts = (zomeCargoDeps { inherit craneLib; }).cargoArtifacts;
-    cargoVendorDir = (zomeCargoDeps { inherit craneLib; }).cargoVendorDir;
+    inherit cargoVendorDir;
+    # = (zomeCargoDeps { inherit craneLib; }).cargoVendorDir;
   });
 
   deterministicWasm = let

@@ -123,8 +123,6 @@
                   holochainAppDeps.nativeBuildInputs { inherit pkgs lib; };
                 CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
                   " -Clink-arg=-fuse-ld=mold";
-                # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
-                #   " -Clink-arg=-fuse-ld=mold -Clink-arg=-fuse-ld=mold";
                 CARGO_PROFILE = if debug then "debug" else "release";
               };
 
