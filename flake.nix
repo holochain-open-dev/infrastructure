@@ -101,8 +101,8 @@
                 CARGO_PROFILE = if debug then "debug" else "release";
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-                pname = "zome";
-                version = "for-holochain-0_3_rc";
+                pname = "workspace";
+                version = "workspace";
               });
 
             in cargoArtifacts;
