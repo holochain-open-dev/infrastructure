@@ -6,7 +6,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles#7dc05a2c5e681fb32d3faef5be297f14cf3d7402&path:ui"
+    "@holochain-open-dev/profiles": "github:holochain-open-dev/profiles#f95cd9b627a308dcac016b47df960dbb24b741b8&path:ui"
   },
   "exports": {
     ".": "./index.js"
