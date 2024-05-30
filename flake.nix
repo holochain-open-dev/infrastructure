@@ -2,18 +2,14 @@
   inputs = {
     crane.url = "github:ipetkov/crane/109987da061a1bf452f435f1653c47511587d919";
 
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs = { nixpkgs.follows = "nixpkgs"; };
-    };
-    nixpkgs.follows = "holochain/nixpkgs";
-
     versions.url = "github:holochain/holochain?dir=versions/0_3_rc";
 
     holochain = {
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
+    rust-overlay.follows = "holochain/rust-overlay";
+    nixpkgs.follows = "holochain/nixpkgs";
   };
 
   nixConfig = {
