@@ -40,8 +40,8 @@ let
       binaryCratesWithoutWorkspace =
         builtins.filter (toml: builtins.hasAttr "package" toml)
         binaryCratesCargoToml;
-      binaryCrates = builtins.map (toml: builtins.trace toml toml.package.name)
-        binaryCratesWithoutWorkspace;
+      binaryCrates =
+        builtins.map (toml: toml.package.name) binaryCratesWithoutWorkspace;
     in binaryCrates;
 
   nonWasmCrates = listBinaryCratesFromWorkspace src;
