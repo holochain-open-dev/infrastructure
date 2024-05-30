@@ -612,24 +612,6 @@
         "type": "github"
       }
     },
-    "flake-utils_6": {
-      "inputs": {
-        "systems": "systems_6"
-      },
-      "locked": {
-        "lastModified": 1705309234,
-        "narHash": "sha256-uNRRNRKmJyCRC/8y1RqBkqWBLM034y4qN7EprSdmgyA=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "1ef2e671c3b0c19053962c07dbda38332dcebf26",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "hc-infra": {
       "inputs": {
         "crane": "crane",
@@ -639,12 +621,16 @@
           "holochain",
           "nixpkgs"
         ],
-        "rust-overlay": "rust-overlay_2",
+        "rust-overlay": [
+          "hc-infra",
+          "holochain",
+          "rust-overlay"
+        ],
         "versions": "versions"
       },
       "locked": {
         "lastModified": 0,
-        "narHash": "sha256-FAAI2oIio5UTM9ERY43ep92d8qvqBv70PamLnhcNIqA=",
+        "narHash": "sha256-kOAtIWqTXVZpyX3A1b96YP73z176p7qPfgAD0OPa+FA=",
         "path": "../../..",
         "type": "path"
       },
@@ -663,7 +649,7 @@
           "holochain",
           "nixpkgs"
         ],
-        "rust-overlay": "rust-overlay_5",
+        "rust-overlay": "rust-overlay_4",
         "versions": "versions_2"
       },
       "locked": {
@@ -720,11 +706,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1716970654,
-        "narHash": "sha256-fwCqrYdEJ6wQ2hVF9rxZW/HEgYS3s7a0IIOFTNCl+k4=",
+        "lastModified": 1717008431,
+        "narHash": "sha256-cRPG2hDyFlxsT2bGlINJOjhZ4VXPBZ3lryXXXgKZ+rQ=",
         "owner": "holochain",
         "repo": "holochain",
-        "rev": "a195ee7c221e22cfc9cd5c9e9c6466ed804d8bd9",
+        "rev": "54e08e370c674c87d2dcac3146cd0aff76df93aa",
         "type": "github"
       },
       "original": {
@@ -775,7 +761,7 @@
         "nixpkgs": "nixpkgs_3",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix_2",
         "repo-git": "repo-git_2",
-        "rust-overlay": "rust-overlay_3",
+        "rust-overlay": "rust-overlay_2",
         "scaffolding": [
           "holochain",
           "empty"
@@ -829,7 +815,7 @@
         "nixpkgs": "nixpkgs_5",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix_3",
         "repo-git": "repo-git_3",
-        "rust-overlay": "rust-overlay_4",
+        "rust-overlay": "rust-overlay_3",
         "scaffolding": [
           "profiles",
           "hc-infra",
@@ -901,7 +887,7 @@
         "nixpkgs": "nixpkgs_6",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix_4",
         "repo-git": "repo-git_4",
-        "rust-overlay": "rust-overlay_6",
+        "rust-overlay": "rust-overlay_5",
         "scaffolding": [
           "profiles",
           "holochain",
@@ -1497,7 +1483,7 @@
       "inputs": {
         "flake-utils": "flake-utils_2",
         "nixpkgs": [
-          "hc-infra",
+          "holochain",
           "nixpkgs"
         ]
       },
@@ -1519,28 +1505,6 @@
       "inputs": {
         "flake-utils": "flake-utils_3",
         "nixpkgs": [
-          "holochain",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1716949111,
-        "narHash": "sha256-ms3aD3Z2jKd1dk8qd0D/N7C8vFxn6z6LQ1G7cvNTVJ8=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "2e7ccf572ce0f0547d4cf4426de4482936882d0e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
-      }
-    },
-    "rust-overlay_4": {
-      "inputs": {
-        "flake-utils": "flake-utils_4",
-        "nixpkgs": [
           "profiles",
           "hc-infra",
           "holochain",
@@ -1561,9 +1525,9 @@
         "type": "github"
       }
     },
-    "rust-overlay_5": {
+    "rust-overlay_4": {
       "inputs": {
-        "flake-utils": "flake-utils_5",
+        "flake-utils": "flake-utils_4",
         "nixpkgs": [
           "profiles",
           "hc-infra",
@@ -1584,9 +1548,9 @@
         "type": "github"
       }
     },
-    "rust-overlay_6": {
+    "rust-overlay_5": {
       "inputs": {
-        "flake-utils": "flake-utils_6",
+        "flake-utils": "flake-utils_5",
         "nixpkgs": [
           "profiles",
           "holochain",
@@ -1750,21 +1714,6 @@
         "type": "github"
       }
     },
-    "systems_6": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
     "versions": {
       "inputs": {
         "holochain": "holochain_2",
@@ -1774,11 +1723,11 @@
       },
       "locked": {
         "dir": "versions/0_3_rc",
-        "lastModified": 1716970654,
-        "narHash": "sha256-fwCqrYdEJ6wQ2hVF9rxZW/HEgYS3s7a0IIOFTNCl+k4=",
+        "lastModified": 1717008431,
+        "narHash": "sha256-cRPG2hDyFlxsT2bGlINJOjhZ4VXPBZ3lryXXXgKZ+rQ=",
         "owner": "holochain",
         "repo": "holochain",
-        "rev": "a195ee7c221e22cfc9cd5c9e9c6466ed804d8bd9",
+        "rev": "54e08e370c674c87d2dcac3146cd0aff76df93aa",
         "type": "github"
       },
       "original": {

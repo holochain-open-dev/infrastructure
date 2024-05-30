@@ -100,7 +100,7 @@
                 CARGO_PROFILE = if debug then "debug" else "release";
                 cargoExtraArgs = "--offline";
                 cargoBuildCommand = ''
-                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/" cargo build --profile release'';
+                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/" cargo build --profile release'';
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
                 pname = "zome";
@@ -132,7 +132,8 @@
 
             in { inherit cargoVendorDir cargoArtifacts; };
 
-          rustZome = { crateCargoToml, holochain, workspacePath }:
+          rustZome =
+            { crateCargoToml, holochain, workspacePath, nonWasmCrates ? [ ] }:
             let
               deterministicCraneLib = let
                 pkgs = import inputs.nixpkgs {
@@ -153,7 +154,7 @@
 
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
-                workspacePath zomeCargoDeps;
+                workspacePath zomeCargoDeps nonWasmCrates;
             };
           sweettest = { holochain, dna, workspacePath, crateCargoToml }:
             let

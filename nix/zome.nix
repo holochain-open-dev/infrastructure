@@ -1,5 +1,6 @@
-{ zomeCargoDeps, pkgs, runCommandLocal, runCommandNoCC, binaryen
-, deterministicCraneLib, craneLib, workspacePath, crateCargoToml }:
+{ lib, zomeCargoDeps, pkgs, runCommandLocal, runCommandNoCC, binaryen
+, deterministicCraneLib, craneLib, workspacePath, crateCargoToml, nonWasmCrates
+}:
 
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
@@ -13,13 +14,47 @@ let
   rustFlags = ''
     RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/ --remap-path-prefix ${zomeDeps.cargoVendorDir}=/build/source/"'';
 
+  listBinaryCratesFromWorkspace = src:
+    let
+      isCrateZome = path:
+        let
+          hasSrc =
+            lib.filesystem.pathIsDirectory (builtins.toString (path + "/src"));
+          hasMain = hasSrc && (builtins.pathExists
+            (builtins.toString (path + "/src/main.rs")));
+          hasBinDir = hasSrc && (lib.filesystem.pathIsDirectory
+            (builtins.toString (path + "/src/bin")));
+        in hasSrc && !hasMain && !hasBinDir;
+
+      allFiles = lib.filesystem.listFilesRecursive src;
+      allCargoTomlsPaths =
+        builtins.filter (path: lib.strings.hasSuffix "/Cargo.toml" path)
+        allFiles;
+      allCratesPaths =
+        builtins.map (path: builtins.dirOf path) allCargoTomlsPaths;
+      binaryCratesPaths =
+        builtins.filter (cratePath: !(isCrateZome cratePath)) allCratesPaths;
+      binaryCratesCargoToml = builtins.map
+        (path: builtins.fromTOML (builtins.readFile (path + "/Cargo.toml")))
+        binaryCratesPaths;
+      binaryCratesWithoutWorkspace =
+        builtins.filter (toml: builtins.hasAttr "package" toml)
+        binaryCratesCargoToml;
+      binaryCrates = builtins.map (toml: builtins.trace toml toml.package.name)
+        binaryCratesWithoutWorkspace;
+    in binaryCrates;
+
+  nonWasmCrates = listBinaryCratesFromWorkspace src;
+  excludedCrates = builtins.map (c: " --exclude ${c}") nonWasmCrates;
+
   commonArgs = {
     inherit src cargoVendorDir;
     doCheck = false;
     CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
     pname = "workspace";
     version = cargoToml.package.version;
-    cargoExtraArgs = "--offline";
+    cargoExtraArgs =
+      "--offline --workspace ${builtins.toString excludedCrates}";
     cargoBuildCommand = "${rustFlags} cargo build --profile release";
   };
 
