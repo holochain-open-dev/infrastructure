@@ -92,44 +92,49 @@
                 (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
             in craneLib;
 
-          zomeCargoArtifacts = { craneLib, src, debug ? false }:
+          zomeCargoDeps = { craneLib, debug ? false }:
             let
+              src =
+                craneLib.cleanCargoSource (craneLib.path ./nix/reference-happ);
+              cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
               commonArgs = {
+                inherit src cargoVendorDir;
                 doCheck = false;
-                inherit src;
                 CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
                 CARGO_PROFILE = if debug then "debug" else "release";
+                cargoExtraArgs = "--offline";
+                cargoBuildCommand = ''
+                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/" cargo build --profile release'';
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-                pname = "workspace";
-                version = "workspace";
+                pname = "zome";
+                version = "for-holochain-0.3.1-rc";
               });
 
-            in cargoArtifacts;
+            in { inherit cargoVendorDir cargoArtifacts; };
 
-          holochainCargoArtifacts = { pkgs, src, lib, craneLib, debug ? false }:
+          holochainCargoDeps =
+            { buildInputs, nativeBuildInputs, craneLib, debug ? false }:
             let
-              commonArgs = {
+              src =
+                craneLib.cleanCargoSource (craneLib.path ./nix/reference-happ);
+              cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
+              cargoArtifacts = craneLib.buildDepsOnly {
+                inherit src buildInputs nativeBuildInputs cargoVendorDir;
                 doCheck = false;
-                inherit src;
-                buildInputs = [ pkgs.mold ]
-                  ++ holochainAppDeps.buildInputs { inherit pkgs lib; };
-                nativeBuildInputs =
-                  holochainAppDeps.nativeBuildInputs { inherit pkgs lib; };
-                CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
-                  " -Clink-arg=-fuse-ld=mold";
+                cargoBuildCommand = ''
+                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/" cargo build --profile release'';
+                cargoCheckCommand = ''
+                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/" cargo check --profile release'';
+                # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
+                #   " -Clink-arg=-fuse-ld=mold";
                 CARGO_PROFILE = if debug then "debug" else "release";
+                cargoExtraArgs = " --tests --offline";
+                pname = "sweettest";
+                version = "for-holochain-0.3.1-rc";
               };
 
-              cargoVendorDir = craneLib.vendorCargoDeps commonArgs;
-              cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-                inherit cargoVendorDir;
-                cargoExtraArgs = " --tests ";
-                pname = "sweettest";
-                version = "for-holochain-0_3_rc";
-              });
-
-            in cargoArtifacts;
+            in { inherit cargoVendorDir cargoArtifacts; };
 
           rustZome = { crateCargoToml, holochain, workspacePath }:
             let
@@ -152,7 +157,7 @@
 
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
-                workspacePath zomeCargoArtifacts;
+                workspacePath zomeCargoDeps;
             };
           sweettest = { holochain, dna, workspacePath, crateCargoToml }:
             let
@@ -161,12 +166,12 @@
               craneLib = holochainCraneLib { inherit system; };
             in pkgs.callPackage ./nix/sweettest.nix {
               inherit holochain dna craneLib workspacePath crateCargoToml
-                holochainCargoArtifacts;
+                holochainCargoDeps;
               nativeBuildInputs = holochainAppDeps.nativeBuildInputs {
                 inherit pkgs;
                 lib = pkgs.lib;
               };
-              buildInputs = [ pkgs.mold ] ++ holochainAppDeps.buildInputs {
+              buildInputs = holochainAppDeps.buildInputs {
                 inherit pkgs;
                 lib = pkgs.lib;
               };

@@ -1,25 +1,30 @@
 { dna, pkgs, buildInputs, nativeBuildInputs, workspacePath, craneLib
-, crateCargoToml, holochainCargoArtifacts, ... }:
+, crateCargoToml, holochainCargoDeps, ... }:
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
   crate = cargoToml.package.name;
 
   src = craneLib.cleanCargoSource (craneLib.path workspacePath);
 
-  hcCargo = pkgs.callPackage holochainCargoArtifacts {
+  hcCargoDeps = pkgs.callPackage holochainCargoDeps {
     inherit craneLib buildInputs nativeBuildInputs;
   };
-  hcCargoArtifacts = hcCargo.cargoArtifacts;
+
+  cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
+
+  rustFlags = ''
+    RUSTFLAGS="--remap-path-prefix ${cargoVendorDir}=/build/source/ --remap-path-prefix ${hcCargoDeps.cargoVendorDir}=/build/source/"'';
 
   cargoArtifacts = (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { }) {
-    cargoArtifacts = hcCargoArtifacts;
-    # cargoVendorDir = hcCargo.cargoVendorDir;
+    inherit cargoVendorDir buildInputs nativeBuildInputs src;
+    cargoArtifacts = hcCargoDeps.cargoArtifacts;
 
-    cargoExtraArgs = " --tests --offline -vv";
+    cargoExtraArgs = "";
+    RUSTFLAGS = rustFlags;
 
-    cargoBuildCommand = ''
-      RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/" cargo build --profile release'';
-    inherit buildInputs nativeBuildInputs src;
+    cargoBuildCommand = "cargo build --profile release --tests --offline";
+
+    cargoCheckCommand = "";
     doCheck = false;
     # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
     #   " -Clink-arg=-fuse-ld=mold";
@@ -28,12 +33,13 @@ let
   };
 
 in craneLib.cargoNextest {
-  inherit buildInputs nativeBuildInputs src cargoArtifacts;
+  inherit buildInputs nativeBuildInputs src cargoArtifacts cargoVendorDir;
+  pname = "workspace-sweettest";
   version = "";
-  pname = "test-${crate}";
+  RUSTFLAGS = rustFlags;
 
   # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS = " -Clink-arg=-fuse-ld=mold";
-  cargoNextestExtraArgs = "-p ${crate} --locked -j 1";
+  cargoNextestExtraArgs = "-p ${crate} --offline -j 1";
 
   DNA_PATH = dna;
 }
