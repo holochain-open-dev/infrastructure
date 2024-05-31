@@ -15,10 +15,7 @@
   };
 
   outputs = inputs@{ ... }:
-    inputs.holochain.inputs.flake-parts.lib.mkFlake {
-      inherit inputs;
-      specialArgs = { rootPath = ./.; };
-    } {
+    inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [ ./zome/zome.nix ];
 
       systems = builtins.attrNames inputs.holochain.devShells;

@@ -441,9 +441,6 @@ coordinator:
     inputs.holochain.inputs.flake-parts.lib.mkFlake
     {
       inherit inputs;
-      specialArgs = {
-        rootPath = ./.;
-      };
     }
     {
       imports = [

@@ -1,6 +1,5 @@
-{ lib, zomeCargoDeps, pkgs, runCommandLocal, runCommandNoCC, binaryen
-, deterministicCraneLib, craneLib, workspacePath, crateCargoToml, nonWasmCrates
-}:
+{ lib, workspacePath, zomeCargoDeps, pkgs, runCommandLocal, runCommandNoCC
+, binaryen, deterministicCraneLib, craneLib, crateCargoToml, nonWasmCrates }:
 
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
@@ -63,7 +62,7 @@ let
     pname = crate;
     version = cargoToml.package.version;
     cargoToml = crateCargoToml;
-    cargoLock = workspacePath + /Cargo.lock;
+    cargoLock = workspacePath + "/Cargo.lock";
   };
 
   cargoArtifacts = (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })

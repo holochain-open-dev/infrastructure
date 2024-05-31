@@ -132,8 +132,7 @@
 
             in { inherit cargoVendorDir cargoArtifacts; };
 
-          rustZome =
-            { crateCargoToml, holochain, workspacePath, nonWasmCrates ? [ ] }:
+          rustZome = { crateCargoToml, holochain, self, nonWasmCrates ? [ ] }:
             let
               deterministicCraneLib = let
                 pkgs = import inputs.nixpkgs {
@@ -154,17 +153,17 @@
 
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
-                workspacePath zomeCargoDeps nonWasmCrates;
+                zomeCargoDeps nonWasmCrates;
+              workspacePath = builtins.toString self;
             };
-          sweettest = { holochain, dna, workspacePath, crateCargoToml
-            , buildInputs ? [ ], nativeBuildInputs ? [ ] }:
+          sweettest = { holochain, dna, self, crateCargoToml, buildInputs ? [ ]
+            , nativeBuildInputs ? [ ] }:
             let
               system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
             in pkgs.callPackage ./nix/sweettest.nix {
-              inherit holochain dna craneLib workspacePath crateCargoToml
-                holochainCargoDeps;
+              inherit holochain dna craneLib crateCargoToml holochainCargoDeps;
               buildInputs = buildInputs ++ holochainAppDeps.buildInputs {
                 inherit pkgs;
                 lib = pkgs.lib;
@@ -174,6 +173,7 @@
                   inherit pkgs;
                   lib = pkgs.lib;
                 };
+              workspacePath = builtins.toString self;
             };
           dna = { holochain, dnaManifest, zomes }:
             let

@@ -1,6 +1,6 @@
 {
   description = "Template for Holochain app development";
-  
+
   inputs = {
     nixpkgs.follows = "holochain/nixpkgs";
 
@@ -10,51 +10,16 @@
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-		hcUtils.url = "path:../../..";
+    hcUtils.url = "path:../../..";
     profiles.url = "github:holochain-open-dev/profiles/nixify";
-    file-storage.url = "github:holochain-open-dev/file-storage/for-hdk-0.3.0-beta-dev";
+    file-storage.url =
+      "github:holochain-open-dev/file-storage/for-hdk-0.3.0-beta-dev";
   };
 
-  outputs = inputs @ { ... }:
-    let 
-      holochainSources = inputs': with inputs'; [ 
-        profiles
-        # ... and add the name of the repository here as well
-      ];
+  outputs = inputs@{ ... }:
+    inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } {
 
-      # Holochain packages coming from the upstream repositories
-      upstreamHolochainPackages  = { inputs' }: inputs.nixpkgs.lib.attrsets.mergeAttrsList (
-        builtins.map (s: s.packages) (holochainSources inputs')
-      );
-      # All holochain packages from this _and_ the upstream repositories, combined
-      allHolochainPackages = { inputs', self' }: inputs.nixpkgs.lib.attrsets.mergeAttrsList [ 
-        self'.packages 
-        (upstreamHolochainPackages { inherit inputs'; }) 
-      ];
-      allZomes = { inputs', self' }: inputs.hcUtils.outputs.lib.filterZomes (allHolochainPackages { inherit inputs' self'; });
-      allDnas = { inputs', self' }: inputs.hcUtils.outputs.lib.filterDnas (allHolochainPackages { inherit inputs' self'; });
-      allHapps = { inputs', self' }: inputs.hcUtils.outputs.lib.filterHapps (allHolochainPackages { inherit inputs' self'; });
-    in
-      inputs.holochain.inputs.flake-parts.lib.mkFlake
-        {
-          inherit inputs;
-          specialArgs = {
-            rootPath = ./.;
-            inherit holochainSources allHolochainPackages allZomes allDnas allHapps;
-          };
-        }
-        {
-
-          systems = builtins.attrNames inputs.holochain.devShells;
-          perSystem =
-            { inputs'
-            , config
-            , pkgs
-            , system
-            , lib
-            , self'
-            , ...
-            }: {
-            };
-        };
+      systems = builtins.attrNames inputs.holochain.devShells;
+      perSystem = { inputs', config, pkgs, system, lib, self', ... }: { };
+    };
 }
