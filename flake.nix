@@ -156,7 +156,8 @@
               inherit deterministicCraneLib craneLib crateCargoToml
                 workspacePath zomeCargoDeps nonWasmCrates;
             };
-          sweettest = { holochain, dna, workspacePath, crateCargoToml }:
+          sweettest = { holochain, dna, workspacePath, crateCargoToml
+            , buildInputs ? [ ], nativeBuildInputs ? [ ] }:
             let
               system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
@@ -164,14 +165,15 @@
             in pkgs.callPackage ./nix/sweettest.nix {
               inherit holochain dna craneLib workspacePath crateCargoToml
                 holochainCargoDeps;
-              nativeBuildInputs = holochainAppDeps.nativeBuildInputs {
+              buildInputs = buildInputs ++ holochainAppDeps.buildInputs {
                 inherit pkgs;
                 lib = pkgs.lib;
               };
-              buildInputs = holochainAppDeps.buildInputs {
-                inherit pkgs;
-                lib = pkgs.lib;
-              };
+              nativeBuildInputs = nativeBuildInputs
+                ++ holochainAppDeps.nativeBuildInputs {
+                  inherit pkgs;
+                  lib = pkgs.lib;
+                };
             };
           dna = { holochain, dnaManifest, zomes }:
             let
