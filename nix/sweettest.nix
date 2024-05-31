@@ -12,8 +12,8 @@ let
 
   cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
 
-  rustFlags = ''
-    RUSTFLAGS="--remap-path-prefix ${cargoVendorDir}=/build/source/ --remap-path-prefix ${hcCargoDeps.cargoVendorDir}=/build/source/"'';
+  rustFlags =
+    "--remap-path-prefix ${cargoVendorDir}=/build/source/ --remap-path-prefix ${hcCargoDeps.cargoVendorDir}=/build/source/";
 
   cargoArtifacts = (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { }) {
     inherit cargoVendorDir buildInputs nativeBuildInputs src;
