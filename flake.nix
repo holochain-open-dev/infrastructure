@@ -45,7 +45,7 @@
                 pkg-config
                 inputs.holochain.outputs.packages.${pkgs.system}.goWrapper
               ]) ++ lib.optionals pkgs.stdenv.isDarwin
-              (with pkgs; [ xcbuild libiconv ]);
+              (with pkgs; [ libiconv ]);
           };
 
           filterByHolochainPackageType = holochainPackageType: packages:
