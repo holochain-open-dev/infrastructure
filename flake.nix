@@ -98,9 +98,10 @@
                 doCheck = false;
                 CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
                 CARGO_PROFILE = if debug then "debug" else "release";
-                cargoExtraArgs = "--offline";
+                cargoExtraArgs = "";
+                cargoCheckCommand = "";
                 cargoBuildCommand = ''
-                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/" cargo build --profile release'';
+                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/" cargo build --profile release --offline --workspace'';
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
                 pname = "zome";
