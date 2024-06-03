@@ -6,32 +6,26 @@ let
 
   src = craneLib.cleanCargoSource (craneLib.path workspacePath);
 
+  commonArgs = {
+    inherit cargoArtifacts buildInputs nativeBuildInputs src;
+    strictDeps = true;
+    CARGO_PROFILE = "release";
+  };
+
   workspaceCargoArtifacts =
-    (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { }) {
-      inherit cargoArtifacts buildInputs nativeBuildInputs src;
-
-      # RUSTFLAGS = rustFlags;
-      cargoExtraArgs = "";
-      cargoBuildCommand =
-        "cargo build --profile release --tests --locked --workspace";
-      cargoCheckCommand = "";
-
-      # CARGO_PROFILE = "release";
+    (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { }) (commonArgs // {
       doCheck = false;
-      # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
-      #   " -Clink-arg=-fuse-ld=mold";
       pname = "workspace-sweettest";
+      cargoExtraArgs = "--workspace --tests";
       version = cargoToml.package.version;
-    };
+    });
 
-in craneLib.cargoNextest {
-  inherit buildInputs nativeBuildInputs src;
+in craneLib.cargoNextest (commonArgs // {
   cargoArtifacts = workspaceCargoArtifacts;
   pname = "${crate}-sweettest";
   version = cargoToml.package.version;
 
-  cargoExtraArgs = "";
-  cargoNextestExtraArgs = "-p ${crate} --locked -j 1";
+  cargoNextestExtraArgs = "-p ${crate} -j 1";
 
   DNA_PATH = dna;
-}
+})

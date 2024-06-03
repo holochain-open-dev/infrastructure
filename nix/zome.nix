@@ -45,17 +45,14 @@ let
   commonArgs = {
     inherit src;
     doCheck = false;
+    strictDeps = true;
     CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
     pname = "workspace";
     version = cargoToml.package.version;
-    cargoExtraArgs = "";
-    cargoCheckCommand = "";
-    cargoBuildCommand =
-      "cargo build --profile release --locked --workspace ${excludedCrates}";
+    cargoExtraArgs = "--workspace ${excludedCrates}";
   };
 
   buildPackageCommonArgs = commonArgs // {
-    cargoBuildCommand = "cargo build --profile release -p ${crate} --locked";
     pname = crate;
     version = cargoToml.package.version;
     cargoToml = crateCargoToml;
@@ -75,10 +72,7 @@ let
     };
     cargoArtifacts =
       (deterministicCraneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
-      (commonArgs // {
-        cargoArtifacts = zca;
-        cargoBuildCommand = "cargo build --profile release --locked";
-      });
+      (commonArgs // { cargoArtifacts = zca; });
 
     wasm = deterministicCraneLib.buildPackage
       (buildPackageCommonArgs // { inherit cargoArtifacts; });

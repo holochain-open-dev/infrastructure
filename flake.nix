@@ -96,13 +96,8 @@
               commonArgs = {
                 inherit src;
                 doCheck = false;
+                strictDeps = true;
                 CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
-                CARGO_PROFILE = if debug then "debug" else "release";
-                cargoExtraArgs = "";
-                cargoCheckCommand = "";
-                # RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/" 
-                cargoBuildCommand =
-                  "cargo build --profile release --locked --workspace";
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
                 pname = "zome";
@@ -129,15 +124,13 @@
                 src = craneLib.cleanCargoSource
                   (craneLib.path ./nix/reference-happ);
                 doCheck = false;
+                strictDeps = true;
                 # RUSTFLAGS =
                 #   "--remap-path-prefix ${cargoVendorDir}=/build/source/";
-                cargoBuildCommand =
-                  "cargo build --profile release --tests --locked --workspace";
-                cargoCheckCommand = "";
-                cargoExtraArgs = "";
                 # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
                 #   " -Clink-arg=-fuse-ld=mold";
-                # CARGO_PROFILE = if debug then "debug" else "release";
+                # CARGO_PROFILE = "release";
+                CARGO_PROFILE = "release";
                 pname = "sweettest";
                 version = "for-holochain-0.3.1-rc";
               };
