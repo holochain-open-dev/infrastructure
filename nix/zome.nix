@@ -61,7 +61,7 @@ let
 
   buildPackageCommonArgs = commonArgs // {
     cargoBuildCommand =
-      "${rustFlags} cargo build --profile release -p ${crate} --offline ${excludedCrates}";
+      "${rustFlags} cargo build --profile release -p ${crate} --offline";
     pname = crate;
     version = cargoToml.package.version;
     cargoToml = crateCargoToml;

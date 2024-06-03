@@ -8,8 +8,6 @@
       crateCargoToml = ./Cargo.toml;
     };
 
-    #
-
     checks.my_zome = inputs.hc-infra.outputs.lib.sweettest {
       workspacePath = inputs.self.outPath;
       holochain = inputs'.holochain;
