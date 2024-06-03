@@ -6,6 +6,8 @@
       workspacePath = inputs.self.outPath;
       holochain = inputs'.holochain;
       crateCargoToml = ./Cargo.toml;
+      cargoArtifacts =
+        inputs.hc-infra.lib.zomeCargoArtifacts { inherit system; };
     };
 
     checks.my_zome = inputs.hc-infra.outputs.lib.sweettest {

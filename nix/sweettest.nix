@@ -13,7 +13,7 @@ let
       # RUSTFLAGS = rustFlags;
       cargoExtraArgs = "";
       cargoBuildCommand =
-        "cargo build --profile release --tests --offline --workspace";
+        "cargo build --profile release --tests --locked --workspace";
       cargoCheckCommand = "";
 
       # CARGO_PROFILE = "release";
@@ -31,7 +31,7 @@ in craneLib.cargoNextest {
   version = cargoToml.package.version;
 
   cargoExtraArgs = "";
-  cargoNextestExtraArgs = "-p ${crate} --offline -j 1";
+  cargoNextestExtraArgs = "-p ${crate} --locked -j 1";
 
   DNA_PATH = dna;
 }

@@ -51,11 +51,11 @@ let
     cargoExtraArgs = "";
     cargoCheckCommand = "";
     cargoBuildCommand =
-      "cargo build --profile release --offline --workspace ${excludedCrates}";
+      "cargo build --profile release --locked --workspace ${excludedCrates}";
   };
 
   buildPackageCommonArgs = commonArgs // {
-    cargoBuildCommand = "cargo build --profile release -p ${crate} --offline";
+    cargoBuildCommand = "cargo build --profile release -p ${crate} --locked";
     pname = crate;
     version = cargoToml.package.version;
     cargoToml = crateCargoToml;
@@ -77,7 +77,7 @@ let
       (deterministicCraneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
       (commonArgs // {
         cargoArtifacts = zca;
-        cargoBuildCommand = "cargo build --profile release";
+        cargoBuildCommand = "cargo build --profile release --locked";
       });
 
     wasm = deterministicCraneLib.buildPackage

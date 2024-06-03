@@ -102,7 +102,7 @@
                 cargoCheckCommand = "";
                 # RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/" 
                 cargoBuildCommand =
-                  "cargo build --profile release --offline --workspace";
+                  "cargo build --profile release --locked --workspace";
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
                 pname = "zome";
@@ -132,7 +132,7 @@
                 # RUSTFLAGS =
                 #   "--remap-path-prefix ${cargoVendorDir}=/build/source/";
                 cargoBuildCommand =
-                  "cargo build --profile release --tests --offline --workspace";
+                  "cargo build --profile release --tests --locked --workspace";
                 cargoCheckCommand = "";
                 cargoExtraArgs = "";
                 # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
