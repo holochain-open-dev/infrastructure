@@ -44,7 +44,8 @@ let
     in binaryCrates;
 
   nonWasmCrates = listBinaryCratesFromWorkspace src;
-  excludedCrates = builtins.map (c: " --exclude ${c}") nonWasmCrates;
+  excludedCrates =
+    builtins.toString (builtins.map (c: " --exclude ${c}") nonWasmCrates);
 
   commonArgs = {
     inherit src cargoVendorDir;
@@ -52,17 +53,18 @@ let
     CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
     pname = "workspace";
     version = cargoToml.package.version;
-    cargoExtraArgs =
-      "--offline --workspace ${builtins.toString excludedCrates}";
-    cargoBuildCommand = "${rustFlags} cargo build --profile release";
+    cargoExtraArgs = "";
+    cargoCheckCommand = "";
+    cargoBuildCommand =
+      "${rustFlags} cargo build --profile release --offline --workspace ${excludedCrates}";
   };
 
   buildPackageCommonArgs = commonArgs // {
-    cargoExtraArgs = "-p ${crate} --offline";
+    cargoBuildCommand =
+      "${rustFlags} cargo build --profile release -p ${crate} --offline ${excludedCrates}";
     pname = crate;
     version = cargoToml.package.version;
     cargoToml = crateCargoToml;
-    cargoLock = workspacePath + "/Cargo.lock";
   };
 
   cargoArtifacts = (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
