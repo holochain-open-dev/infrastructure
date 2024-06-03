@@ -1,17 +1,12 @@
-{ lib, workspacePath, zomeCargoDeps, pkgs, runCommandLocal, runCommandNoCC
-, binaryen, deterministicCraneLib, craneLib, crateCargoToml, nonWasmCrates }:
+{ lib, workspacePath, referenceZomeCargoArtifacts, cargoArtifacts, pkgs
+, runCommandLocal, runCommandNoCC, binaryen, deterministicCraneLib, craneLib
+, crateCargoToml, nonWasmCrates }:
 
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
   crate = cargoToml.package.name;
 
   src = craneLib.cleanCargoSource (craneLib.path workspacePath);
-  zomeDeps = zomeCargoDeps { inherit craneLib; };
-
-  cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
-
-  rustFlags = "";
-  # RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/ --remap-path-prefix ${zomeDeps.cargoVendorDir}=/build/source/"'';
 
   listBinaryCratesFromWorkspace = src:
     let
@@ -48,7 +43,7 @@ let
     builtins.toString (builtins.map (c: " --exclude ${c}") nonWasmCrates);
 
   commonArgs = {
-    inherit src cargoVendorDir;
+    inherit src;
     doCheck = false;
     CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
     pname = "workspace";
@@ -66,19 +61,23 @@ let
     cargoToml = crateCargoToml;
   };
 
-  cargoArtifacts = (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
-    (commonArgs // { cargoArtifacts = zomeDeps.cargoArtifacts; });
+  zomeCargoArtifacts =
+    (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
+    (commonArgs // { inherit cargoArtifacts; });
 
   wasm = craneLib.buildPackage
-    (buildPackageCommonArgs // { inherit cargoArtifacts; });
+    (buildPackageCommonArgs // { cargoArtifacts = zomeCargoArtifacts; });
 
   deterministicWasm = let
-    zomeDeps = zomeCargoDeps { craneLib = deterministicCraneLib; };
+    zca = referenceZomeCargoArtifacts {
+      system = pkgs.system;
+      craneLib = deterministicCraneLib;
+    };
     cargoArtifacts =
       (deterministicCraneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
       (commonArgs // {
-        cargoArtifacts = zomeDeps.cargoArtifacts;
-        cargoBuildCommand = "${rustFlags} cargo build --profile release";
+        cargoArtifacts = zca;
+        cargoBuildCommand = "cargo build --profile release";
       });
 
     wasm = deterministicCraneLib.buildPackage

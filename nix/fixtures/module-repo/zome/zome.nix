@@ -1,7 +1,7 @@
 { inputs, ... }:
 
 {
-  perSystem = { inputs', self', ... }: {
+  perSystem = { inputs', self', system, ... }: {
     packages.my_zome = inputs.hc-infra.outputs.lib.rustZome {
       workspacePath = inputs.self.outPath;
       holochain = inputs'.holochain;
@@ -32,6 +32,8 @@
         holochain = inputs'.holochain;
       };
       crateCargoToml = ./Cargo.toml;
+      cargoArtifacts =
+        inputs.hc-infra.lib.holochainCargoArtifacts { inherit system; };
     };
   };
 }

@@ -62,7 +62,6 @@
 
           holochainPkgs = { system }:
             let
-
               pkgs = import inputs.nixpkgs {
                 inherit system;
                 overlays = [ (import inputs.rust-overlay) ];
@@ -88,13 +87,14 @@
                 (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
             in craneLib;
 
-          zomeCargoDeps = { craneLib, debug ? false }:
+          zomeCargoArtifacts = { system
+            , craneLib ? (holochainCraneLib { inherit system; }), debug ? false
+            }:
             let
               src =
                 craneLib.cleanCargoSource (craneLib.path ./nix/reference-happ);
-              cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
               commonArgs = {
-                inherit src cargoVendorDir;
+                inherit src;
                 doCheck = false;
                 CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
                 CARGO_PROFILE = if debug then "debug" else "release";
@@ -109,16 +109,25 @@
                 version = "for-holochain-0.3.1-rc";
               });
 
-            in { inherit cargoVendorDir cargoArtifacts; };
+            in cargoArtifacts;
 
-          holochainCargoDeps =
-            { buildInputs, nativeBuildInputs, craneLib, debug ? false }:
+          holochainCargoArtifacts = { system }:
             let
-              src =
-                craneLib.cleanCargoSource (craneLib.path ./nix/reference-happ);
-              cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
+              pkgs = holochainPkgs { inherit system; };
+              craneLib = holochainCraneLib { inherit system; };
+
+              buildInputs = holochainAppDeps.buildInputs {
+                inherit pkgs;
+                lib = pkgs.lib;
+              };
+              nativeBuildInputs = holochainAppDeps.nativeBuildInputs {
+                inherit pkgs;
+                lib = pkgs.lib;
+              };
               cargoArtifacts = craneLib.buildDepsOnly {
-                inherit src buildInputs nativeBuildInputs cargoVendorDir;
+                inherit buildInputs nativeBuildInputs;
+                src = craneLib.cleanCargoSource
+                  (craneLib.path ./nix/reference-happ);
                 doCheck = false;
                 # RUSTFLAGS =
                 #   "--remap-path-prefix ${cargoVendorDir}=/build/source/";
@@ -132,11 +141,10 @@
                 pname = "sweettest";
                 version = "for-holochain-0.3.1-rc";
               };
+            in cargoArtifacts;
 
-            in { inherit cargoVendorDir cargoArtifacts; };
-
-          rustZome =
-            { crateCargoToml, holochain, workspacePath, nonWasmCrates ? [ ] }:
+          rustZome = { crateCargoToml, holochain, workspacePath
+            , nonWasmCrates ? [ ], cargoArtifacts ? null }:
             let
               deterministicCraneLib = let
                 pkgs = import inputs.nixpkgs {
@@ -157,16 +165,18 @@
 
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
-                zomeCargoDeps nonWasmCrates workspacePath;
+                cargoArtifacts nonWasmCrates workspacePath;
+              referenceZomeCargoArtifacts = flake.lib.zomeCargoArtifacts;
             };
           sweettest = { holochain, dna, workspacePath, crateCargoToml
-            , buildInputs ? [ ], nativeBuildInputs ? [ ] }:
+            , buildInputs ? [ ], nativeBuildInputs ? [ ], cargoArtifacts ? null
+            }:
             let
               system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
             in pkgs.callPackage ./nix/sweettest.nix {
-              inherit holochain dna craneLib crateCargoToml holochainCargoDeps
+              inherit holochain dna craneLib crateCargoToml cargoArtifacts
                 workspacePath;
               buildInputs = buildInputs ++ holochainAppDeps.buildInputs {
                 inherit pkgs;
