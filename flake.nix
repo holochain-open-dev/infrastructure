@@ -100,8 +100,9 @@
                 CARGO_PROFILE = if debug then "debug" else "release";
                 cargoExtraArgs = "";
                 cargoCheckCommand = "";
-                cargoBuildCommand = ''
-                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/" cargo build --profile release --offline --workspace'';
+                # RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/" 
+                cargoBuildCommand =
+                  "cargo build --profile release --offline --workspace";
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
                 pname = "zome";
@@ -119,14 +120,15 @@
               cargoArtifacts = craneLib.buildDepsOnly {
                 inherit src buildInputs nativeBuildInputs cargoVendorDir;
                 doCheck = false;
-                cargoBuildCommand = ''
-                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/" cargo build --profile release'';
-                cargoCheckCommand = ''
-                  RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/" cargo check --profile release'';
+                # RUSTFLAGS =
+                #   "--remap-path-prefix ${cargoVendorDir}=/build/source/";
+                cargoBuildCommand =
+                  "cargo build --profile release --tests --offline --workspace";
+                cargoCheckCommand = "";
+                cargoExtraArgs = "";
                 # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
                 #   " -Clink-arg=-fuse-ld=mold";
                 CARGO_PROFILE = if debug then "debug" else "release";
-                cargoExtraArgs = " --tests --offline";
                 pname = "sweettest";
                 version = "for-holochain-0.3.1-rc";
               };

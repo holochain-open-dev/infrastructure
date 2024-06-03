@@ -31,6 +31,12 @@ jobs:
           nix flake update
           nix develop
 
+      - name: Update example repository
+        run: |
+          cd nix/fixture/module-repo
+          nix flake update
+          nix develop --command bash -c "cargo update"
+
       - uses: dorny/paths-filter@v3
         id: changes
         with:
@@ -39,6 +45,8 @@ jobs:
               - 'flake.lock'
             package_json:
               - '**/*/package.json'
+            cargo_lock:
+              - '**/*/Cargo.lock'
 
       - name: Create Pull Request
         id: cpr

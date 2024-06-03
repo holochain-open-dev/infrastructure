@@ -3,9 +3,9 @@ on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
   push: 
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   linux-build-and-cache:
@@ -30,6 +30,13 @@ jobs:
           nix flake update
           cachix watch-exec holochain-open-dev -- nix build -L .#my_zome
           sha256sum result
+
+      - name: Test zomes
+        env:
+          CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
+        run: |
+          cd ./nix/fixtures/module-repo
+          cachix watch-exec holochain-open-dev -- nix flake check -L 
 
   macos-just-get-from-cache:
     needs: linux-build-and-cache

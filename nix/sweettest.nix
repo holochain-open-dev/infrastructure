@@ -12,19 +12,16 @@ let
 
   cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
 
-  rustFlags =
-    "--remap-path-prefix ${cargoVendorDir}=/build/source/ --remap-path-prefix ${hcCargoDeps.cargoVendorDir}=/build/source/";
-
   cargoArtifacts = (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { }) {
     inherit cargoVendorDir buildInputs nativeBuildInputs src;
     cargoArtifacts = hcCargoDeps.cargoArtifacts;
 
+    # RUSTFLAGS = rustFlags;
     cargoExtraArgs = "";
-    RUSTFLAGS = rustFlags;
-
-    cargoBuildCommand = "cargo build --profile release --tests --offline";
-
+    cargoBuildCommand =
+      "cargo build --profile release --tests --offline --workspace";
     cargoCheckCommand = "";
+
     doCheck = false;
     # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
     #   " -Clink-arg=-fuse-ld=mold";
@@ -34,10 +31,14 @@ let
 
 in craneLib.cargoNextest {
   inherit buildInputs nativeBuildInputs src cargoArtifacts cargoVendorDir;
-  pname = "workspace-sweettest";
+  pname = "${crate}-sweettest";
   version = "";
-  RUSTFLAGS = rustFlags;
 
+  # preCheck = ''
+  #   export RUSTFLAGS="${rustFlags}"
+  # '';
+
+  cargoExtraArgs = "";
   # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS = " -Clink-arg=-fuse-ld=mold";
   cargoNextestExtraArgs = "-p ${crate} --offline -j 1";
 

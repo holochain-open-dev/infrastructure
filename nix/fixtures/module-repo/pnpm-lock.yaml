@@ -11,8 +11,8 @@ importers:
   ui:
     dependencies:
       '@holochain-open-dev/profiles':
-        specifier: github:holochain-open-dev/profiles#f95cd9b627a308dcac016b47df960dbb24b741b8&path:ui
-        version: github.com/holochain-open-dev/profiles/f95cd9b627a308dcac016b47df960dbb24b741b8#path:ui(@types/react@18.2.65)
+        specifier: github:holochain-open-dev/profiles#decbb755bfa4432d672a58783eb7d4985fcadcba&path:ui
+        version: github.com/holochain-open-dev/profiles/decbb755bfa4432d672a58783eb7d4985fcadcba#path:ui(@types/react@18.2.65)
 
 packages:
 
@@ -204,8 +204,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  github.com/holochain-open-dev/profiles/f95cd9b627a308dcac016b47df960dbb24b741b8#path:ui:
-    resolution: {path: ui, tarball: https://codeload.github.com/holochain-open-dev/profiles/tar.gz/f95cd9b627a308dcac016b47df960dbb24b741b8}
+  github.com/holochain-open-dev/profiles/decbb755bfa4432d672a58783eb7d4985fcadcba#path:ui:
+    resolution: {path: ui, tarball: https://codeload.github.com/holochain-open-dev/profiles/tar.gz/decbb755bfa4432d672a58783eb7d4985fcadcba}
     name: '@holochain-open-dev/profiles'
     version: 0.300.0-rc.0
 
@@ -502,8 +502,8 @@ snapshots:
   /ws@8.16.0:
     dev: false
 
-  github.com/holochain-open-dev/profiles/f95cd9b627a308dcac016b47df960dbb24b741b8#path:ui(@types/react@18.2.65):
-    id: github.com/holochain-open-dev/profiles/f95cd9b627a308dcac016b47df960dbb24b741b8#path:ui
+  github.com/holochain-open-dev/profiles/decbb755bfa4432d672a58783eb7d4985fcadcba#path:ui(@types/react@18.2.65):
+    id: github.com/holochain-open-dev/profiles/decbb755bfa4432d672a58783eb7d4985fcadcba#path:ui
     dependencies:
       '@holochain-open-dev/elements': 0.300.0-rc.0(@types/react@18.2.65)
       '@holochain-open-dev/signals': 0.300.0-rc.1(@types/react@18.2.65)

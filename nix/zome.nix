@@ -10,8 +10,8 @@ let
 
   cargoVendorDir = craneLib.vendorCargoDeps { inherit src; };
 
-  rustFlags = ''
-    RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/ --remap-path-prefix ${zomeDeps.cargoVendorDir}=/build/source/"'';
+  rustFlags = "";
+  # RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/ --remap-path-prefix ${zomeDeps.cargoVendorDir}=/build/source/"'';
 
   listBinaryCratesFromWorkspace = src:
     let
@@ -56,12 +56,11 @@ let
     cargoExtraArgs = "";
     cargoCheckCommand = "";
     cargoBuildCommand =
-      "${rustFlags} cargo build --profile release --offline --workspace ${excludedCrates}";
+      "cargo build --profile release --offline --workspace ${excludedCrates}";
   };
 
   buildPackageCommonArgs = commonArgs // {
-    cargoBuildCommand =
-      "${rustFlags} cargo build --profile release -p ${crate} --offline";
+    cargoBuildCommand = "cargo build --profile release -p ${crate} --offline";
     pname = crate;
     version = cargoToml.package.version;
     cargoToml = crateCargoToml;
@@ -74,11 +73,7 @@ let
     (buildPackageCommonArgs // { inherit cargoArtifacts; });
 
   deterministicWasm = let
-    cargoVendorDir = deterministicCraneLib.vendorCargoDeps { inherit src; };
     zomeDeps = zomeCargoDeps { craneLib = deterministicCraneLib; };
-    rustFlags = ''
-      RUSTFLAGS="--remap-path-prefix $(pwd)=/build/source/ --remap-path-prefix ${cargoVendorDir}=/build/source/ --remap-path-prefix ${zomeDeps.cargoVendorDir}=/build/source/"'';
-
     cargoArtifacts =
       (deterministicCraneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
       (commonArgs // {
