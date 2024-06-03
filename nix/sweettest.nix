@@ -22,21 +22,24 @@ let
       "cargo build --profile release --tests --offline --workspace";
     cargoCheckCommand = "";
 
+    # CARGO_PROFILE = "release";
     doCheck = false;
     # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
     #   " -Clink-arg=-fuse-ld=mold";
     pname = "workspace-sweettest";
-    version = "";
+    version = cargoToml.package.version;
   };
 
 in craneLib.cargoNextest {
   inherit buildInputs nativeBuildInputs src cargoArtifacts cargoVendorDir;
   pname = "${crate}-sweettest";
-  version = "";
+  version = cargoToml.package.version;
 
   # preCheck = ''
   #   export RUSTFLAGS="${rustFlags}"
   # '';
+
+  # CARGO_PROFILE = "debug";
 
   cargoExtraArgs = "";
   # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS = " -Clink-arg=-fuse-ld=mold";

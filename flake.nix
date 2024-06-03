@@ -128,7 +128,7 @@
                 cargoExtraArgs = "";
                 # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
                 #   " -Clink-arg=-fuse-ld=mold";
-                CARGO_PROFILE = if debug then "debug" else "release";
+                # CARGO_PROFILE = if debug then "debug" else "release";
                 pname = "sweettest";
                 version = "for-holochain-0.3.1-rc";
               };
