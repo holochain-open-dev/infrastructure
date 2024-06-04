@@ -24,14 +24,12 @@ let
       cratesNames = builtins.map (toml: toml.package.name) nonWorkspaceCrates;
     in cratesNames;
   packageList = listCratesFromWorkspace src;
-  packages =
-    builtins.toString (builtins.map (c: " --package ${c}") packageList);
 
   workspaceCargoArtifacts =
     (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { }) (commonArgs // {
       doCheck = false;
-      cargoBuildCommand = "cargoWorkspace build --tests";
-      cargoTestCommand = "cargoWorkspace test";
+      cargoBuildCommand = "cargoWorkspace build --tests --locked";
+      cargoExtraArgs = "";
       cargoCheckCommand = "";
       preBuild = ''
         cargoWorkspace() {
@@ -47,22 +45,12 @@ let
       pname = "workspace-sweettest";
       version = cargoToml.package.version;
     });
-  # workspaceCargoArtifacts =
-  #   (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { }) (commonArgs // {
-  #     doCheck = false;
-  #     cargoExtraArgs = "--workspace --locked --all-targets";
-
-  #     pname = "workspace-sweettest";
-  #     version = cargoToml.package.version;
-  #   });
 
 in craneLib.cargoNextest (commonArgs // {
   cargoArtifacts = workspaceCargoArtifacts;
   pname = "${crate}-test";
   version = cargoToml.package.version;
 
-  # cargoTestArgs = "-p ${crate} -j 1";
-  # cargoExtraArgs = "--locked";
   cargoNextestExtraArgs = "-p ${crate} -j 1";
 
   DNA_PATH = dna;
