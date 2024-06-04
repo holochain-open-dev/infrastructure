@@ -635,8 +635,12 @@ export function liveLinksSignal<
 					if (hcSignal.type === 'LinkCreated') {
 						if (
 							linkType === hcSignal.link_type &&
-							hcSignal.action.hashed.content.base_address.toString() ===
-								innerBaseAddress.toString()
+							(hcSignal.action.hashed.content.base_address.toString() ===
+								innerBaseAddress.toString() ||
+								retype(
+									hcSignal.action.hashed.content.base_address,
+									HashType.AGENT,
+								).toString() === innerBaseAddress.toString())
 						) {
 							const lastLinks = links ? links : [];
 							maybeSet([...lastLinks, createLinkToLink(hcSignal.action)]);
