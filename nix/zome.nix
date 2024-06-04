@@ -45,11 +45,13 @@ let
   commonArgs = {
     inherit src;
     doCheck = false;
-    strictDeps = true;
     CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
     pname = "workspace";
     version = cargoToml.package.version;
-    cargoExtraArgs = "--workspace ${excludedCrates}";
+    cargoBuildCommand =
+      "cargo build --release --locked --workspace ${excludedCrates}";
+    cargoCheckCommand = "";
+    cargoExtraArgs = "";
   };
 
   buildPackageCommonArgs = commonArgs // {

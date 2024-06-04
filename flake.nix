@@ -96,7 +96,6 @@
               commonArgs = {
                 inherit src;
                 doCheck = false;
-                strictDeps = true;
                 CARGO_BUILD_TARGET = "wasm32-unknown-unknown";
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
@@ -124,7 +123,6 @@
                 src = craneLib.cleanCargoSource
                   (craneLib.path ./nix/reference-happ);
                 doCheck = false;
-                strictDeps = true;
                 # RUSTFLAGS =
                 #   "--remap-path-prefix ${cargoVendorDir}=/build/source/";
                 # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
