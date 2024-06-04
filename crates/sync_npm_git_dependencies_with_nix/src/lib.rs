@@ -4,7 +4,12 @@ use ignore::Walk;
 use parse_flake_lock::{FlakeLock, FlakeLockParseError, Node};
 use regex::Regex;
 use serde_json::Value;
-use std::{fs::File, io::BufReader, path::Path, process::Command};
+use std::{
+    fs::File,
+    io::BufReader,
+    path::Path,
+    process::{Command, Stdio},
+};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -114,7 +119,10 @@ pub fn synchronize_npm_git_dependencies_with_nix(
 
     if replaced_some_dep {
         println!("Running pnpm install...");
-        Command::new("pnpm").arg("install").output()?;
+        Command::new("pnpm")
+            .arg("install")
+            .stdout(Stdio::inherit())
+            .output()?;
         println!(
             "{}",
             "Successfully synchronized npm dependencies with nix".green()
