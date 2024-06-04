@@ -8,7 +8,7 @@ on:
     branches: [ main ]
 
 jobs:
-  linux-build-and-cache:
+  build-and-cache:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -39,7 +39,6 @@ jobs:
           cd ./nix/fixtures/module-repo
           nix flake update
           cachix watch-exec holochain-open-dev -- nix build -L .#my_zome
-          sha256sum result
 
       - name: Test zomes
         env:
