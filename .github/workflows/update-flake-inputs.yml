@@ -33,9 +33,10 @@ jobs:
 
       - name: Update example repository
         run: |
-          cd nix/fixture/module-repo
+          cd nix/fixtures/module-repo
           nix flake update
           nix develop --command bash -c "cargo update"
+          nix develop --command bash -c "cd nix/reference-happ && cargo update"
 
       - uses: dorny/paths-filter@v3
         id: changes

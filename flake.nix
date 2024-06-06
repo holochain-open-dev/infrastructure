@@ -343,6 +343,7 @@
         packages.pnpm = pkgs.writeShellScriptBin "pnpm" ''
           #!${pkgs.bash}/bin/bash
           exec ${pkgs.nodejs_20}/bin/node ${pkgs.nodejs_20}/bin/corepack pnpm@9.2.0 "$@"
-        '';      };
+        '';
+      };
     };
 }

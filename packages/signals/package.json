@@ -1,40 +1,43 @@
 {
-	"name": "@holochain-open-dev/signals",
-	"version": "0.300.0-rc.3",
-	"description": "Holochain async-signals to build reusable holochain-open-dev modules",
-	"author": "guillem.cordoba@gmail.com",
-	"main": "dist/index.js",
-	"module": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"files": ["dist", "src"],
-	"exports": {
-		".": "./dist/index.js",
-		"./dist/*": "./dist/*"
-	},
-	"scripts": {
-		"start": "vite --open",
-		"build": "npm run lint && tsc",
-		"lint": "eslint src",
-		"test": "vitest run",
-		"prepublish": "npm run build"
-	},
-	"dependencies": {
-		"@holochain-open-dev/utils": "^0.300.0-rc.0",
-		"@holochain/client": "^0.17.0-rc",
-		"@shoelace-style/shoelace": "^2.11.2",
-		"async-signals": "^0.1.10",
-		"lit-signal-watcher": "^0.1.1",
-		"signal-polyfill": "^0.1.1"
-	},
-	"devDependencies": {
-		"@types/lodash-es": "^4.17.6",
-		"js-base64": "^3.7.7",
-		"typescript": "^5.4.0",
-		"vite": "^4.1.1",
-		"vitest": "^1.5.0"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
-	"type": "module"
+  "name": "@holochain-open-dev/signals",
+  "version": "0.300.0-rc.3",
+  "description": "Holochain async-signals to build reusable holochain-open-dev modules",
+  "author": "guillem.cordoba@gmail.com",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./dist/*": "./dist/*"
+  },
+  "scripts": {
+    "start": "vite --open",
+    "build": "npm run lint && tsc",
+    "lint": "eslint src",
+    "test": "vitest run",
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "@holochain-open-dev/utils": "^0.300.0-rc.0",
+    "@holochain/client": "^0.17.0-rc",
+    "@shoelace-style/shoelace": "^2.11.2",
+    "async-signals": "^0.1.10",
+    "lit-signal-watcher": "^0.1.1",
+    "signal-polyfill": "^0.1.1"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
+    "js-base64": "^3.7.7",
+    "typescript": "^5.4.0",
+    "vite": "^4.1.1",
+    "vitest": "^1.5.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module"
 }
