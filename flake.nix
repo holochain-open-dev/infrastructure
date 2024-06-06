@@ -340,16 +340,9 @@
           inherit cargoArtifacts;
         });
 
-        packages.pnpm = pkgs.stdenv.mkDerivation {
-          pname = "pnpm";
-          version = "pnpm-9";
-          buildInputs = [ pkgs.nodejs_20 ];
-          phases = [ "installPhase" ];
-          installPhase = ''
-            mkdir -p $out/bin
-            corepack enable pnpm --install-directory=$out/bin
-          '';
-        };
-      };
+        packages.pnpm = pkgs.writeShellScriptBin "pnpm" ''
+          #!${pkgs.bash}/bin/bash
+          exec ${pkgs.nodejs_20}/bin/node ${pkgs.nodejs_20}/bin/corepack pnpm@9.2.0 "$@"
+        '';      };
     };
 }
