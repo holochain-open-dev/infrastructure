@@ -24,6 +24,19 @@ export class Routes extends NativeRoutes {
 
 		return pathname.split(prefix)[1];
 	}
+
+	// Goes back, and if there is no page saved in the history of the app,
+	// goes back up to the root of the previous level of the pathname
+	pop(parentPath: string = '') {
+		const previousPathname = this.currentPathname();
+		window.history.back();
+
+		setTimeout(() => {
+			if (this.currentPathname() === previousPathname) {
+				this.goto(this.link(parentPath));
+			}
+		});
+	}
 }
 
 export class Router extends NativeRouter {
@@ -47,5 +60,17 @@ export class Router extends NativeRouter {
 	}
 	go(delta: number | undefined) {
 		window.history.go(delta);
+	}
+	// Goes back, and if there is no page saved in the history of the app,
+	// goes back up to the root of the previous level of the pathname
+	pop(parentPath: string = '') {
+		const previousPathname = this.currentPathname();
+		window.history.back();
+
+		setTimeout(() => {
+			if (this.currentPathname() === previousPathname) {
+				this.goto(this.link(parentPath));
+			}
+		});
 	}
 }

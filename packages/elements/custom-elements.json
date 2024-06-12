@@ -456,6 +456,19 @@
             {
               "kind": "method",
               "name": "currentPathname"
+            },
+            {
+              "kind": "method",
+              "name": "pop",
+              "parameters": [
+                {
+                  "name": "parentPath",
+                  "default": "''",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
             }
           ],
           "superclass": {
@@ -505,6 +518,19 @@
                   "name": "delta",
                   "type": {
                     "text": "number | undefined"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "pop",
+              "parameters": [
+                {
+                  "name": "parentPath",
+                  "default": "''",
+                  "type": {
+                    "text": "string"
                   }
                 }
               ]
