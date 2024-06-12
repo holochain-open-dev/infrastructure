@@ -25,8 +25,10 @@ export class Routes extends NativeRoutes {
 		return pathname.split(prefix)[1];
 	}
 
-	// Goes back, and if there is no page saved in the history of the app,
-	// goes back up to the root of the previous level of the pathname
+	/// Goes back, and if there is no page saved in the history of the app,
+	/// goes back up to the root of the previous level of the pathname
+	///
+	/// Having no page saved in the history of the app usually means that the user refreshed the page
 	pop(parentPath: string = '') {
 		const previousPathname = this.currentPathname();
 		window.history.back();
