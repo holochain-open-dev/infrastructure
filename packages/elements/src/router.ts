@@ -14,7 +14,6 @@ export type {
 export class Routes extends NativeRoutes {
 	goto(pathname: string): Promise<void> {
 		window.history.pushState(null, '', super.link(pathname));
-		console.log(pathname);
 		return super.goto(pathname);
 	}
 	currentPathname() {
