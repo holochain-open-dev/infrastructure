@@ -262,7 +262,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./shared-styles.js\""
+            "package": "./shared-styles.js"
           }
         },
         {
@@ -270,7 +270,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./form-field-controller.js\""
+            "package": "./form-field-controller.js"
           }
         },
         {
@@ -278,7 +278,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./on-submit.js\""
+            "package": "./on-submit.js"
           }
         },
         {
@@ -286,7 +286,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./holo-hash-property.js\""
+            "package": "./holo-hash-property.js"
           }
         },
         {
@@ -294,7 +294,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./icon.js\""
+            "package": "./icon.js"
           }
         },
         {
@@ -302,7 +302,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./notify.js\""
+            "package": "./notify.js"
           }
         },
         {
@@ -310,7 +310,15 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./date-utils.js\""
+            "package": "./date-utils.js"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "./router.js"
           }
         }
       ]
@@ -415,6 +423,154 @@
           "declaration": {
             "name": "onSubmit",
             "module": "src/on-submit.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/router.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "Routes",
+          "members": [
+            {
+              "kind": "method",
+              "name": "goto",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "pathname",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "currentPathname"
+            }
+          ],
+          "superclass": {
+            "name": "NativeRoutes",
+            "package": "@lit-labs/router"
+          }
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "Router",
+          "members": [
+            {
+              "kind": "method",
+              "name": "goto",
+              "return": {
+                "type": {
+                  "text": "Promise<void>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "pathname",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "currentPathname"
+            },
+            {
+              "kind": "method",
+              "name": "back"
+            },
+            {
+              "kind": "method",
+              "name": "forward"
+            },
+            {
+              "kind": "method",
+              "name": "go",
+              "parameters": [
+                {
+                  "name": "delta",
+                  "type": {
+                    "text": "number | undefined"
+                  }
+                }
+              ]
+            }
+          ],
+          "superclass": {
+            "name": "NativeRouter",
+            "package": "@lit-labs/router"
+          }
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "BaseRouteConfig",
+          "declaration": {
+            "name": "BaseRouteConfig",
+            "package": "@lit-labs/router"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "PathRouteConfig",
+          "declaration": {
+            "name": "PathRouteConfig",
+            "package": "@lit-labs/router"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "RouteConfig",
+          "declaration": {
+            "name": "RouteConfig",
+            "package": "@lit-labs/router"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "RoutesConnectedEvent",
+          "declaration": {
+            "name": "RoutesConnectedEvent",
+            "package": "@lit-labs/router"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "URLPatternRouteConfig",
+          "declaration": {
+            "name": "URLPatternRouteConfig",
+            "package": "@lit-labs/router"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Routes",
+          "declaration": {
+            "name": "Routes",
+            "module": "src/router.ts"
+          }
+        },
+        {
+          "kind": "js",
+          "name": "Router",
+          "declaration": {
+            "name": "Router",
+            "module": "src/router.ts"
           }
         }
       ]

@@ -110,12 +110,12 @@ export function collectionSignal<
 
 					if (signal.type === 'LinkCreated') {
 						if (linkType === signal.link_type) {
-							maybeSet([...links, createLinkToLink(signal.action)]);
+							maybeSet([...(links || []), createLinkToLink(signal.action)]);
 						}
 					} else if (signal.type === 'LinkDeleted') {
 						if (linkType === signal.link_type) {
 							maybeSet(
-								links.filter(
+								(links || []).filter(
 									link =>
 										link.create_link_hash.toString() !==
 										signal.create_link_action.hashed.hash.toString(),
