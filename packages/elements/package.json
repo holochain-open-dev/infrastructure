@@ -1,6 +1,6 @@
 {
 	"name": "@holochain-open-dev/elements",
-	"version": "0.300.0-rc.1",
+	"version": "0.300.0-rc.2",
 	"description": "Common utilities and elements to build Holochain web applications",
 	"author": "guillem.cordoba@gmail.com",
 	"main": "dist/index.js",
