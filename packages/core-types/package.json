@@ -1,35 +1,32 @@
 {
-  "name": "@holochain-open-dev/core-types",
-  "version": "0.300.0-rc.0",
-  "description": "Typescript types for holochain core",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "type": "module",
-  "files": [
-    "dist/**/*"
-  ],
-  "scripts": {
-    "lint": "eslint src",
-    "build": "npm run lint && tsc",
-    "publish": "npm run build && npm publish --tag dev"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/holochain-open-dev/core-types.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@holochain/client": "^0.17.0-rc"
-  },
-  "devDependencies": {
-    "@types/libsodium-wrappers": "^0.7.10",
-    "@types/node": "^16.11.10",
-    "@types/ws": "^8.2.0",
-    "typescript": "^5.4.0"
-  },
-  "bugs": {
-    "url": "https://github.com/holochain-open-dev/core-types/issues"
-  },
-  "homepage": "https://github.com/holochain-open-dev/core-types#readme"
+	"name": "@holochain-open-dev/core-types",
+	"version": "0.300.0",
+	"description": "Typescript types for holochain core",
+	"main": "dist/index.js",
+	"module": "dist/index.js",
+	"type": "module",
+	"files": ["dist/**/*"],
+	"scripts": {
+		"lint": "eslint src",
+		"build": "npm run lint && tsc"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/holochain-open-dev/core-types.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@holochain/client": "^0.17.0"
+	},
+	"devDependencies": {
+		"@types/libsodium-wrappers": "^0.7.10",
+		"@types/node": "^16.11.10",
+		"@types/ws": "^8.2.0",
+		"typescript": "^5.4.0"
+	},
+	"bugs": {
+		"url": "https://github.com/holochain-open-dev/core-types/issues"
+	},
+	"homepage": "https://github.com/holochain-open-dev/core-types#readme"
 }

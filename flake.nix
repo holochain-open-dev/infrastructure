@@ -2,7 +2,7 @@
   inputs = {
     crane.url = "github:ipetkov/crane/109987da061a1bf452f435f1653c47511587d919";
 
-    versions.url = "github:holochain/holochain?dir=versions/0_3_rc";
+    versions.url = "github:holochain/holochain?dir=versions/0_3";
 
     holochain = {
       url = "github:holochain/holochain";
