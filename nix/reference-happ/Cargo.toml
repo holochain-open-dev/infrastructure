@@ -1,17 +1,17 @@
 [package]
 name = "zome"
-version ="0.3.1-rc"
+version ="0.3.1"
 edition = "2021"
 
 [dependencies]
-hdk = "0.3.1-rc"
+hdk = "0.3.1"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 name = "my_zome"
 
 [dev-dependencies]
-fixt = "0.3.1-rc"
+fixt = "0.3.1"
 futures = { version = "0.3.1", default-features = false }
-hdk = { version = "0.3.1-rc", features = ["encoding", "test_utils"] }
-holochain = { version = "0.3.1-rc", features = ["test_utils"] }
+hdk = { version = "0.3.1", features = ["encoding", "test_utils"] }
+holochain = { version = "0.3.1", features = ["test_utils"] }

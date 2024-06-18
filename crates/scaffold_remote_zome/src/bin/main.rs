@@ -93,6 +93,7 @@ fn internal_main() -> Result<()> {
     );
 
     println!("Running nix flake update...");
+    println!("");
     Command::new("nix").args(["flake", "update"]).output()?;
 
     synchronize_npm_git_dependencies_with_nix()?;

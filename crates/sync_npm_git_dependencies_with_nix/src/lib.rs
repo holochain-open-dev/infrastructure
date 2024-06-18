@@ -119,6 +119,7 @@ pub fn synchronize_npm_git_dependencies_with_nix(
 
     if replaced_some_dep {
         println!("Running pnpm install...");
+        println!("");
         Command::new("pnpm")
             .arg("install")
             .stdout(Stdio::inherit())

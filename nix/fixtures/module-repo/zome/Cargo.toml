@@ -14,7 +14,7 @@ hdk = {workspace = true}
 serde = "1"
 
 [dev-dependencies]
-fixt = "0.3.1-rc"
+fixt = "0.3.1"
 futures = { version = "0.3.1", default-features = false }
 hdk = { workspace = true, features = ["encoding", "test_utils"] }
 holochain = { workspace = true, features = ["test_utils"] }
