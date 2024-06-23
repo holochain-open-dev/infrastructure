@@ -2258,7 +2258,7 @@ dependencies = [
  "kitsune_p2p_dht_arc",
  "must_future",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "rand 0.8.5",
  "rusqlite",
  "serde",
@@ -2446,7 +2446,7 @@ dependencies = [
  "holochain_util",
  "kitsune_p2p_timestamp",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "serde",
  "serde_bytes",
  "subtle",
@@ -2729,7 +2729,7 @@ dependencies = [
  "one_err",
  "parking_lot 0.12.3",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "rand 0.8.5",
  "regex",
  "rusqlite",
@@ -2867,7 +2867,7 @@ dependencies = [
  "num_enum",
  "once_cell",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "rand 0.8.5",
  "rusqlite",
  "serde",
@@ -3551,7 +3551,7 @@ dependencies = [
  "holochain_util",
  "kitsune_p2p_dht_arc",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "serde",
  "serde_bytes",
  "shrinkwraprs",
@@ -3619,7 +3619,7 @@ dependencies = [
  "must_future",
  "num-traits",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "rand 0.8.5",
  "serde",
  "statrs",
@@ -3640,7 +3640,7 @@ dependencies = [
  "kitsune_p2p_timestamp",
  "num-traits",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "rusqlite",
  "serde",
 ]
@@ -3704,7 +3704,7 @@ dependencies = [
  "chrono",
  "once_cell",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "rand 0.8.5",
  "rusqlite",
  "serde",
@@ -3749,7 +3749,7 @@ dependencies = [
  "parking_lot 0.12.3",
  "paste",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "rmp-serde 1.1.2",
  "rustls 0.20.9",
  "serde",
@@ -4182,7 +4182,7 @@ dependencies = [
  "futures",
  "holochain_util",
  "proptest",
- "proptest-derive 0.4.0",
+ "proptest-derive 0.5.0",
  "reqwest 0.12.5",
  "rmp-serde 1.1.2",
  "serde",
@@ -4962,9 +4962,9 @@ dependencies = [
 
 [[package]]
 name = "proptest"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31b476131c3c86cb68032fdc5cb6d5a1045e3e42d96b69fa599fd77701e1f5bf"
+checksum = "b4c2511913b88df1637da85cc8d96ec8e43a3f8bb8ccb71ee1ac240d6f3df58d"
 dependencies = [
  "bit-set",
  "bit-vec",
@@ -4993,13 +4993,13 @@ dependencies = [
 
 [[package]]
 name = "proptest-derive"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9cf16337405ca084e9c78985114633b6827711d22b9e6ef6c6c0d665eb3f0b6e"
+checksum = "6ff7ff745a347b87471d859a377a9a404361e7efc2a971d73424a6d183c0fc77"
 dependencies = [
  "proc-macro2 1.0.86",
  "quote 1.0.36",
- "syn 1.0.109",
+ "syn 2.0.67",
 ]
 
 [[package]]
