@@ -4,13 +4,13 @@
   inputs = {
     nixpkgs.follows = "holochain/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/weekly";
+    versions.url = "github:holochain/holochain?dir=versions/0_3";
 
     holochain = {
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-    hcUtils.url = "path:../../..";
+    hc-infra.url = "path:../../..";
     service.url = "path:../service-repo";
   };
 
@@ -21,22 +21,12 @@
       systems = builtins.attrNames inputs.holochain.devShells;
       perSystem = { inputs', config, pkgs, system, lib, self', ... }: {
         devShells.default = pkgs.mkShell {
-          inputsFrom = [ inputs'.holochain.devShells.holonix ];
-          packages = with pkgs; [
-            nodejs_20
-            # more packages go here
-            cargo-nextest
-            (inputs.hcUtils.lib.syncNpmDependenciesWithNix {
-              inherit system;
-              holochainPackages = upstreamNpmPackages { inherit inputs'; };
-            })
+          inputsFrom = [
+            inputs'.hc-infra.devShells.synchronized-pnpm
+            inputs'.holochain.devShells.holonix
           ];
-
-          shellHook = ''
-            sync-npm-dependencies-with-nix
-          '';
+          packages = [ pkgs.nodejs_20 ];
         };
-        # packages.i = inputs'.profiles.packages.profiles_ui;
       };
     };
 }

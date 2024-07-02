@@ -81,12 +81,14 @@ let
   in runCommandLocal "${crate}-deterministic" {
     meta = { holochainPackageType = "zome"; };
   } "	cp ${wasm}/lib/${crate}.wasm $out \n";
-  release = runCommandNoCC crate {
+
+  release = runCommandLocal crate {
     meta = { holochainPackageType = "zome"; };
     buildInputs = [ binaryen ];
   } ''
     wasm-opt --strip-debug -Oz -o $out ${deterministicWasm}
   '';
+
   debug = runCommandLocal "${crate}-debug" {
     meta = {
       holochainPackageType = "zome";

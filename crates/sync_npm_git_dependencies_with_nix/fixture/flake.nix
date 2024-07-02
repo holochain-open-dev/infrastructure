@@ -4,16 +4,15 @@
   inputs = {
     nixpkgs.follows = "holochain/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/weekly";
+    versions.url = "github:holochain/holochain?dir=versions/0_3";
 
     holochain = {
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-    hcUtils.url = "path:../../..";
+    hc-infra.url = "path:../../..";
     profiles.url = "github:holochain-open-dev/profiles/nixify";
-    file-storage.url =
-      "github:holochain-open-dev/file-storage/for-hdk-0.3.0-beta-dev";
+    file-storage.url = "github:holochain-open-dev/file-storage/nixify";
   };
 
   outputs = inputs@{ ... }:

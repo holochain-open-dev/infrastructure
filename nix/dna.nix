@@ -7,7 +7,7 @@ let
 
   # Recurse over the zomes, and add the correct bundled zome package by name
   manifest = (callPackage ./import-yaml.nix { }) dnaManifest;
-  zomeToBundled = zome: zome // { bundled = zomes.${zome.name}.meta.release; };
+  zomeToBundled = zome: zome // { bundled = "./${zome.name}.wasm"; };
   coordinatorZomes = builtins.map zomeToBundled manifest.coordinator.zomes;
   integrityZomes = builtins.map zomeToBundled manifest.integrity.zomes;
 
@@ -24,32 +24,47 @@ let
     meta = { holochainPackageType = "dna"; };
   } ''
       mkdir workdir
-    	cp ${dnaManifestYaml} workdir/dna.yaml
+      cp ${dnaManifestYaml} workdir/dna.yaml
+
+      ${
+        builtins.toString (builtins.map (zome: ''
+          cp ${zomes.${zome.name}.meta.release} ./workdir/${zome.name}.wasm
+        '') manifest'.integrity.zomes)
+      }
+
+      ${
+        builtins.toString (builtins.map (zome: ''
+          cp ${zomes.${zome.name}.meta.release} ./workdir/${zome.name}.wasm
+        '') manifest'.coordinator.zomes)
+      }
+    	
     	${holochain.packages.holochain}/bin/hc dna pack workdir
     	mv workdir/${manifest.name}.dna $out
   '';
 
   # Debug package
-  debug = let
-    manifest = (callPackage ./import-yaml.nix { }) dnaManifest;
-    zomeToBundled = zome: zome // { bundled = zomes.${zome.name}; };
-    coordinatorZomes = builtins.map zomeToBundled manifest.coordinator.zomes;
-    integrityZomes = builtins.map zomeToBundled manifest.integrity.zomes;
-
-    manifest' = manifest // {
-      coordinator.zomes = coordinatorZomes;
-      integrity = manifest.integrity // { zomes = integrityZomes; };
-    };
-
-    dnaManifestJson = writeText "dna.json" (builtins.toJSON manifest');
-    dnaManifestYaml = runCommandLocal "json-to-yaml" { }
-      "	${json2yaml}/bin/json2yaml ${dnaManifestJson} $out\n";
-  in runCommandLocal manifest.name {
+  debug = runCommandLocal manifest.name {
     srcs = zomeSrcs;
     meta = {
       inherit release;
       holochainPackageType = "dna";
     };
-  }
-  "	mkdir workdir\n	cp ${dnaManifestYaml} workdir/dna.yaml\n	${holochain.packages.holochain}/bin/hc dna pack workdir\n	mv workdir/${manifest.name}.dna $out\n";
+  } ''
+    	mkdir workdir
+    	cp ${dnaManifestYaml} workdir/dna.yaml
+      
+      ${
+        builtins.toString (builtins.map (zome: ''
+          cp ${zomes.${zome.name}} ./workdir/${zome.name}.wasm
+        '') manifest'.integrity.zomes)
+      }
+      ${
+        builtins.toString (builtins.map (zome: ''
+          cp ${zomes.${zome.name}} ./workdir/${zome.name}.wasm
+        '') manifest'.coordinator.zomes)
+      }
+      
+    	${holochain.packages.holochain}/bin/hc dna pack workdir
+    	mv workdir/${manifest.name}.dna $out
+  '';
 in debug
