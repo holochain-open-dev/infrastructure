@@ -185,7 +185,7 @@ export function immutableEntrySignal<T>(
 								});
 							} else {
 								if (retries < maxRetries) {
-									setTimeout(() => tryFetch, pollInterval);
+									setTimeout(() => tryFetch(), pollInterval);
 								} else {
 									signal.set({
 										status: 'error',
@@ -196,7 +196,7 @@ export function immutableEntrySignal<T>(
 						})
 						.catch(error => {
 							if (retries < maxRetries) {
-								setTimeout(() => tryFetch, pollInterval);
+								setTimeout(() => tryFetch(), pollInterval);
 							} else {
 								signal.set({
 									status: 'error',
@@ -453,13 +453,14 @@ export function deletesForEntrySignal<
 						}
 					});
 					if (
-						!deletes ||
-						!areArrayHashesEqual(
-							deletes.map(d => d.hashed.hash),
-							ndeletes.map(d => d.hashed.hash),
-						)
+						ndeletes &&
+						(!deletes ||
+							!areArrayHashesEqual(
+								deletes.map(d => d.hashed.hash),
+								ndeletes.map(d => d.hashed.hash),
+							))
 					) {
-						deletes = ndeletes;
+						deletes = uniquifyActions(ndeletes);
 						signal.set({
 							status: 'completed',
 							value: deletes,
@@ -483,7 +484,7 @@ export function deletesForEntrySignal<
 							originalActionHash.toString()
 					) {
 						const lastDeletes = deletes ? deletes : [];
-						deletes = [...lastDeletes, hcSignal.action];
+						deletes = uniquifyActions([...lastDeletes, hcSignal.action]);
 						signal.set({
 							status: 'completed',
 							value: deletes,
