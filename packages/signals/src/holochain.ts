@@ -431,7 +431,7 @@ export function deletesForEntrySignal<
 >(
 	client: ZomeClient<S>,
 	originalActionHash: ActionHash,
-	fetchDeletes: () => Promise<Array<SignedActionHashed<Delete>>>,
+	fetchDeletes: () => Promise<Array<SignedActionHashed<Delete>> | undefined>,
 	pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS,
 ): AsyncSignal<Array<SignedActionHashed<Delete>>> {
 	let active = false;
