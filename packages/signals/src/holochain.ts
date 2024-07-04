@@ -73,7 +73,7 @@ export function collectionSignal<
 						sortLinksByTimestampAscending,
 					);
 					if (
-						links === undefined ||
+						!links ||
 						!areArrayHashesEqual(
 							orderedNewLinks.map(l => l.create_link_hash),
 							links.map(l => l.create_link_hash),
@@ -353,7 +353,7 @@ export function allRevisionsOfEntrySignal<
 						}
 					});
 					if (
-						allRevisions === undefined ||
+						!allRevisions ||
 						!areArrayHashesEqual(
 							allRevisions.map(r => r.actionHash),
 							nAllRevisions.map(r => r.actionHash),
@@ -453,7 +453,7 @@ export function deletesForEntrySignal<
 						}
 					});
 					if (
-						deletes === undefined ||
+						!deletes ||
 						!areArrayHashesEqual(
 							deletes.map(d => d.hashed.hash),
 							ndeletes.map(d => d.hashed.hash),
@@ -598,7 +598,7 @@ export function liveLinksSignal<
 					);
 
 					if (
-						links === undefined ||
+						!links ||
 						!areArrayHashesEqual(
 							orderedNewLinks.map(l => l.create_link_hash),
 							links.map(l => l.create_link_hash),
@@ -755,7 +755,7 @@ export function deletedLinksSignal<
 							return;
 					}
 					if (
-						deletedLinks === undefined ||
+						!deletedLinks ||
 						!areArrayHashesEqual(
 							orderedNewLinks.map(l => l[0].hashed.hash),
 							deletedLinks.map(l => l[0].hashed.hash),

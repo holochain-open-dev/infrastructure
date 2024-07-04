@@ -1,6 +1,6 @@
 {
 	"name": "@holochain-open-dev/signals",
-	"version": "0.300.0",
+	"version": "0.300.2",
 	"description": "Holochain async-signals to build reusable holochain-open-dev modules",
 	"author": "guillem.cordoba@gmail.com",
 	"main": "dist/index.js",
