@@ -196,9 +196,11 @@
         };
       };
 
-      systems = builtins.attrNames inputs.holochain.devShells;
-      perSystem = { inputs', config, pkgs, system, lib, ... }: rec {
+      imports = [ ./crates/scaffold_remote_zome/default.nix ];
 
+      systems = builtins.attrNames inputs.holochain.devShells;
+
+      perSystem = { inputs', config, pkgs, system, lib, ... }: rec {
         devShells.default = pkgs.mkShell {
           inputsFrom = [ inputs'.holochain.devShells.holonix ];
           packages = with pkgs;
@@ -288,34 +290,6 @@
           craneLib = inputs.crane.mkLib pkgs;
 
           cratePath = ./crates/sync_npm_git_dependencies_with_nix;
-
-          cargoToml =
-            builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
-          crate = cargoToml.package.name;
-
-          commonArgs = {
-            src = craneLib.cleanCargoSource (craneLib.path ./.);
-            doCheck = false;
-            buildInputs =
-              flake.lib.holochainAppDeps.buildInputs { inherit pkgs lib; };
-            nativeBuildInputs = flake.lib.holochainAppDeps.nativeBuildInputs {
-              inherit pkgs lib;
-            };
-          };
-          cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-            pname = "workspace";
-            version = "workspace";
-          });
-        in craneLib.buildPackage (commonArgs // {
-          pname = crate;
-          version = cargoToml.package.version;
-          inherit cargoArtifacts;
-        });
-
-        packages.scaffold-remote-zome = let
-          craneLib = inputs.crane.mkLib pkgs;
-
-          cratePath = ./crates/scaffold_remote_zome;
 
           cargoToml =
             builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
