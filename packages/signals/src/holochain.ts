@@ -31,6 +31,7 @@ export function createLinkToLink(
 	createLink: SignedActionHashed<CreateLink>,
 ): Link {
 	return {
+		base: createLink.hashed.content.base_address,
 		author: createLink.hashed.content.author,
 		link_type: createLink.hashed.content.link_type,
 		tag: createLink.hashed.content.tag,
