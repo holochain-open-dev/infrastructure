@@ -17,7 +17,7 @@ path = "src/bin/main.rs"
 anyhow = "1.0.81"
 ignore = "0.4"
 serde_json = {version ="1", features = ["std", "preserve_order"]}
-serde_yaml = "=0.9.33"
+serde_yaml = "^0.9"
 serde = "1"
 clap = {version = "4.5.4", features = ["derive"]}
 nix_scaffolding_utils = { path = "../nix_scaffolding_utils" }
