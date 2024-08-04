@@ -3,9 +3,9 @@ members = ["zome"]
 resolver = "2"
 
 [workspace.dependencies]
-hdi = "0.4.1"
-hdk = "0.3.1"
-holochain = "0.3.1"
+hdi = "0.4.2"
+hdk = "0.3.2"
+holochain = "0.3.2"
 
 [profile.release]
 opt-level = "z"

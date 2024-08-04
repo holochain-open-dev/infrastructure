@@ -100,7 +100,7 @@
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
                 pname = "zome";
-                version = "for-holochain-0.3.1";
+                version = "for-holochain-0.3.2";
               });
 
             in cargoArtifacts;
@@ -130,7 +130,7 @@
                 # CARGO_PROFILE = "release";
                 CARGO_PROFILE = "release";
                 pname = "sweettest";
-                version = "for-holochain-0.3.1";
+                version = "for-holochain-0.3.2";
               };
             in cargoArtifacts;
 
