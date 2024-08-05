@@ -70,9 +70,9 @@ export function collectionSignal<
 
 				const maybeSet = (newLinksValue: Link[]) => {
 					if (!active) return;
-					const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
-						sortLinksByTimestampAscending,
-					);
+					const orderedNewLinks = uniquifyLinks(
+						newLinksValue ? newLinksValue : [],
+					).sort(sortLinksByTimestampAscending);
 					if (
 						!links ||
 						!areArrayHashesEqual(
@@ -595,9 +595,9 @@ export function liveLinksSignal<
 
 				const maybeSet = (newLinksValue: Link[]) => {
 					if (!active) return;
-					const orderedNewLinks = uniquifyLinks(newLinksValue).sort(
-						sortLinksByTimestampAscending,
-					);
+					const orderedNewLinks = uniquifyLinks(
+						newLinksValue ? newLinksValue : [],
+					).sort(sortLinksByTimestampAscending);
 
 					if (
 						!links ||
