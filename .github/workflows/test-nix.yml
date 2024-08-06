@@ -18,13 +18,18 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install nix
-        uses: cachix/install-nix-action@v25
+        uses: cachix/install-nix-action@v27
         with:
-          nix_path: nixpkgs=channel:nixos-unstable
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_path: nixpkgs=channel:nixos-24.05
 
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@v15
         with:
           name: holochain-ci
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: holochain-open-dev
 
       - name: Test flake
         env:
@@ -37,7 +42,7 @@ jobs:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
           cd ./nix/fixtures/module-repo
-          nix flake lock --update-input hc-infra
+          nix flake update hc-infra
           cachix watch-exec holochain-open-dev -- nix build --no-update-lock-file --accept-flake-config -L .#my_zome
 
       - name: Test zomes
