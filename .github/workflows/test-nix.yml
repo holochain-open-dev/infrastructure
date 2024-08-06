@@ -37,6 +37,7 @@ jobs:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
           cd ./nix/fixtures/module-repo
+          nix flake lock --update-input hc-infra
           cachix watch-exec holochain-open-dev -- nix build --no-update-lock-file --accept-flake-config -L .#my_zome
 
       - name: Test zomes
