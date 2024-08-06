@@ -38,7 +38,7 @@ jobs:
         run: |
           cd ./nix/fixtures/module-repo
           nix flake update
-          cachix watch-exec holochain-open-dev -- nix build -L .#my_zome
+          cachix watch-exec holochain-open-dev -- nix build --no-update-lock-file -L .#my_zome
 
       - name: Test zomes
         env:
