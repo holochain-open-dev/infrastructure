@@ -33,6 +33,7 @@ export function createLinkToLink(
   createLink: SignedActionHashed<CreateLink>
 ): Link {
   return {
+    base: createLink.hashed.content.base_address,
     author: createLink.hashed.content.author,
     link_type: createLink.hashed.content.link_type,
     tag: createLink.hashed.content.tag,
@@ -96,11 +97,11 @@ export function collectionStore<
       const signal = originalSignal as ActionCommittedSignal<any, any>;
 
       if (signal.type === "LinkCreated") {
-        if (linkType in signal.link_type) {
+        if (linkType === signal.link_type) {
           maybeSet([...links, createLinkToLink(signal.action)]);
         }
       } else if (signal.type === "LinkDeleted") {
-        if (linkType in signal.link_type) {
+        if (linkType === signal.link_type) {
           maybeSet(
             links.filter(
               (link) =>
@@ -492,7 +493,7 @@ export function liveLinksStore<
 
       if (signal.type === "LinkCreated") {
         if (
-          linkType in signal.link_type &&
+          linkType === signal.link_type &&
           signal.action.hashed.content.base_address.toString() ===
           innerBaseAddress.toString()
         ) {
@@ -500,7 +501,7 @@ export function liveLinksStore<
         }
       } else if (signal.type === "LinkDeleted") {
         if (
-          linkType in signal.link_type &&
+          linkType === signal.link_type &&
           signal.create_link_action.hashed.content.base_address.toString() ===
           innerBaseAddress.toString()
         ) {
@@ -606,7 +607,7 @@ export function deletedLinksStore<
 
       if (signal.type === "LinkDeleted") {
         if (
-          linkType in signal.link_type &&
+          linkType === signal.link_type &&
           signal.create_link_action.hashed.content.base_address.toString() ===
           innerBaseAddress.toString()
         ) {
