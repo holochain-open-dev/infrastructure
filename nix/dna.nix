@@ -1,6 +1,5 @@
 # Build a DNA
-{ dnaManifest, json2yaml, runCommandLocal, callPackage, writeText, holochain
-, zomes ? { } }:
+{ dnaManifest, json2yaml, runCommandLocal, callPackage, writeText, holochain, zomes ? { } }:
 
 let
   zomeSrcs = builtins.attrValues zomes;

@@ -15,4 +15,3 @@ roles:
         quantum_time: ~
       installed_hash: ~
       clone_limit: 0
-
