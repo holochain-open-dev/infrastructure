@@ -54,9 +54,9 @@ fn compare_integrity_zomes(
         original_integrity_zomes.keys().cloned().collect();
     let new_zome_names: BTreeSet<ZomeName> = new_integrity_zomes.keys().cloned().collect();
 
-    let missing_zomes: BTreeSet<ZomeName> = new_zome_names
-        .difference(&original_zome_names)
-        .cloned()
+    let missing_zomes: Vec<String> = original_zome_names
+        .difference(&new_zome_names)
+        .map(|zome_name| zome_name.to_string())
         .collect();
 
     if missing_zomes.len() > 0 {
@@ -65,9 +65,9 @@ fn compare_integrity_zomes(
         ));
     }
 
-    let new_unexpected_zomes: BTreeSet<ZomeName> = original_zome_names
-        .difference(&new_zome_names)
-        .cloned()
+    let new_unexpected_zomes: Vec<String> = new_zome_names
+        .difference(&original_zome_names)
+        .map(|zome_name| zome_name.to_string())
         .collect();
 
     if new_unexpected_zomes.len() > 0 {

@@ -57,7 +57,8 @@ let
     srcs = [ release matchingIntegrityDna.meta.release ];
     buildInputs = [ compare-dnas-integrity ];
   } ''
-    compare-dnas-integrity ${matchingIntegrityDna.meta.release} ${release}
+    ${compare-dnas-integrity}/bin/compare-dnas-integrity ${matchingIntegrityDna.meta.release} ${release}
+    cp ${release} $out
   '' else release;
 
   # Debug package
