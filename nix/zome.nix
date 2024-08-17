@@ -1,6 +1,18 @@
-{ lib, workspacePath, referenceZomeCargoArtifacts, cargoArtifacts, pkgs
-, runCommandLocal, runCommandNoCC, binaryen, deterministicCraneLib, craneLib
-, crateCargoToml, nonWasmCrates }:
+{ lib
+  , workspacePath
+  , referenceZomeCargoArtifacts
+  , cargoArtifacts
+  , pkgs
+  , runCommandLocal
+  , runCommandNoCC
+  , binaryen
+  , deterministicCraneLib
+  , craneLib
+  , crateCargoToml
+  , nonWasmCrates
+  , matchingZomeHash ? null
+  , zome-wasm-hash
+}:
 
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
@@ -89,10 +101,25 @@ let
     wasm-opt --strip-debug -Oz -o $out ${deterministicWasm}
   '';
 
+  guardedRelease = if matchingZomeHash != null then runCommandLocal "check-zome-${crate}-hash" {
+    srcs = [ release matchingZomeHash.meta.release ];
+    buildInputs = [ zome-wasm-hash ];
+  } ''
+    ORIGINAL_HASH=$(zome-wasm-hash ${matchingZomeHash.meta.release})
+    NEW_HASH=$(zome-wasm-hash ${release})
+
+    if $ORIGINAL_HASH != $NEW_HASH then
+      echo "The hash for the new zome does not match the hash of the original zome"
+      exit 1
+    fi
+
+    cp ${release} $out
+  '' else release;
+
   debug = runCommandLocal "${crate}-debug" {
     meta = {
       holochainPackageType = "zome";
-      inherit release;
+      release = guardedRelease;
     };
   } ''
     cp ${wasm}/lib/${crate}.wasm $out 

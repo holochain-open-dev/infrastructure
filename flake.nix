@@ -135,7 +135,7 @@ rec {
             in cargoArtifacts;
 
           rustZome = { crateCargoToml, holochain, workspacePath
-            , nonWasmCrates ? [ ], cargoArtifacts ? null }:
+            , nonWasmCrates ? [ ], cargoArtifacts ? null, matchingZomeHash ? null }:
             let
               deterministicCraneLib = let
                 pkgs = import inputs.nixpkgs {
@@ -154,9 +154,11 @@ rec {
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
 
+              zome-wasm-hash = (outputs inputs).packages.${system}.zome-wasm-hash;
+
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
-                cargoArtifacts nonWasmCrates workspacePath;
+                cargoArtifacts nonWasmCrates workspacePath matchingZomeHash zome-wasm-hash;
               referenceZomeCargoArtifacts = flake.lib.zomeCargoArtifacts;
             };
           sweettest = { holochain, dna, workspacePath, crateCargoToml
@@ -201,6 +203,7 @@ rec {
       imports = [ 
         ./crates/scaffold_remote_zome/default.nix 
         ./crates/compare_dnas_integrity/default.nix 
+        ./crates/zome_wasm_hash/default.nix 
       ];
 
       systems = builtins.attrNames inputs.holochain.devShells;

@@ -5714,6 +5714,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "zome_wasm_hash"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap 4.5.13",
+ "holochain_types",
+ "tokio",
+]
+
+[[package]]
 name = "zopfli"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

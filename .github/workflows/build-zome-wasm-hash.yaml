@@ -1,0 +1,46 @@
+name: "build-zome-wasm-hash"
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push: 
+    branches: [ main ]
+  pull_request: 
+    branches: [ main ]
+
+jobs:
+  build-and-cache:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v27
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_path: nixpkgs=channel:nixos-24.05
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: holochain-ci
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: holochain-open-dev
+
+      - name: Build zome-wasm-hash
+        env:
+          CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
+        run: |
+          cachix watch-exec holochain-open-dev -- nix build --no-update-lock-file --accept-flake-config -L .#zome-wasm-hash
+          cachix push holochain-open-dev $(nix path-info --json --accept-flake-config --no-warn-dirty .#zome-wasm-hash | nix run nixpkgs#jq -- -r 'keys[0]')
+
+      - name: Pin zome-wasm-hash
+        if: github.event_name == "pull_request"
+        env:
+          CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
+        run: |
+          cachix pin holochain-open-dev zome-wasm-hash $(nix path-info --json --accept-flake-config --no-warn-dirty .#zome-wasm-hash | nix run nixpkgs#jq -- -r 'keys[0]')
