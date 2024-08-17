@@ -6,7 +6,7 @@
       dnaManifest = ./dna.yaml;
       holochain = inputs'.holochain;
       zomes = { my_zome = inputs'.module.packages.my_zome; };
-      matchingIntegrityDna = inputs'.previousDnaVersion.packages.my_dna;
+      # matchingIntegrityDna = inputs'.previousDnaVersion.packages.my_dna;
     };
   };
 }
