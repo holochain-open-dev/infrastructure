@@ -39,7 +39,7 @@ jobs:
           cachix push holochain-open-dev $(nix path-info --json --accept-flake-config --no-warn-dirty .#zome-wasm-hash | nix run nixpkgs#jq -- -r 'keys[0]')
 
       - name: Pin zome-wasm-hash
-        if: github.event_name == "pull_request"
+        if: github.event_name == 'pull_request'
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
