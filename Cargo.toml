@@ -1,5 +1,8 @@
 [workspace]
 members = ["crates/*"]
-exclude = ["nix/reference-happ"]
+exclude = [
+  "nix/reference-happ",
+  "nix/fixtures/module-repo",
+  "nix/fixtures/module-repo/zome",
+]
 resolver = "2"
-

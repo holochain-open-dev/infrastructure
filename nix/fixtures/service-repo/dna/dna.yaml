@@ -5,10 +5,10 @@ integrity:
   network_seed: ~
   properties: ~
   origin_time: 2022-02-11T23:29:00.789576Z
+  zomes: []
+coordinator:
   zomes:
     - name: my_zome
       dylib: ~
       dependencies: []
       hash: ~
-coordinator:
-  zomes: []
