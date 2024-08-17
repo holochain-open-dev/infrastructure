@@ -37,10 +37,14 @@ async fn main() -> anyhow::Result<()> {
         return Ok(());
     }
 
+    let name = new_dna_file.dna_def().name.clone();
+
     // Hashes don't match???
     // We need to find why...
     let compare_result = compare_integrity_zomes(original_dna_file, new_dna_file)?;
-    Err(anyhow!("DNA Hashes don't match! Reason: {compare_result}"))
+    Err(anyhow!(
+        "DNA hashes for DNA {name} don't match! Reason: {compare_result}",
+    ))
 }
 
 fn compare_integrity_zomes(

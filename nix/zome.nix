@@ -108,8 +108,8 @@ let
     ORIGINAL_HASH=$(zome-wasm-hash ${matchingZomeHash.meta.release})
     NEW_HASH=$(zome-wasm-hash ${release})
 
-    if $ORIGINAL_HASH != $NEW_HASH then
-      echo "The hash for the new zome does not match the hash of the original zome"
+    if [[ "$ORIGINAL_HASH" != "$NEW_HASH" ]]; then
+      echo "The hash for the new ${crate} zome does not match the hash of the original zome"
       exit 1
     fi
 
