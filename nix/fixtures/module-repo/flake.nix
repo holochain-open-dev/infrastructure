@@ -10,7 +10,8 @@
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-    hc-infra.url = "path:../../..";
+
+    hc-infra.url = "path:./../../..";
     profiles.url = "github:holochain-open-dev/profiles/nixify";
   };
 

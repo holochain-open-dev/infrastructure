@@ -1,6 +1,5 @@
-{
+rec {
   inputs = {
-    crane.url = "github:ipetkov/crane/109987da061a1bf452f435f1653c47511587d919";
 
     versions.url = "github:holochain/holochain?dir=versions/0_3";
 
@@ -8,6 +7,7 @@
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
+    crane.follows = "holochain/crane";
     rust-overlay.follows = "holochain/rust-overlay";
     nixpkgs.follows = "holochain/nixpkgs";
   };
@@ -179,12 +179,14 @@
                   lib = pkgs.lib;
                 };
             };
-          dna = { holochain, dnaManifest, zomes }:
+          dna = { holochain, dnaManifest, zomes, matchingIntegrityDna ? null }:
             let
               system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
+              compare-dnas-integrity = (outputs inputs).packages.${system}.compare-dnas-integrity;
+              
             in pkgs.callPackage ./nix/dna.nix {
-              inherit zomes holochain dnaManifest;
+              inherit zomes holochain dnaManifest compare-dnas-integrity matchingIntegrityDna;
             };
           happ = { holochain, happManifest, dnas }:
             let
@@ -196,7 +198,10 @@
         };
       };
 
-      imports = [ ./crates/scaffold_remote_zome/default.nix ];
+      imports = [ 
+        ./crates/scaffold_remote_zome/default.nix 
+        ./crates/compare_dnas_integrity/default.nix 
+      ];
 
       systems = builtins.attrNames inputs.holochain.devShells;
 
@@ -316,7 +321,7 @@
 
         packages.pnpm = pkgs.writeShellScriptBin "pnpm" ''
           #!${pkgs.bash}/bin/bash
-          exec ${pkgs.nodejs_20}/bin/node ${pkgs.nodejs_20}/bin/corepack pnpm@9.2.0 "$@"
+          exec ${pkgs.nodejs_20}/bin/node ${pkgs.nodejs_20}/bin/corepack pnpm@9.7.1 "$@"
         '';
       };
     };

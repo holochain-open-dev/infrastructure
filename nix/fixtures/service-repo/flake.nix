@@ -10,9 +10,12 @@
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-    hc-infra.url = "path:../../..";
-    module.url = "path:../module-repo";
+
+    hc-infra.url = "path:./../../..";
+    module.url = "path:./../module-repo";
     profiles.url = "github:holochain-open-dev/profiles/nixify";
+
+    previousDnaVersion.url = "github:holochain-open-dev/infrastructure/24cdb879a2d20414dc77a6527f2cf3edc990c15c?dir=nix/fixtures/service-repo";
   };
 
   outputs = inputs@{ ... }:

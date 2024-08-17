@@ -525,6 +525,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "compare_dnas_integrity"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap 4.5.13",
+ "holochain_types",
+ "tokio",
+]
+
+[[package]]
 name = "console"
 version = "0.15.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"

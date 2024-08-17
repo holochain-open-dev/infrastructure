@@ -10,8 +10,9 @@
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-    hc-infra.url = "path:../../..";
-    service.url = "path:../service-repo";
+
+    hc-infra.url = "path:./../../..";
+    service.url = "path:./../service-repo";
   };
 
   outputs = inputs@{ ... }:

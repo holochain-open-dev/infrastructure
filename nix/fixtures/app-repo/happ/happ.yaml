@@ -1,7 +1,7 @@
 ---
 manifest_version: "1"
 name: my_happ
-description: ~
+description: my description
 roles:
   - name: my_dna
     provisioning:

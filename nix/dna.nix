@@ -1,5 +1,17 @@
 # Build a DNA
-{ dnaManifest, json2yaml, runCommandLocal, callPackage, writeText, holochain, zomes ? { } }:
+{ 
+  dnaManifest
+  , json2yaml
+  , runCommandLocal
+  , callPackage
+  , writeText
+  , holochain
+  # If given a DNA, will check whether the DNA hashes for the given `matchingIntegrityDna` and the DNA to be built match
+  # If they don't, it will print an error describing which zomes don't match
+  , matchingIntegrityDna ? null
+  , compare-dnas-integrity
+  , zomes ? { }
+}:
 
 let
   zomeSrcs = builtins.attrValues zomes;
@@ -41,11 +53,18 @@ let
     	mv workdir/${manifest.name}.dna $out
   '';
 
+  guardedRelease = if matchingIntegrityDna then runCommandLocal "check-match-dnas-integrity" {
+    srcs = [ release matchingIntegrityDna ];
+    buildInputs = [ compare-dnas-integrity ];
+  } ''
+    compare-dnas-integrity ${matchingIntegrityDna} ${release}
+  '' else release;
+
   # Debug package
   debug = runCommandLocal manifest.name {
     srcs = zomeSrcs;
     meta = {
-      inherit release;
+      release = guardedRelease ;
       holochainPackageType = "dna";
     };
   } ''

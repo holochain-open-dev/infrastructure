@@ -1,4 +1,4 @@
-lockfileVersion: '7.0'
+lockfileVersion: '9.0'
 
 settings:
   autoInstallPeers: true
@@ -11,189 +11,190 @@ importers:
   ui:
     dependencies:
       '@holochain-open-dev/profiles':
-        specifier: github:holochain-open-dev/profiles#decbb755bfa4432d672a58783eb7d4985fcadcba&path:ui
-        version: github.com/holochain-open-dev/profiles/decbb755bfa4432d672a58783eb7d4985fcadcba#path:ui(@types/react@18.2.65)
+        specifier: github:holochain-open-dev/profiles#112ac7c452d5a5c775a07a072c0ee14cb81c41ed&path:ui
+        version: https://codeload.github.com/holochain-open-dev/profiles/tar.gz/112ac7c452d5a5c775a07a072c0ee14cb81c41ed#path:ui(@types/react@18.3.3)
 
 packages:
 
-  /@bitgo/blake2b-wasm@3.2.3:
+  '@bitgo/blake2b-wasm@3.2.3':
     resolution: {integrity: sha512-NaurBrMaEpjfg7EdUJgW/c6byt27O6q1ZaxB5Ita10MjjYjUu0SyYF4q7JPNxpHF/lMxb0YZakOxigbDBu9Jjw==}
 
-  /@bitgo/blake2b@3.2.4:
+  '@bitgo/blake2b@3.2.4':
     resolution: {integrity: sha512-46PEgEVPxecNJ/xczggIllSxIkFIvvbVM0OfIDdNJ5qpFHUeBCkNIiGdzC3fYZlsv7bVTdUZOj79GcFBLMYBqA==}
 
-  /@ctrl/tinycolor@4.0.3:
-    resolution: {integrity: sha512-e9nEVehVJwkymQpkGhdSNzLT2Lr9UTTby+JePq4Z2SxBbOQjY7pLgSouAaXvfaGQVSAaY0U4eJdwfSDmCbItcw==}
+  '@ctrl/tinycolor@4.1.0':
+    resolution: {integrity: sha512-WyOx8cJQ+FQus4Mm4uPIZA64gbk3Wxh0so5Lcii0aJifqwoVOlfFtorjLE0Hen4OYyHZMXDWqMmaQemBhgxFRQ==}
     engines: {node: '>=14'}
 
-  /@floating-ui/core@1.6.0:
-    resolution: {integrity: sha512-PcF++MykgmTj3CIyOQbKA/hDzOAiqI3mhuoN44WRCopIs1sgoDoU4oty4Jtqaj/y3oDU6fnVSm4QG0a3t5i0+g==}
+  '@floating-ui/core@1.6.7':
+    resolution: {integrity: sha512-yDzVT/Lm101nQ5TCVeK65LtdN7Tj4Qpr9RTXJ2vPFLqtLxwOrpoxAHAJI8J3yYWUc40J0BDBheaitK5SJmno2g==}
 
-  /@floating-ui/dom@1.6.3:
-    resolution: {integrity: sha512-RnDthu3mzPlQ31Ss/BTwQ1zjzIhr3lk1gZB1OC56h/1vEtaXkESrOqL5fQVMfXpwGtRwX+YsZBdyHtJMQnkArw==}
+  '@floating-ui/dom@1.6.10':
+    resolution: {integrity: sha512-fskgCFv8J8OamCmyun8MfjB1Olfn+uZKjOKZ0vhYF3gRmEUXcGOjxWL8bBr7i4kIuPZ2KD2S3EUIOxnjC8kl2A==}
 
-  /@floating-ui/utils@0.2.1:
-    resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
+  '@floating-ui/utils@0.2.7':
+    resolution: {integrity: sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==}
 
-  /@holo-host/identicon@0.1.0:
+  '@holo-host/identicon@0.1.0':
     resolution: {integrity: sha512-Dn5pTV/m3XaK1Zvq3liw/vQUt7goM7Y84x2zUyH8cb9CNMs4kPCNHs3kalbJZ/ymzFvwcdiLwwNW8AKk+WWN5A==}
 
-  /@holochain-open-dev/elements@0.300.0-rc.0:
-    resolution: {integrity: sha512-b26ZChbZ6qmAZjwzHSOyRmCOdBQ7vy/9+MedvQEuiIpAjz5KGdtKfbkMAz4M2GgQwLPVBYS66Gdct6mGVvwkyw==}
+  '@holochain-open-dev/elements@0.300.1':
+    resolution: {integrity: sha512-i0BYvrM+aKFlyiNQ02mkqTElLxQ4AFM0nBs4whXrb/p7XU/SQm0dApieEGMsTgtZu8cI/ZgmPzi6qQSduXXLPA==}
 
-  /@holochain-open-dev/signals@0.300.0-rc.1:
-    resolution: {integrity: sha512-2f8nYnzIW9eioF1S8R+6jpr0O4Z2I4d5+dKLQoIOklOdtmaaMqk7HltPbD3Np1S9Uj+2nPaNYHNWdSS4G4fSGg==}
+  '@holochain-open-dev/profiles@https://codeload.github.com/holochain-open-dev/profiles/tar.gz/112ac7c452d5a5c775a07a072c0ee14cb81c41ed#path:ui':
+    resolution: {path: ui, tarball: https://codeload.github.com/holochain-open-dev/profiles/tar.gz/112ac7c452d5a5c775a07a072c0ee14cb81c41ed}
+    version: 0.300.0
 
-  /@holochain-open-dev/utils@0.300.0-rc.0:
-    resolution: {integrity: sha512-D1mqrpnWnJPnEceGzxzCjo3xe4ADgpTd+CX+F4+HZpyWkxUIIFiQIpjm6i0HO+WmEJblvLWXSN5xG1neC1UU0g==}
+  '@holochain-open-dev/signals@0.300.7':
+    resolution: {integrity: sha512-3B2dGbGzNt7V6PvXTmKPfmxE4SFKrRm2qAU7hJVu3KhalKGEvBk8QiTevkveP6pHfUhEG+q4zhvE4cQrFJ/Ojg==}
 
-  /@holochain/client@0.17.0-rc.0:
-    resolution: {integrity: sha512-DyoAe6Gf7Atpn5f+WO8Lj08G4Vfu5p5U9PuUlOkm5gjfwTxHU6rOTAmdEWz1QcA2Yne3cmUj+qqpofTSVqB/Eg==}
+  '@holochain-open-dev/utils@0.300.2':
+    resolution: {integrity: sha512-wdJtqUAsiYmKNPLVfrAX6rP+ufF844v7bKGu1y5l1zQuMdGWPGkH43FUIy5xe6NrWWY2pz3W8D/IyXc8mnBc1w==}
+
+  '@holochain/client@0.17.1':
+    resolution: {integrity: sha512-Jvh6DN+OdktV3KQH+tioRzvPT+LWJFBp1klMFG9vaccphIVvJN1LepJfRB8OyxW5iGAZ/TFCTwF19XSJuM1fQQ==}
     engines: {node: '>=18.0.0 || >=20.0.0'}
 
-  /@holochain/serialization@0.1.0-beta-rc.3:
+  '@holochain/serialization@0.1.0-beta-rc.3':
     resolution: {integrity: sha512-DJx4V2KXHVLciyOGjOYKTM/JLBpBEZ3RsPIRCgf7qmwhQdxXvhi2p+oFFRD51yUT5uC1/MzIVeJCl/R60PwFbw==}
 
-  /@lit-labs/ssr-dom-shim@1.2.0:
-    resolution: {integrity: sha512-yWJKmpGE6lUURKAaIltoPIE/wrbY3TEkqQt+X0m+7fQNnAv0keydnYvbiJFP1PnMhizmIWRWOG5KLhYyc/xl+g==}
+  '@lit-labs/router@0.1.3':
+    resolution: {integrity: sha512-G+HHo57KsArG58LOI8DLtipFfC9tVV4lGaDy2I8hYQvS2P/pV5wQObrpFYPZswse8D47y8VuHNXNdVPQOVc5MA==}
 
-  /@lit/context@1.1.0:
-    resolution: {integrity: sha512-fCyv4dsH05wCNm3AKbB+PdYbXGJd/XT8OOwo4hVmD4COq5wOWJlQreGAMDvmHZ7osqxuu06Y4nmP6ooXpN7ErA==}
+  '@lit-labs/ssr-dom-shim@1.2.1':
+    resolution: {integrity: sha512-wx4aBmgeGvFmOKucFKY+8VFJSYZxs9poN3SDNQFF6lT6NrQUnHiPB2PWz2sc4ieEcAaYYzN+1uWahEeTq2aRIQ==}
 
-  /@lit/localize@0.12.1:
-    resolution: {integrity: sha512-uuF6OO6fjqomCf3jXsJ5cTGf1APYuN88S4Gvo/fjt9YkG4OMaMvpEUqd5oWhyzrJfY+HcenAbLJNi2Cq3H7gdg==}
+  '@lit/context@1.1.2':
+    resolution: {integrity: sha512-S0nw2C6Tkm7fVX5TGYqeROGD+Z9Coa2iFpW+ysYBDH3YvCqOY3wVQvSgwbaliLJkjTnSEYCBe9qFqKV8WUFpVw==}
 
-  /@lit/react@1.0.3:
-    resolution: {integrity: sha512-RGoPMrAPbFjQFXFbfmYdotw000DyChehTim+d562HRXvFGw//KxouI8jNOcc3Kw/1uqUA1SJqXFtKKxK0NUrww==}
+  '@lit/localize@0.12.2':
+    resolution: {integrity: sha512-Qv9kvgJKDq/JVSwXOxuWvQnnOBysHA99ti9im9a4fImCmx+fto+XXcUYQbjZHqiueEEc4V20PcRDPO+1g/6seQ==}
+
+  '@lit/react@1.0.5':
+    resolution: {integrity: sha512-RSHhrcuSMa4vzhqiTenzXvtQ6QDq3hSPsnHHO3jaPmmvVFeoNNm4DHoQ0zLdKAUvY3wP3tTENSUf7xpyVfrDEA==}
     peerDependencies:
       '@types/react': 17 || 18
 
-  /@lit/reactive-element@2.0.4:
+  '@lit/reactive-element@2.0.4':
     resolution: {integrity: sha512-GFn91inaUa2oHLak8awSIigYz0cU0Payr1rcFsrkf5OJ5eSPxElyZfKh0f2p9FsTiZWXQdWGJeXZICEfXXYSXQ==}
 
-  /@mdi/js@7.4.47:
+  '@mdi/js@7.4.47':
     resolution: {integrity: sha512-KPnNOtm5i2pMabqZxpUz7iQf+mfrYZyKCZ8QNz85czgEt7cuHcGorWfdzUMWYA0SD+a6Hn4FmJ+YhzzzjkTZrQ==}
 
-  /@msgpack/msgpack@2.8.0:
+  '@msgpack/msgpack@2.8.0':
     resolution: {integrity: sha512-h9u4u/jiIRKbq25PM+zymTyW6bhTzELvOoUd+AvYriWOAKpLGnIamaET3pnHYoI5iYphAHBI4ayx0MehR+VVPQ==}
     engines: {node: '>= 10'}
 
-  /@shoelace-style/animations@1.1.0:
+  '@shoelace-style/animations@1.1.0':
     resolution: {integrity: sha512-Be+cahtZyI2dPKRm8EZSx3YJQ+jLvEcn3xzRP7tM4tqBnvd/eW/64Xh0iOf0t2w5P8iJKfdBbpVNE9naCaOf2g==}
 
-  /@shoelace-style/localize@3.1.2:
-    resolution: {integrity: sha512-Hf45HeO+vdQblabpyZOTxJ4ZeZsmIUYXXPmoYrrR4OJ5OKxL+bhMz5mK8JXgl7HsoEowfz7+e248UGi861de9Q==}
+  '@shoelace-style/localize@3.2.1':
+    resolution: {integrity: sha512-r4C9C/5kSfMBIr0D9imvpRdCNXtUNgyYThc4YlS6K5Hchv1UyxNQ9mxwj+BTRH2i1Neits260sR3OjKMnplsFA==}
 
-  /@shoelace-style/shoelace@2.14.0:
-    resolution: {integrity: sha512-b8HXsSMvKX/9D5yCygnCkAuwZfxYof1+owJx9fYggq/bOAQ8WQcZzMBPTI4amgfwEnFzhRF8ETT+V8w+sptlww==}
+  '@shoelace-style/shoelace@2.16.0':
+    resolution: {integrity: sha512-OV4XYAAZv0OfOR4RlpxCYOn7pH8ETIL8Pkh5hFvIrL+BN4/vlBLoeESYDU2tB/f9iichu4cfwdPquJITmKdY1w==}
     engines: {node: '>=14.17.0'}
 
-  /@types/prop-types@15.7.11:
-    resolution: {integrity: sha512-ga8y9v9uyeiLdpKddhxYQkxNDrfvuPrlFb0N1qnZZByvcElJaXthF1UhvCh9TLWJBEHeNtdnbysW7Y6Uq8CVng==}
+  '@types/prop-types@15.7.12':
+    resolution: {integrity: sha512-5zvhXYtRNRluoE/jAp4GVsSduVUzNWKkOZrCDBWYtE7biZywwdC2AcEzg+cSMLFRfVgeAFqpfNabiPjxFddV1Q==}
 
-  /@types/react@18.2.65:
-    resolution: {integrity: sha512-98TsY0aW4jqx/3RqsUXwMDZSWR1Z4CUlJNue8ueS2/wcxZOsz4xmW1X8ieaWVRHcmmQM3R8xVA4XWB3dJnWwDQ==}
+  '@types/react@18.3.3':
+    resolution: {integrity: sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==}
 
-  /@types/scheduler@0.16.8:
-    resolution: {integrity: sha512-WZLiwShhwLRmeV6zH+GkbOFT6Z6VklCItrDioxUnv+u4Ll+8vKeFySoFyK/0ctcRpOmwAicELfmys1sDc/Rw+A==}
-
-  /@types/trusted-types@2.0.7:
+  '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
 
-  /async-signals@0.1.9:
-    resolution: {integrity: sha512-vjnpA/wVOzMxYDHAyfB2hIB4G9Cu8YfrSK7IJJHFZctACUPjS6+kAEKKnBHB09ClHh/IO1FZ0WSc2a3g5gfseg==}
+  async-signals@0.1.11:
+    resolution: {integrity: sha512-ooYxYRwcOOAVQ8QFVu+Xt0PRB3dHVzGgWyFyE+h6BkdGKXD+b1eecIrNWTDgBQGp5yV/le8zpSTp1KKVRYgtBg==}
 
-  /blakejs@1.2.1:
+  blakejs@1.2.1:
     resolution: {integrity: sha512-QXUSXI3QVc/gJME0dBpXrag1kbzOqCjCX8/b54ntNyW6sjtoqxqRk3LTmXzaJoh71zMsDCjM+47jS7XiwN/+fQ==}
 
-  /composed-offset-position@0.0.4:
+  composed-offset-position@0.0.4:
     resolution: {integrity: sha512-vMlvu1RuNegVE0YsCDSV/X4X10j56mq7PCIyOKK74FxkXzGLwhOUmdkJLSdOBOMwWycobGUMgft2lp+YgTe8hw==}
 
-  /csstype@3.1.3:
+  csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
-  /emittery@1.0.3:
+  emittery@1.0.3:
     resolution: {integrity: sha512-tJdCJitoy2lrC2ldJcqN4vkqJ00lT+tOWNT1hBJjO/3FDMJa5TTIiYGCKGkn/WfCyOzUMObeohbVTj00fhiLiA==}
     engines: {node: '>=14.16'}
 
-  /is-plain-obj@4.1.0:
+  is-plain-obj@4.1.0:
     resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
     engines: {node: '>=12'}
 
-  /isomorphic-ws@5.0.0:
+  isomorphic-ws@5.0.0:
     resolution: {integrity: sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==}
     peerDependencies:
       ws: '*'
 
-  /js-base64@3.7.7:
+  js-base64@3.7.7:
     resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
 
-  /libsodium-wrappers@0.7.13:
-    resolution: {integrity: sha512-kasvDsEi/r1fMzKouIDv7B8I6vNmknXwGiYodErGuESoFTohGSKZplFtVxZqHaoQ217AynyIFgnOVRitpHs0Qw==}
+  libsodium-wrappers@0.7.15:
+    resolution: {integrity: sha512-E4anqJQwcfiC6+Yrl01C1m8p99wEhLmJSs0VQqST66SbQXXBoaJY0pF4BNjRYa/sOQAxx6lXAaAFIlx+15tXJQ==}
 
-  /libsodium@0.7.13:
-    resolution: {integrity: sha512-mK8ju0fnrKXXfleL53vtp9xiPq5hKM0zbDQtcxQIsSmxNgSxqCj6R7Hl9PkrNe2j29T4yoDaF7DJLK9/i5iWUw==}
+  libsodium@0.7.15:
+    resolution: {integrity: sha512-sZwRknt/tUpE2AwzHq3jEyUU5uvIZHtSssktXq7owd++3CSgn8RGrv6UZJJBpP7+iBghBqe7Z06/2M31rI2NKw==}
 
-  /lit-element@4.0.4:
-    resolution: {integrity: sha512-98CvgulX6eCPs6TyAIQoJZBCQPo80rgXR+dVBs61cstJXqtI+USQZAbA4gFHh6L/mxBx9MrgPLHLsUgDUHAcCQ==}
+  lit-element@4.1.0:
+    resolution: {integrity: sha512-gSejRUQJuMQjV2Z59KAS/D4iElUhwKpIyJvZ9w+DIagIQjfJnhR20h2Q5ddpzXGS+fF0tMZ/xEYGMnKmaI/iww==}
 
-  /lit-html@3.1.2:
-    resolution: {integrity: sha512-3OBZSUrPnAHoKJ9AMjRL/m01YJxQMf+TMHanNtTHG68ubjnZxK0RFl102DPzsw4mWnHibfZIBJm3LWCZ/LmMvg==}
+  lit-html@3.2.0:
+    resolution: {integrity: sha512-pwT/HwoxqI9FggTrYVarkBKFN9MlTUpLrDHubTmW4SrkL3kkqW5gxwbxMMUnbbRHBC0WTZnYHcjDSCM559VyfA==}
 
-  /lit-signal-watcher@0.1.0:
-    resolution: {integrity: sha512-lZ0SgmHv2wRiTduW0KdTbO27gmzgv+87meC2xDR4UAnF/o/yEk77r7wNkZolX0WU88YdXBGDVx9q/URLA4cTCg==}
+  lit-signal-watcher@0.1.1:
+    resolution: {integrity: sha512-OUAEqcKI7NY6/1md4Hy3RqoQOpiv+GiYO6ISDt8JTeXKW3YditiAACYsfEZ8mwGxfCLcRSfWLdKgNFntiYqm+Q==}
 
-  /lit@3.1.2:
-    resolution: {integrity: sha512-VZx5iAyMtX7CV4K8iTLdCkMaYZ7ipjJZ0JcSdJ0zIdGxxyurjIn7yuuSxNBD7QmjvcNJwr0JS4cAdAtsy7gZ6w==}
+  lit@3.2.0:
+    resolution: {integrity: sha512-s6tI33Lf6VpDu7u4YqsSX78D28bYQulM+VAzsGch4fx2H0eLZnJsUBsPWmGYSGoKDNbjtRv02rio1o+UdPVwvw==}
 
-  /lodash-es@4.17.21:
+  lodash-es@4.17.21:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
 
-  /nanoassert@1.1.0:
+  nanoassert@1.1.0:
     resolution: {integrity: sha512-C40jQ3NzfkP53NsO8kEOFd79p4b9kDXQMwgiY1z8ZwrDZgUyom0AHwGegF4Dm99L+YoYhuaB0ceerUcXmqr1rQ==}
 
-  /nanoassert@2.0.0:
+  nanoassert@2.0.0:
     resolution: {integrity: sha512-7vO7n28+aYO4J+8w96AzhmU8G+Y/xpPDJz/se19ICsqj/momRbb9mh9ZUtkoJ5X3nTnPdhEJyc0qnM6yAsHBaA==}
 
-  /orderedmap@2.1.1:
+  orderedmap@2.1.1:
     resolution: {integrity: sha512-TvAWxi0nDe1j/rtMcWcIj94+Ffe6n7zhow33h40SKxmsmozs6dz/e+EajymfoFcHd7sxNn8yHM8839uixMOV6g==}
 
-  /prosemirror-commands@1.5.2:
-    resolution: {integrity: sha512-hgLcPaakxH8tu6YvVAaILV2tXYsW3rAdDR8WNkeKGcgeMVQg3/TMhPdVoh7iAmfgVjZGtcOSjKiQaoeKjzd2mQ==}
+  prosemirror-commands@1.6.0:
+    resolution: {integrity: sha512-xn1U/g36OqXn2tn5nGmvnnimAj/g1pUx2ypJJIe8WkVX83WyJVC5LTARaxZa2AtQRwntu9Jc5zXs9gL9svp/mg==}
 
-  /prosemirror-keymap@1.2.2:
+  prosemirror-keymap@1.2.2:
     resolution: {integrity: sha512-EAlXoksqC6Vbocqc0GtzCruZEzYgrn+iiGnNjsJsH4mrnIGex4qbLdWWNza3AW5W36ZRrlBID0eM6bdKH4OStQ==}
 
-  /prosemirror-model@1.19.4:
-    resolution: {integrity: sha512-RPmVXxUfOhyFdayHawjuZCxiROsm9L4FCUA6pWI+l7n2yCBsWy9VpdE1hpDHUS8Vad661YLY9AzqfjLhAKQ4iQ==}
+  prosemirror-model@1.22.3:
+    resolution: {integrity: sha512-V4XCysitErI+i0rKFILGt/xClnFJaohe/wrrlT2NSZ+zk8ggQfDH4x2wNK7Gm0Hp4CIoWizvXFP7L9KMaCuI0Q==}
 
-  /prosemirror-state@1.4.3:
+  prosemirror-state@1.4.3:
     resolution: {integrity: sha512-goFKORVbvPuAQaXhpbemJFRKJ2aixr+AZMGiquiqKxaucC6hlpHNZHWgz5R7dS4roHiwq9vDctE//CZ++o0W1Q==}
 
-  /prosemirror-transform@1.8.0:
-    resolution: {integrity: sha512-BaSBsIMv52F1BVVMvOmp1yzD3u65uC3HTzCBQV1WDPqJRQ2LuHKcyfn0jwqodo8sR9vVzMzZyI+Dal5W9E6a9A==}
+  prosemirror-transform@1.10.0:
+    resolution: {integrity: sha512-9UOgFSgN6Gj2ekQH5CTDJ8Rp/fnKR2IkYfGdzzp5zQMFsS4zDllLVx/+jGcX86YlACpG7UR5fwAXiWzxqWtBTg==}
 
-  /prosemirror-view@1.33.1:
-    resolution: {integrity: sha512-62qkYgSJIkwIMMCpuGuPzc52DiK1Iod6TWoIMxP4ja6BTD4yO8kCUL64PZ/WhH/dJ9fW0CDO39FhH1EMyhUFEg==}
+  prosemirror-view@1.33.10:
+    resolution: {integrity: sha512-wsKg9JeQkWlkXG8DDcloI/tbB9r3CysziubigoC8wTuE6zobN/9cl8bGRk1J1XjkUp7rxGBziOSxrhoILL84hg==}
 
-  /qr-creator@1.0.0:
+  qr-creator@1.0.0:
     resolution: {integrity: sha512-C0cqfbS1P5hfqN4NhsYsUXePlk9BO+a45bAQ3xLYjBL3bOIFzoVEjs79Fado9u9BPBD3buHi3+vY+C8tHh4qMQ==}
 
-  /signal-polyfill@0.1.0:
-    resolution: {integrity: sha512-RMyLaEor0noasIsXmvLfRNf/QeF3eND6A1WErMqJ5ZLc3dpI7aifcZMwwpLafJkGnyLSWraK8gcXaAqxCtxxeg==}
+  signal-polyfill@0.1.2:
+    resolution: {integrity: sha512-HT9d+L9NMiTzMxb/tU2Baym6129ROyRETSjvchvSkQa7wN0+SrG/IUlsaBLqKn2c+4mlze6CgQBEvgBjxOpiaQ==}
 
-  /signal-polyfill@0.1.1:
-    resolution: {integrity: sha512-ZihPkMjiWOCZaYOb/vi1YLj+f0GTKVF7tQVNovtK32yjqcvRvjGPTwwX3Ad45mQ8v08kLUBagsOkuyJ6gpwhWA==}
-
-  /sort-keys@5.0.0:
+  sort-keys@5.0.0:
     resolution: {integrity: sha512-Pdz01AvCAottHTPQGzndktFNdbRA75BgOfeT1hH+AMnJFv8lynkPi42rfeEhpx1saTEI3YNMWxfqu0sFD1G8pw==}
     engines: {node: '>=12'}
 
-  /w3c-keyname@2.2.8:
+  w3c-keyname@2.2.8:
     resolution: {integrity: sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ==}
 
-  /ws@8.16.0:
-    resolution: {integrity: sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==}
+  ws@8.18.0:
+    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -204,79 +205,83 @@ packages:
       utf-8-validate:
         optional: true
 
-  github.com/holochain-open-dev/profiles/decbb755bfa4432d672a58783eb7d4985fcadcba#path:ui:
-    resolution: {path: ui, tarball: https://codeload.github.com/holochain-open-dev/profiles/tar.gz/decbb755bfa4432d672a58783eb7d4985fcadcba}
-    name: '@holochain-open-dev/profiles'
-    version: 0.300.0-rc.0
-
 snapshots:
 
-  /@bitgo/blake2b-wasm@3.2.3:
+  '@bitgo/blake2b-wasm@3.2.3':
     dependencies:
       nanoassert: 1.1.0
-    dev: false
 
-  /@bitgo/blake2b@3.2.4:
+  '@bitgo/blake2b@3.2.4':
     dependencies:
       '@bitgo/blake2b-wasm': 3.2.3
       nanoassert: 2.0.0
-    dev: false
 
-  /@ctrl/tinycolor@4.0.3:
-    dev: false
+  '@ctrl/tinycolor@4.1.0': {}
 
-  /@floating-ui/core@1.6.0:
+  '@floating-ui/core@1.6.7':
     dependencies:
-      '@floating-ui/utils': 0.2.1
-    dev: false
+      '@floating-ui/utils': 0.2.7
 
-  /@floating-ui/dom@1.6.3:
+  '@floating-ui/dom@1.6.10':
     dependencies:
-      '@floating-ui/core': 1.6.0
-      '@floating-ui/utils': 0.2.1
-    dev: false
+      '@floating-ui/core': 1.6.7
+      '@floating-ui/utils': 0.2.7
 
-  /@floating-ui/utils@0.2.1:
-    dev: false
+  '@floating-ui/utils@0.2.7': {}
 
-  /@holo-host/identicon@0.1.0:
-    dev: false
+  '@holo-host/identicon@0.1.0': {}
 
-  /@holochain-open-dev/elements@0.300.0-rc.0(@types/react@18.2.65):
+  '@holochain-open-dev/elements@0.300.1(@types/react@18.3.3)':
     dependencies:
       '@holo-host/identicon': 0.1.0
-      '@holochain/client': 0.17.0-rc.0
-      '@lit/localize': 0.12.1
+      '@holochain/client': 0.17.1
+      '@lit-labs/router': 0.1.3
+      '@lit/localize': 0.12.2
       '@mdi/js': 7.4.47
-      '@shoelace-style/shoelace': 2.14.0(@types/react@18.2.65)
-      lit: 3.1.2
-      prosemirror-commands: 1.5.2
+      '@shoelace-style/shoelace': 2.16.0(@types/react@18.3.3)
+      lit: 3.2.0
+      prosemirror-commands: 1.6.0
       prosemirror-keymap: 1.2.2
       prosemirror-state: 1.4.3
-      prosemirror-view: 1.33.1
+      prosemirror-view: 1.33.10
     transitivePeerDependencies:
       - '@types/react'
       - bufferutil
       - utf-8-validate
-    dev: false
 
-  /@holochain-open-dev/signals@0.300.0-rc.1(@types/react@18.2.65):
+  '@holochain-open-dev/profiles@https://codeload.github.com/holochain-open-dev/profiles/tar.gz/112ac7c452d5a5c775a07a072c0ee14cb81c41ed#path:ui(@types/react@18.3.3)':
     dependencies:
-      '@holochain-open-dev/utils': 0.300.0-rc.0
-      '@holochain/client': 0.17.0-rc.0
-      '@shoelace-style/shoelace': 2.14.0(@types/react@18.2.65)
-      async-signals: 0.1.9
-      lit-signal-watcher: 0.1.0
-      signal-polyfill: 0.1.1
+      '@holochain-open-dev/elements': 0.300.1(@types/react@18.3.3)
+      '@holochain-open-dev/signals': 0.300.7(@types/react@18.3.3)
+      '@holochain-open-dev/utils': 0.300.2
+      '@holochain/client': 0.17.1
+      '@lit/context': 1.1.2
+      '@lit/localize': 0.12.2
+      '@mdi/js': 7.4.47
+      '@msgpack/msgpack': 2.8.0
+      '@shoelace-style/shoelace': 2.16.0(@types/react@18.3.3)
+      lit: 3.2.0
     transitivePeerDependencies:
       - '@types/react'
       - bufferutil
       - utf-8-validate
-    dev: false
 
-  /@holochain-open-dev/utils@0.300.0-rc.0:
+  '@holochain-open-dev/signals@0.300.7(@types/react@18.3.3)':
     dependencies:
-      '@holochain/client': 0.17.0-rc.0
+      '@holochain-open-dev/utils': 0.300.2
+      '@holochain/client': 0.17.1
+      '@shoelace-style/shoelace': 2.16.0(@types/react@18.3.3)
+      async-signals: 0.1.11
+      lit-signal-watcher: 0.1.1
+      signal-polyfill: 0.1.2
+    transitivePeerDependencies:
+      - '@types/react'
+      - bufferutil
+      - utf-8-validate
+
+  '@holochain-open-dev/utils@0.300.2':
+    dependencies:
+      '@holochain/client': 0.17.1
       '@msgpack/msgpack': 2.8.0
       blakejs: 1.2.1
       emittery: 1.0.3
@@ -285,238 +290,171 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
-    dev: false
 
-  /@holochain/client@0.17.0-rc.0:
+  '@holochain/client@0.17.1':
     dependencies:
       '@bitgo/blake2b': 3.2.4
       '@holochain/serialization': 0.1.0-beta-rc.3
       '@msgpack/msgpack': 2.8.0
       emittery: 1.0.3
-      isomorphic-ws: 5.0.0(ws@8.16.0)
+      isomorphic-ws: 5.0.0(ws@8.18.0)
       js-base64: 3.7.7
-      libsodium-wrappers: 0.7.13
+      libsodium-wrappers: 0.7.15
       lodash-es: 4.17.21
-      ws: 8.16.0
+      ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
-    dev: false
 
-  /@holochain/serialization@0.1.0-beta-rc.3:
-    dev: false
+  '@holochain/serialization@0.1.0-beta-rc.3': {}
 
-  /@lit-labs/ssr-dom-shim@1.2.0:
-    dev: false
+  '@lit-labs/router@0.1.3':
+    dependencies:
+      lit: 3.2.0
 
-  /@lit/context@1.1.0:
+  '@lit-labs/ssr-dom-shim@1.2.1': {}
+
+  '@lit/context@1.1.2':
     dependencies:
       '@lit/reactive-element': 2.0.4
-    dev: false
 
-  /@lit/localize@0.12.1:
+  '@lit/localize@0.12.2':
     dependencies:
-      lit: 3.1.2
-    dev: false
+      lit: 3.2.0
 
-  /@lit/react@1.0.3(@types/react@18.2.65):
+  '@lit/react@1.0.5(@types/react@18.3.3)':
     dependencies:
-      '@types/react': 18.2.65
-    dev: false
+      '@types/react': 18.3.3
 
-  /@lit/reactive-element@2.0.4:
+  '@lit/reactive-element@2.0.4':
     dependencies:
-      '@lit-labs/ssr-dom-shim': 1.2.0
-    dev: false
+      '@lit-labs/ssr-dom-shim': 1.2.1
 
-  /@mdi/js@7.4.47:
-    dev: false
+  '@mdi/js@7.4.47': {}
 
-  /@msgpack/msgpack@2.8.0:
-    dev: false
+  '@msgpack/msgpack@2.8.0': {}
 
-  /@shoelace-style/animations@1.1.0:
-    dev: false
+  '@shoelace-style/animations@1.1.0': {}
 
-  /@shoelace-style/localize@3.1.2:
-    dev: false
+  '@shoelace-style/localize@3.2.1': {}
 
-  /@shoelace-style/shoelace@2.14.0(@types/react@18.2.65):
+  '@shoelace-style/shoelace@2.16.0(@types/react@18.3.3)':
     dependencies:
-      '@ctrl/tinycolor': 4.0.3
-      '@floating-ui/dom': 1.6.3
-      '@lit/react': 1.0.3(@types/react@18.2.65)
+      '@ctrl/tinycolor': 4.1.0
+      '@floating-ui/dom': 1.6.10
+      '@lit/react': 1.0.5(@types/react@18.3.3)
       '@shoelace-style/animations': 1.1.0
-      '@shoelace-style/localize': 3.1.2
+      '@shoelace-style/localize': 3.2.1
       composed-offset-position: 0.0.4
-      lit: 3.1.2
+      lit: 3.2.0
       qr-creator: 1.0.0
     transitivePeerDependencies:
       - '@types/react'
-    dev: false
 
-  /@types/prop-types@15.7.11:
-    dev: false
+  '@types/prop-types@15.7.12': {}
 
-  /@types/react@18.2.65:
+  '@types/react@18.3.3':
     dependencies:
-      '@types/prop-types': 15.7.11
-      '@types/scheduler': 0.16.8
+      '@types/prop-types': 15.7.12
       csstype: 3.1.3
-    dev: false
 
-  /@types/scheduler@0.16.8:
-    dev: false
+  '@types/trusted-types@2.0.7': {}
 
-  /@types/trusted-types@2.0.7:
-    dev: false
-
-  /async-signals@0.1.9:
+  async-signals@0.1.11:
     dependencies:
-      lit: 3.1.2
-      signal-polyfill: 0.1.1
-    dev: false
+      lit: 3.2.0
+      signal-polyfill: 0.1.2
 
-  /blakejs@1.2.1:
-    dev: false
+  blakejs@1.2.1: {}
 
-  /composed-offset-position@0.0.4:
-    dev: false
+  composed-offset-position@0.0.4: {}
 
-  /csstype@3.1.3:
-    dev: false
+  csstype@3.1.3: {}
 
-  /emittery@1.0.3:
-    dev: false
+  emittery@1.0.3: {}
 
-  /is-plain-obj@4.1.0:
-    dev: false
+  is-plain-obj@4.1.0: {}
 
-  /isomorphic-ws@5.0.0(ws@8.16.0):
+  isomorphic-ws@5.0.0(ws@8.18.0):
     dependencies:
-      ws: 8.16.0
-    dev: false
+      ws: 8.18.0
 
-  /js-base64@3.7.7:
-    dev: false
+  js-base64@3.7.7: {}
 
-  /libsodium-wrappers@0.7.13:
+  libsodium-wrappers@0.7.15:
     dependencies:
-      libsodium: 0.7.13
-    dev: false
+      libsodium: 0.7.15
 
-  /libsodium@0.7.13:
-    dev: false
+  libsodium@0.7.15: {}
 
-  /lit-element@4.0.4:
+  lit-element@4.1.0:
     dependencies:
-      '@lit-labs/ssr-dom-shim': 1.2.0
+      '@lit-labs/ssr-dom-shim': 1.2.1
       '@lit/reactive-element': 2.0.4
-      lit-html: 3.1.2
-    dev: false
+      lit-html: 3.2.0
 
-  /lit-html@3.1.2:
+  lit-html@3.2.0:
     dependencies:
       '@types/trusted-types': 2.0.7
-    dev: false
 
-  /lit-signal-watcher@0.1.0:
+  lit-signal-watcher@0.1.1:
     dependencies:
-      lit: 3.1.2
-      signal-polyfill: 0.1.0
-    dev: false
+      lit: 3.2.0
+      signal-polyfill: 0.1.2
 
-  /lit@3.1.2:
+  lit@3.2.0:
     dependencies:
       '@lit/reactive-element': 2.0.4
-      lit-element: 4.0.4
-      lit-html: 3.1.2
-    dev: false
+      lit-element: 4.1.0
+      lit-html: 3.2.0
 
-  /lodash-es@4.17.21:
-    dev: false
+  lodash-es@4.17.21: {}
 
-  /nanoassert@1.1.0:
-    dev: false
+  nanoassert@1.1.0: {}
 
-  /nanoassert@2.0.0:
-    dev: false
+  nanoassert@2.0.0: {}
 
-  /orderedmap@2.1.1:
-    dev: false
+  orderedmap@2.1.1: {}
 
-  /prosemirror-commands@1.5.2:
+  prosemirror-commands@1.6.0:
     dependencies:
-      prosemirror-model: 1.19.4
+      prosemirror-model: 1.22.3
       prosemirror-state: 1.4.3
-      prosemirror-transform: 1.8.0
-    dev: false
+      prosemirror-transform: 1.10.0
 
-  /prosemirror-keymap@1.2.2:
+  prosemirror-keymap@1.2.2:
     dependencies:
       prosemirror-state: 1.4.3
       w3c-keyname: 2.2.8
-    dev: false
 
-  /prosemirror-model@1.19.4:
+  prosemirror-model@1.22.3:
     dependencies:
       orderedmap: 2.1.1
-    dev: false
 
-  /prosemirror-state@1.4.3:
+  prosemirror-state@1.4.3:
     dependencies:
-      prosemirror-model: 1.19.4
-      prosemirror-transform: 1.8.0
-      prosemirror-view: 1.33.1
-    dev: false
+      prosemirror-model: 1.22.3
+      prosemirror-transform: 1.10.0
+      prosemirror-view: 1.33.10
 
-  /prosemirror-transform@1.8.0:
+  prosemirror-transform@1.10.0:
     dependencies:
-      prosemirror-model: 1.19.4
-    dev: false
+      prosemirror-model: 1.22.3
 
-  /prosemirror-view@1.33.1:
+  prosemirror-view@1.33.10:
     dependencies:
-      prosemirror-model: 1.19.4
+      prosemirror-model: 1.22.3
       prosemirror-state: 1.4.3
-      prosemirror-transform: 1.8.0
-    dev: false
+      prosemirror-transform: 1.10.0
 
-  /qr-creator@1.0.0:
-    dev: false
+  qr-creator@1.0.0: {}
 
-  /signal-polyfill@0.1.0:
-    dev: false
+  signal-polyfill@0.1.2: {}
 
-  /signal-polyfill@0.1.1:
-    dev: false
-
-  /sort-keys@5.0.0:
+  sort-keys@5.0.0:
     dependencies:
       is-plain-obj: 4.1.0
-    dev: false
 
-  /w3c-keyname@2.2.8:
-    dev: false
+  w3c-keyname@2.2.8: {}
 
-  /ws@8.16.0:
-    dev: false
-
-  github.com/holochain-open-dev/profiles/decbb755bfa4432d672a58783eb7d4985fcadcba#path:ui(@types/react@18.2.65):
-    id: github.com/holochain-open-dev/profiles/decbb755bfa4432d672a58783eb7d4985fcadcba#path:ui
-    dependencies:
-      '@holochain-open-dev/elements': 0.300.0-rc.0(@types/react@18.2.65)
-      '@holochain-open-dev/signals': 0.300.0-rc.1(@types/react@18.2.65)
-      '@holochain-open-dev/utils': 0.300.0-rc.0
-      '@holochain/client': 0.17.0-rc.0
-      '@lit/context': 1.1.0
-      '@lit/localize': 0.12.1
-      '@mdi/js': 7.4.47
-      '@msgpack/msgpack': 2.8.0
-      '@shoelace-style/shoelace': 2.14.0(@types/react@18.2.65)
-      lit: 3.1.2
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - utf-8-validate
-    dev: false
+  ws@8.18.0: {}
