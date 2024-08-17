@@ -53,11 +53,11 @@ let
     	mv workdir/${manifest.name}.dna $out
   '';
 
-  guardedRelease = if matchingIntegrityDna then runCommandLocal "check-match-dnas-integrity" {
-    srcs = [ release matchingIntegrityDna ];
+  guardedRelease = if matchingIntegrityDna != null then runCommandLocal "check-match-dnas-integrity" {
+    srcs = [ release matchingIntegrityDna.meta.release ];
     buildInputs = [ compare-dnas-integrity ];
   } ''
-    compare-dnas-integrity ${matchingIntegrityDna} ${release}
+    compare-dnas-integrity ${matchingIntegrityDna.meta.release} ${release}
   '' else release;
 
   # Debug package
