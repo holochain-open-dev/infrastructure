@@ -1,9 +1,9 @@
-name: "build-scaffold-remote-zome"
+name: "build-compare-dnas-integrity"
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
   push: 
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   build-and-cache:
@@ -29,10 +29,10 @@ jobs:
         with:
           name: holochain-open-dev
 
-      - name: Build scaffold-remote-zome
+      - name: Build compare-dnas-integrity
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
-          cachix watch-exec holochain-open-dev -- nix build --no-update-lock-file --accept-flake-config -L .#scaffold-remote-zome
-          cachix push holochain-open-dev $(nix path-info --json --accept-flake-config --no-warn-dirty .#scaffold-remote-zome | nix run nixpkgs#jq -- -r 'keys[0]')
-          cachix pin holochain-open-dev scaffold-remote-zome $(nix path-info --json --accept-flake-config --no-warn-dirty .#scaffold-remote-zome | nix run nixpkgs#jq -- -r 'keys[0]')
+          cachix watch-exec holochain-open-dev -- nix build --no-update-lock-file --accept-flake-config -L .#compare-dnas-integrity 
+          cachix push holochain-open-dev $(nix path-info --json --accept-flake-config --no-warn-dirty .#compare-dnas-integrity | nix run nixpkgs#jq -- -r 'keys[0]')
+          cachix pin holochain-open-dev compare-dnas-integrity $(nix path-info --json --accept-flake-config --no-warn-dirty .#compare-dnas-integrity | nix run nixpkgs#jq -- -r 'keys[0]')

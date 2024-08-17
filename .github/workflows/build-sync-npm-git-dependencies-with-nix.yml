@@ -18,27 +18,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install nix
-        uses: cachix/install-nix-action@v25
+        uses: cachix/install-nix-action@v27
         with:
-          nix_path: nixpkgs=channel:nixos-unstable
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_path: nixpkgs=channel:nixos-24.05
 
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@v15
         with:
           name: holochain-ci
 
-      - uses: cachix/cachix-action@v14
+      - uses: cachix/cachix-action@v15
         with:
           name: holochain-open-dev
 
       - name: Build sync-npm-git-dependencies-with-nix
-        run: |
-          nix build -L .#sync-npm-git-dependencies-with-nix
-
-      - name: Cache sync-npm-git-dependencies-with-nix
-        if: github.event_name != 'pull_request'
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |
-          cachix push holochain-open-dev $(nix path-info .#sync-npm-git-dependencies-with-nix)
-          cachix pin holochain-open-dev sync-npm-git-dependencies-with-nix $(nix path-info .#sync-npm-git-dependencies-with-nix)
+          cachix watch-exec holochain-open-dev -- nix build --no-update-lock-file --accept-flake-config -L .#sync-npm-git-dependencies-with-nix 
+          cachix push holochain-open-dev $(nix path-info --json --accept-flake-config --no-warn-dirty .#sync-npm-git-dependencies-with-nix | nix run nixpkgs#jq -- -r 'keys[0]')
+          cachix pin holochain-open-dev sync-npm-git-dependencies-with-nix $(nix path-info --json --accept-flake-config --no-warn-dirty .#sync-npm-git-dependencies-with-nix | nix run nixpkgs#jq -- -r 'keys[0]')
