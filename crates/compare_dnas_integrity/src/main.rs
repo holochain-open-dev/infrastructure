@@ -83,7 +83,8 @@ fn compare_integrity_zomes(
             .eq(&wasm_hash)
         {
             return Ok(anyhow!(
-                "The hash of the new integrity zome {zome_name:?} doesn't match the hash of the old integrity zome"
+                "The hash of the new integrity zome {:?} doesn't match the hash of the old integrity zome", 
+                zome_name.to_string()
             ));
         }
     }

@@ -15,7 +15,7 @@
     module.url = "path:./../module-repo";
     profiles.url = "github:holochain-open-dev/profiles/nixify";
 
-    previousDnaVersion.url = "github:holochain-open-dev/infrastructure/bc0d3c70682216d0f6f4dacaed0d650e2551b21d?dir=nix/fixtures/service-repo";
+    previousDnaVersion.url = "github:holochain-open-dev/infrastructure/cab12a7cfe0c7da510f4887b7bc93321cd0b6960?dir=nix/fixtures/service-repo";
   };
 
   outputs = inputs@{ ... }:
