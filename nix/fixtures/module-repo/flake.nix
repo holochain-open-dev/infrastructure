@@ -13,7 +13,7 @@
 
     hc-infra.url = "path:./../../..";
     profiles.url = "github:holochain-open-dev/profiles/nixify";
-    previousZomeVersion.url = "github:holochain-open-dev/infrastructure/67dffe4af2c8675cd47d0b404fd0473d6a93ddfd?dir=nix/fixtures/module-repo";
+    # previousZomeVersion.url = "github:holochain-open-dev/infrastructure/67dffe4af2c8675cd47d0b404fd0473d6a93ddfd?dir=nix/fixtures/module-repo";
   };
 
   outputs = inputs@{ ... }:
