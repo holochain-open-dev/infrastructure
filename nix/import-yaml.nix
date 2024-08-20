@@ -37,24 +37,21 @@ let
           trimmedValue = lib.strings.trim value;
         in
           if trimmedValue == "[]" then [] 
-          else (if trimmedValue == "~" then null else (let 
+          else if trimmedValue == "~" then null 
+          else (let 
             m4 = l.match ''"(.*)"'' trimmedValue;
+            m5 = l.match "\'(.*)\'" trimmedValue;
           in 
             if m4 != null then 
               l.elemAt m4 0 
-            else 
-              (if (l.match ''[0-9]+'' trimmedValue) != null then
-                lib.toInt trimmedValue
-              else (
-                if l.match "^[\ \t]*$" value != null then null
-                else (
-                  if trimmedValue == "true" then true
-                  else if trimmedValue == "false" then false
-                  else trimmedValue
-                )
-              ))
-            )
-          );
+            else if m5 != null then
+              l.elemAt m5 0 
+            else if l.match ''[0-9]+'' trimmedValue != null then
+              lib.toInt trimmedValue
+            else if l.match "^[\ \t]*$" value != null then null
+            else if trimmedValue == "true" then true
+            else if trimmedValue == "false" then false
+            else trimmedValue);
       in
         if m3 != null
         then {
