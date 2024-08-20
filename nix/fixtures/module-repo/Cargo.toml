@@ -1,5 +1,5 @@
 [workspace]
-members = ["zome"]
+members = ["zomes/*"]
 resolver = "2"
 
 [workspace.dependencies]

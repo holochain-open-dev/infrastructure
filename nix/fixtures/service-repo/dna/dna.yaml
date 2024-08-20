@@ -6,9 +6,14 @@ integrity:
   properties: ~
   origin_time: 2022-02-11T23:29:00.789576Z
   zomes:
-    - name: my_zome
+    - name: my_zome_integrity
       dylib: ~
       dependencies: ~  
       hash: ~
 coordinator:
-  zomes: []
+  zomes:
+    - name: my_zome
+      dylib: ~
+      dependencies:
+        - name: my_zome_integrity
+      hash: ~

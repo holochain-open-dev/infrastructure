@@ -4366,8 +4366,17 @@ dependencies = [
  "futures",
  "hdk",
  "holochain",
+ "my_zome_integrity",
  "serde",
  "tokio",
+]
+
+[[package]]
+name = "my_zome_integrity"
+version = "0.1.0"
+dependencies = [
+ "hdi",
+ "serde",
 ]
 
 [[package]]

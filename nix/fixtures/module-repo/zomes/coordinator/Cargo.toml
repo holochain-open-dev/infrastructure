@@ -10,8 +10,9 @@ crate-type = ["cdylib", "rlib"]
 name = "my_zome"
 
 [dependencies]
-hdk = {workspace = true}
+hdk = { workspace = true }
 serde = "1"
+my_zome_integrity = { path = "../integrity" }
 
 [dev-dependencies]
 fixt = "0.3.2"
