@@ -8,7 +8,7 @@ integrity:
   zomes:
     - name: my_zome_integrity
       dylib: ~
-      dependencies: ~  
+      dependencies: null  
       hash: ~
 coordinator:
   zomes:

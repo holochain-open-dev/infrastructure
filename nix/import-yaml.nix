@@ -51,6 +51,7 @@ let
             else if l.match "^[\ \t]*$" value != null then null
             else if trimmedValue == "true" then true
             else if trimmedValue == "false" then false
+            else if trimmedValue == "null" then null
             else trimmedValue);
       in
         if m3 != null
