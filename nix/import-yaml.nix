@@ -33,19 +33,23 @@ let
         m3 = l.match ''([[:space:]]*-[[:space:]]+)(.*)'' line;
         # m3Key =  l.match ''(.*): (.*)'' line;
         isListEntry = m3 != null;
-        toValue = value: if value == "[]" then [] else (if value == "~" then null else (let 
-            m4 = l.match ''"(.*)"'' value;
+        toValue = value: let
+          trimmedValue = lib.strings.trim value;
+        in
+          if trimmedValue == "[]" then [] 
+          else (if trimmedValue == "~" then null else (let 
+            m4 = l.match ''"(.*)"'' trimmedValue;
           in 
             if m4 != null then 
               l.elemAt m4 0 
             else 
-              (if (l.match ''[0-9]+'' value) != null then
-                lib.toInt value
+              (if (l.match ''[0-9]+'' trimmedValue) != null then
+                lib.toInt trimmedValue
               else (
                 if l.match "^[\ \t]*$" value != null then null
                 else (
-                  if value == "true" then true
-                  else if value == "false" then false
+                  if trimmedValue == "true" then true
+                  else if trimmedValue == "false" then false
                   else value
                 )
               ))
@@ -53,7 +57,7 @@ let
           );
       in
         if m3 != null
-        then rec {
+        then {
           inherit isListEntry;
           indent = (l.stringLength (l.elemAt m3 0)) / 2;
           key =
