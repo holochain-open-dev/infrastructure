@@ -15,5 +15,5 @@ coordinator:
     - name: my_zome
       dylib: ~
       dependencies:
-        - name: my_zome_integrity
+        - name: my_zome_integrity  
       hash: ~

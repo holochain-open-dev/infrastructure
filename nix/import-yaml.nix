@@ -50,7 +50,7 @@ let
                 else (
                   if trimmedValue == "true" then true
                   else if trimmedValue == "false" then false
-                  else value
+                  else trimmedValue
                 )
               ))
             )
