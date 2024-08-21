@@ -20,7 +20,7 @@ let
     "	${json2yaml}/bin/json2yaml ${happManifestJson} $out\n";
 
   release = runCommandLocal manifest.name {
-    srcs = builtins.map (dna: dna.release) dnaSrcs;
+    srcs = builtins.map (dna: dna.meta.release) dnaSrcs;
     meta = { holochainPackageType = "happ"; };
   } ''
       mkdir workdir
@@ -29,7 +29,7 @@ let
 
       ${
         builtins.toString (builtins.map (role: ''
-          cp ${dnas.${role.name}.release} ./workdir/${role.name}.dna 
+          cp ${dnas.${role.name}.meta.release} ./workdir/${role.name}.dna 
         '') manifest'.roles)
       }
 
@@ -39,8 +39,8 @@ let
 
   debug = runCommandLocal manifest.name {
     srcs = dnaSrcs;
-    inherit release;
     meta = {
+      inherit release;
       holochainPackageType = "happ";
     };
   } ''

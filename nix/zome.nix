@@ -102,10 +102,10 @@ let
   '';
 
   guardedRelease = if matchingZomeHash != null then runCommandLocal "check-zome-${crate}-hash" {
-    srcs = [ release matchingZomeHash.release ];
+    srcs = [ release matchingZomeHash.meta.release ];
     buildInputs = [ zome-wasm-hash ];
   } ''
-    ORIGINAL_HASH=$(zome-wasm-hash ${matchingZomeHash.release})
+    ORIGINAL_HASH=$(zome-wasm-hash ${matchingZomeHash.meta.release})
     NEW_HASH=$(zome-wasm-hash ${release})
 
     if [[ "$ORIGINAL_HASH" != "$NEW_HASH" ]]; then
@@ -119,8 +119,8 @@ let
   debug = runCommandLocal "${crate}-debug" {
     meta = {
       holochainPackageType = "zome";
+      release = guardedRelease;
     };
-    release = guardedRelease;
   } ''
     cp ${wasm}/lib/${crate}.wasm $out 
   '';

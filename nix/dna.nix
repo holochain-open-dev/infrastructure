@@ -31,7 +31,7 @@ let
   dnaManifestYaml = runCommandLocal "json-to-yaml" { }
     "	${json2yaml}/bin/json2yaml ${dnaManifestJson} $out\n"; # Recurse over the zomes, and add the correct bundled zome package by name
   release = runCommandLocal manifest.name {
-    srcs = builtins.map (zome: zome.release) zomeSrcs;
+    srcs = builtins.map (zome: zome.meta.release) zomeSrcs;
     meta = { holochainPackageType = "dna"; };
   } ''
       mkdir workdir
@@ -39,13 +39,13 @@ let
 
       ${
         builtins.toString (builtins.map (zome: ''
-          cp ${zomes.${zome.name}.release} ./workdir/${zome.name}.wasm
+          cp ${zomes.${zome.name}.meta.release} ./workdir/${zome.name}.wasm
         '') manifest'.integrity.zomes)
       }
 
       ${
         builtins.toString (builtins.map (zome: ''
-          cp ${zomes.${zome.name}.release} ./workdir/${zome.name}.wasm
+          cp ${zomes.${zome.name}.meta.release} ./workdir/${zome.name}.wasm
         '') manifest'.coordinator.zomes)
       }
     	
@@ -54,18 +54,18 @@ let
   '';
 
   guardedRelease = if matchingIntegrityDna != null then runCommandLocal "check-match-dna-${manifest.name}-integrity" {
-    srcs = [ release matchingIntegrityDna.release ];
+    srcs = [ release matchingIntegrityDna.meta.release ];
     buildInputs = [ compare-dnas-integrity ];
   } ''
-    ${compare-dnas-integrity}/bin/compare-dnas-integrity ${matchingIntegrityDna.release} ${release}
+    ${compare-dnas-integrity}/bin/compare-dnas-integrity ${matchingIntegrityDna.meta.release} ${release}
     cp ${release} $out
   '' else release;
 
   # Debug package
   debug = runCommandLocal manifest.name {
     srcs = zomeSrcs;
-    release = guardedRelease;
     meta = {
+      release = guardedRelease;
       holochainPackageType = "dna";
     };
   } ''
