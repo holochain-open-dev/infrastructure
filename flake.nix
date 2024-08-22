@@ -135,7 +135,8 @@ rec {
             in cargoArtifacts;
 
           rustZome = { crateCargoToml, holochain, workspacePath
-            , nonWasmCrates ? [ ], cargoArtifacts ? null, matchingZomeHash ? null }:
+            , nonWasmCrates ? [ ], cargoArtifacts ? null
+            , matchingZomeHash ? null }:
             let
               deterministicCraneLib = let
                 pkgs = import inputs.nixpkgs {
@@ -154,11 +155,13 @@ rec {
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
 
-              zome-wasm-hash = (outputs inputs).packages.${system}.zome-wasm-hash;
+              zome-wasm-hash =
+                (outputs inputs).packages.${system}.zome-wasm-hash;
 
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
-                cargoArtifacts nonWasmCrates workspacePath matchingZomeHash zome-wasm-hash;
+                cargoArtifacts nonWasmCrates workspacePath matchingZomeHash
+                zome-wasm-hash;
               referenceZomeCargoArtifacts = flake.lib.zomeCargoArtifacts;
             };
           sweettest = { holochain, dna, workspacePath, crateCargoToml
@@ -185,10 +188,12 @@ rec {
             let
               system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
-              compare-dnas-integrity = (outputs inputs).packages.${system}.compare-dnas-integrity;
-              
+              compare-dnas-integrity =
+                (outputs inputs).packages.${system}.compare-dnas-integrity;
+
             in pkgs.callPackage ./nix/dna.nix {
-              inherit zomes holochain dnaManifest compare-dnas-integrity matchingIntegrityDna;
+              inherit zomes holochain dnaManifest compare-dnas-integrity
+                matchingIntegrityDna;
             };
           happ = { holochain, happManifest, dnas }:
             let
@@ -200,10 +205,10 @@ rec {
         };
       };
 
-      imports = [ 
-        ./crates/scaffold_remote_zome/default.nix 
-        ./crates/compare_dnas_integrity/default.nix 
-        ./crates/zome_wasm_hash/default.nix 
+      imports = [
+        ./crates/scaffold_remote_zome/default.nix
+        ./crates/compare_dnas_integrity/default.nix
+        ./crates/zome_wasm_hash/default.nix
       ];
 
       systems = builtins.attrNames inputs.holochain.devShells;
