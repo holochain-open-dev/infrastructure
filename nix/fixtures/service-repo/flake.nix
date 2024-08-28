@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.follows = "holochain/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/0_3";
+    versions.url = "github:holochain/holochain?dir=versions/weekly";
 
     holochain = {
       url = "github:holochain/holochain";
@@ -12,10 +12,14 @@
     };
 
     hc-infra.url = "path:./../../..";
-    module.url = "path:./../module-repo";
+    module = {
+      url = "path:./../module-repo";
+      inputs.hc-infra.follows = "hc-infra";
+    };
     profiles.url = "github:holochain-open-dev/profiles/nixify";
 
-    previousDnaVersion.url = "github:holochain-open-dev/infrastructure/cab12a7cfe0c7da510f4887b7bc93321cd0b6960?dir=nix/fixtures/service-repo";
+    # previousDnaVersion.url =
+    # "github:holochain-open-dev/infrastructure/cab12a7cfe0c7da510f4887b7bc93321cd0b6960?dir=nix/fixtures/service-repo";
   };
 
   outputs = inputs@{ ... }:

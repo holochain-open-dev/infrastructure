@@ -15,7 +15,7 @@ serde = "1"
 my_zome_integrity = { path = "../integrity" }
 
 [dev-dependencies]
-fixt = "0.3.2"
+fixt = "0.4.0-dev"
 futures = { version = "0.3", default-features = false }
 hdk = { workspace = true, features = ["encoding", "test_utils"] }
 holochain = { workspace = true, features = ["test_utils"] }

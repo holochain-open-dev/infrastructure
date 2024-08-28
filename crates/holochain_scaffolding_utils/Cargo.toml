@@ -9,7 +9,8 @@ edition = "2021"
 serde = "1"
 thiserror = "1.0.22"
 file_tree_utils = { path = "../file_tree_utils" }
-holochain_types = "0.3.2"
 dialoguer = "0.11"
 serde_yaml = "^0.9"
-mr_bundle = "0.3.2"
+
+mr_bundle = { workspace = true }
+holochain_types = { workspace = true }

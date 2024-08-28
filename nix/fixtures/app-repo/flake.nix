@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.follows = "holochain/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/0_3";
+    versions.url = "github:holochain/holochain?dir=versions/weekly";
 
     holochain = {
       url = "github:holochain/holochain";
@@ -12,7 +12,10 @@
     };
 
     hc-infra.url = "path:./../../..";
-    service.url = "path:./../service-repo";
+    service = {
+      url = "path:./../service-repo";
+      inputs.hc-infra.follows = "hc-infra";
+    };
   };
 
   outputs = inputs@{ ... }:

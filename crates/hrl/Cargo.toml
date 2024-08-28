@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 serde = "1"
-hdk = "0.3"
-holo_hash = { version = "0.3", features = ["encoding"] }
+hdk = { workspace = true }
+holo_hash = { workspace = true, features = ["encoding"] }
