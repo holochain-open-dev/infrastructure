@@ -29,6 +29,7 @@ export class ZomeMock implements AppClient {
 	constructor(
 		protected roleName: string,
 		protected zomeName: string,
+		public installedAppId = 'mock_installed_app_id',
 		public myPubKey: AgentPubKey = decodeHashFromBase64(
 			'uhCAk13OZ84d5HFum5PZYcl61kHHMfL2EJ4yNbHwSp4vn6QeOdFii',
 		),
@@ -45,7 +46,7 @@ export class ZomeMock implements AppClient {
 	async appInfo(): Promise<AppInfo> {
 		return {
 			agent_pub_key: this.myPubKey,
-			installed_app_id: 'test-app',
+			installed_app_id: this.installedAppId,
 			status: 'running',
 			cell_info: {
 				[this.roleName]: [
