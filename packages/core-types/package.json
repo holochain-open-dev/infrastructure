@@ -1,6 +1,6 @@
 {
 	"name": "@holochain-open-dev/core-types",
-	"version": "0.400.0-dev.",
+	"version": "0.400.0-dev.1",
 	"description": "Typescript types for holochain core",
 	"main": "dist/index.js",
 	"module": "dist/index.js",
