@@ -15,10 +15,7 @@
       commonArgs = {
         src = craneLib.cleanCargoSource (craneLib.path ../../.);
         doCheck = false;
-        buildInputs =
-          self.lib.holochainAppDeps.buildInputs { inherit pkgs lib; };
-        nativeBuildInputs =
-          self.lib.holochainAppDeps.nativeBuildInputs { inherit pkgs lib; };
+        buildInputs = self.lib.holochainDeps { inherit pkgs lib; };
       };
       cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
         pname = "workspace";

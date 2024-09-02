@@ -1,15 +1,10 @@
 rec {
   inputs = {
+    nixpkgs.follows = "holonix/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/weekly";
-
-    holochain = {
-      url = "github:holochain/holochain";
-      inputs.versions.follows = "versions";
-    };
-    crane.follows = "holochain/crane";
-    rust-overlay.follows = "holochain/rust-overlay";
-    nixpkgs.follows = "holochain/nixpkgs";
+    holonix.url = "github:holochain/holonix";
+    rust-overlay.follows = "holonix/rust-overlay";
+    crane.follows = "holonix/crane";
   };
 
   nixConfig = {
@@ -20,33 +15,17 @@ rec {
   };
 
   outputs = inputs@{ ... }:
-    inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } rec {
+    inputs.holonix.inputs.flake-parts.lib.mkFlake { inherit inputs; } rec {
       flake = {
         lib = rec {
-          holochainAppDeps = {
-            buildInputs = { pkgs, lib }:
-              (with pkgs; [
-                openssl
-                inputs.holochain.outputs.packages.${pkgs.system}.opensslStatic
-                sqlcipher
-                glib
-              ]) ++ (lib.optionals pkgs.stdenv.isDarwin
-                (with pkgs.darwin.apple_sdk_11_0.frameworks; [
-                  AppKit
-                  CoreFoundation
-                  CoreServices
-                  Security
-                  IOKit
-                ]));
-            nativeBuildInputs = { pkgs, lib }:
-              (with pkgs; [
-                makeWrapper
-                perl
-                pkg-config
-                inputs.holochain.outputs.packages.${pkgs.system}.goWrapper
-              ]) ++ lib.optionals pkgs.stdenv.isDarwin
-              (with pkgs; [ xcbuild libiconv ]);
-          };
+          holochainDeps = { pkgs, lib }:
+            (with pkgs; [ perl go openssl ])
+            ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.pkg-config ])
+            ++ (lib.optionals pkgs.stdenv.isDarwin [
+              pkgs.libiconv
+              pkgs.darwin.apple_sdk.frameworks.Security
+              pkgs.darwin.apple_sdk_11_0.frameworks.CoreFoundation
+            ]);
 
           filterByHolochainPackageType = holochainPackageType: packages:
             inputs.nixpkgs.lib.filterAttrs (key: value:
@@ -110,16 +89,12 @@ rec {
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
 
-              buildInputs = holochainAppDeps.buildInputs {
-                inherit pkgs;
-                lib = pkgs.lib;
-              };
-              nativeBuildInputs = holochainAppDeps.nativeBuildInputs {
+              buildInputs = holochainDeps {
                 inherit pkgs;
                 lib = pkgs.lib;
               };
               cargoArtifacts = craneLib.buildDepsOnly {
-                inherit buildInputs nativeBuildInputs;
+                inherit buildInputs;
                 src = craneLib.cleanCargoSource
                   (craneLib.path ./nix/reference-happ);
                 doCheck = false;
@@ -134,7 +109,7 @@ rec {
               };
             in cargoArtifacts;
 
-          rustZome = { crateCargoToml, holochain, workspacePath
+          rustZome = { crateCargoToml, system, workspacePath
             , nonWasmCrates ? [ ], cargoArtifacts ? null
             , matchingZomeHash ? null }:
             let
@@ -151,7 +126,6 @@ rec {
                 };
               in (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
 
-              system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
 
@@ -164,41 +138,34 @@ rec {
                 zome-wasm-hash;
               referenceZomeCargoArtifacts = flake.lib.zomeCargoArtifacts;
             };
-          sweettest = { holochain, dna, workspacePath, crateCargoToml
+          sweettest = { system, dna, workspacePath, crateCargoToml
             , buildInputs ? [ ], nativeBuildInputs ? [ ], cargoArtifacts ? null
             }:
             let
-              system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
             in pkgs.callPackage ./nix/sweettest.nix {
-              inherit holochain dna craneLib crateCargoToml cargoArtifacts
-                workspacePath;
-              buildInputs = buildInputs ++ holochainAppDeps.buildInputs {
+              inherit dna craneLib crateCargoToml cargoArtifacts workspacePath;
+              buildInputs = buildInputs ++ holochainDeps {
                 inherit pkgs;
                 lib = pkgs.lib;
               };
-              nativeBuildInputs = nativeBuildInputs
-                ++ holochainAppDeps.nativeBuildInputs {
-                  inherit pkgs;
-                  lib = pkgs.lib;
-                };
             };
-          dna = { holochain, dnaManifest, zomes, matchingIntegrityDna ? null }:
+          dna = { system, dnaManifest, zomes, matchingIntegrityDna ? null }:
             let
-              system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
               compare-dnas-integrity =
                 (outputs inputs).packages.${system}.compare-dnas-integrity;
+              holochain = inputs.holonix.outputs.packages.${system}.holochain;
 
             in pkgs.callPackage ./nix/dna.nix {
               inherit zomes holochain dnaManifest compare-dnas-integrity
                 matchingIntegrityDna;
             };
-          happ = { holochain, happManifest, dnas }:
+          happ = { system, happManifest, dnas }:
             let
-              system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
+              holochain = inputs.holonix.outputs.packages.${system}.holochain;
             in pkgs.callPackage ./nix/happ.nix {
               inherit dnas holochain happManifest;
             };
@@ -211,16 +178,16 @@ rec {
         ./crates/zome_wasm_hash/default.nix
       ];
 
-      systems = builtins.attrNames inputs.holochain.devShells;
+      systems = builtins.attrNames inputs.holonix.devShells;
 
       perSystem = { inputs', config, pkgs, system, lib, ... }: rec {
         devShells.default = pkgs.mkShell {
-          inputsFrom = [ inputs'.holochain.devShells.holonix ];
+          inputsFrom = [ inputs'.holonix.devShells.default ];
           packages = with pkgs;
             [
               nodejs_20
               # more packages go here
-            ];
+            ] ++ flake.lib.holochainDeps { inherit pkgs lib; };
         };
 
         packages.npm-warning = pkgs.writeShellScriptBin "echo-npm-warning" ''
@@ -311,11 +278,7 @@ rec {
           commonArgs = {
             src = craneLib.cleanCargoSource (craneLib.path ./.);
             doCheck = false;
-            buildInputs =
-              flake.lib.holochainAppDeps.buildInputs { inherit pkgs lib; };
-            nativeBuildInputs = flake.lib.holochainAppDeps.nativeBuildInputs {
-              inherit pkgs lib;
-            };
+            buildInputs = flake.lib.holochainDeps { inherit pkgs lib; };
           };
           cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
             pname = "workspace";

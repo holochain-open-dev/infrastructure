@@ -5,7 +5,7 @@
     packages = {
       my_happ = inputs.hc-infra.outputs.lib.happ {
         happManifest = ./happ.yaml;
-        holochain = inputs'.holochain;
+        inherit system;
         dnas = { my_dna = inputs'.service.packages.my_dna; };
       };
     };

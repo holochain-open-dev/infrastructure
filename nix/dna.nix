@@ -1,23 +1,14 @@
 # Build a DNA
-{ 
-  dnaManifest
-  , json2yaml
-  , runCommandLocal
-  , callPackage
-  , writeText
-  , holochain
-  # If given a DNA, will check whether the DNA hashes for the given `matchingIntegrityDna` and the DNA to be built match
-  # If they don't, it will print an error describing which zomes don't match
-  , matchingIntegrityDna ? null
-  , compare-dnas-integrity
-  , zomes ? { }
-}:
+{ dnaManifest, json2yaml, runCommandLocal, pkgs, writeText, holochain
+# If given a DNA, will check whether the DNA hashes for the given `matchingIntegrityDna` and the DNA to be built match
+# If they don't, it will print an error describing which zomes don't match
+, matchingIntegrityDna ? null, compare-dnas-integrity, zomes ? { } }:
 
 let
   zomeSrcs = builtins.attrValues zomes;
 
   # Recurse over the zomes, and add the correct bundled zome package by name
-  manifest = (callPackage ./import-yaml.nix { }) dnaManifest;
+  manifest = (pkgs.callPackage ./import-yaml.nix { }) dnaManifest;
   zomeToBundled = zome: zome // { bundled = "./${zome.name}.wasm"; };
   coordinatorZomes = builtins.map zomeToBundled manifest.coordinator.zomes;
   integrityZomes = builtins.map zomeToBundled manifest.integrity.zomes;
@@ -49,17 +40,20 @@ let
         '') manifest'.coordinator.zomes)
       }
     	
-    	${holochain.packages.holochain}/bin/hc dna pack workdir
+    	${holochain}/bin/hc dna pack workdir
     	mv workdir/${manifest.name}.dna $out
   '';
 
-  guardedRelease = if matchingIntegrityDna != null then runCommandLocal "check-match-dna-${manifest.name}-integrity" {
-    srcs = [ release matchingIntegrityDna.meta.release ];
-    buildInputs = [ compare-dnas-integrity ];
-  } ''
-    ${compare-dnas-integrity}/bin/compare-dnas-integrity ${matchingIntegrityDna.meta.release} ${release}
-    cp ${release} $out
-  '' else release;
+  guardedRelease = if matchingIntegrityDna != null then
+    runCommandLocal "check-match-dna-${manifest.name}-integrity" {
+      srcs = [ release matchingIntegrityDna.meta.release ];
+      buildInputs = [ compare-dnas-integrity ];
+    } ''
+      ${compare-dnas-integrity}/bin/compare-dnas-integrity ${matchingIntegrityDna.meta.release} ${release}
+      cp ${release} $out
+    ''
+  else
+    release;
 
   # Debug package
   debug = runCommandLocal manifest.name {
@@ -83,7 +77,7 @@ let
         '') manifest'.coordinator.zomes)
       }
       
-    	${holochain.packages.holochain}/bin/hc dna pack workdir
+    	${holochain}/bin/hc dna pack workdir
     	mv workdir/${manifest.name}.dna $out
   '';
 in debug

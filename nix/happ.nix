@@ -33,7 +33,7 @@ let
         '') manifest'.roles)
       }
 
-    	${holochain.packages.holochain}/bin/hc app pack workdir
+    	${holochain}/bin/hc app pack workdir
     	mv workdir/${manifest.name}.happ $out
   '';
 
@@ -54,7 +54,7 @@ let
         '') manifest.roles)
       }
 
-    	${holochain.packages.holochain}/bin/hc app pack workdir
+    	${holochain}/bin/hc app pack workdir
     	mv workdir/${manifest.name}.happ $out
   '';
 in debug
