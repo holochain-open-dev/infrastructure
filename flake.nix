@@ -138,16 +138,14 @@ rec {
                 zome-wasm-hash;
               referenceZomeCargoArtifacts = flake.lib.zomeCargoArtifacts;
             };
-          sweettest = { holochain, dna, workspacePath, crateCargoToml
+          sweettest = { system, dna, workspacePath, crateCargoToml
             , buildInputs ? [ ], nativeBuildInputs ? [ ], cargoArtifacts ? null
             }:
             let
-              system = holochain.devShells.holonix.system;
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
             in pkgs.callPackage ./nix/sweettest.nix {
-              inherit holochain dna craneLib crateCargoToml cargoArtifacts
-                workspacePath;
+              inherit dna craneLib crateCargoToml cargoArtifacts workspacePath;
               buildInputs = buildInputs ++ holochainDeps {
                 inherit pkgs;
                 lib = pkgs.lib;

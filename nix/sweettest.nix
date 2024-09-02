@@ -1,4 +1,4 @@
-{ pkgs, dna, lib, cargoArtifacts, buildInputs, nativeBuildInputs, workspacePath
+{ dna, lib, cargoArtifacts, buildInputs, nativeBuildInputs, workspacePath
 , craneLib, crateCargoToml, ... }:
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
