@@ -1,5 +1,5 @@
 # Build a DNA
-{ dnaManifest, json2yaml, runCommandLocal, callPackage, writeText, holochain
+{ dnaManifest, json2yaml, runCommandLocal, pkgs, writeText, holochain
 # If given a DNA, will check whether the DNA hashes for the given `matchingIntegrityDna` and the DNA to be built match
 # If they don't, it will print an error describing which zomes don't match
 , matchingIntegrityDna ? null, compare-dnas-integrity, zomes ? { } }:
@@ -8,7 +8,7 @@ let
   zomeSrcs = builtins.attrValues zomes;
 
   # Recurse over the zomes, and add the correct bundled zome package by name
-  manifest = (callPackage ./import-yaml.nix { }) dnaManifest;
+  manifest = (pkgs.callPackage ./import-yaml.nix { }) dnaManifest;
   zomeToBundled = zome: zome // { bundled = "./${zome.name}.wasm"; };
   coordinatorZomes = builtins.map zomeToBundled manifest.coordinator.zomes;
   integrityZomes = builtins.map zomeToBundled manifest.integrity.zomes;

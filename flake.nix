@@ -156,7 +156,7 @@ rec {
               pkgs = holochainPkgs { inherit system; };
               compare-dnas-integrity =
                 (outputs inputs).packages.${system}.compare-dnas-integrity;
-              holochain = inputs.holonix.outputs.${system}.packages.holochain;
+              holochain = inputs.holonix.outputs.packages.${system}.holochain;
 
             in pkgs.callPackage ./nix/dna.nix {
               inherit zomes holochain dnaManifest compare-dnas-integrity
@@ -165,7 +165,7 @@ rec {
           happ = { system, happManifest, dnas }:
             let
               pkgs = holochainPkgs { inherit system; };
-              holochain = inputs.holonix.outputs.${system}.packages.holochain;
+              holochain = inputs.holonix.outputs.packages.${system}.holochain;
             in pkgs.callPackage ./nix/happ.nix {
               inherit dnas holochain happManifest;
             };

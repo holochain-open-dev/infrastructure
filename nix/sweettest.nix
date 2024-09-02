@@ -1,12 +1,12 @@
-{ dna, lib, cargoArtifacts, buildInputs, nativeBuildInputs, workspacePath
-, craneLib, crateCargoToml, ... }:
+{ dna, lib, cargoArtifacts, buildInputs, workspacePath, craneLib, crateCargoToml
+, ... }:
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
   crate = cargoToml.package.name;
 
   src = craneLib.cleanCargoSource (craneLib.path workspacePath);
 
-  commonArgs = { inherit cargoArtifacts buildInputs nativeBuildInputs src; };
+  commonArgs = { inherit cargoArtifacts buildInputs src; };
 
   listCratesFromWorkspace = src:
     let
