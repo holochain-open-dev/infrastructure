@@ -2,20 +2,15 @@
   description = "Template for Holochain app development";
 
   inputs = {
-    nixpkgs.follows = "holochain/nixpkgs";
-
-    versions.url = "github:holochain/holochain?dir=versions/0_3";
-
-    holochain = {
-      url = "github:holochain/holochain";
-      inputs.versions.follows = "versions";
-    };
+    nixpkgs.follows = "holonix/nixpkgs";
+    holonix.url = "github:holochain/holonix/main-0.3";
 
     hc-infra.url = "path:./../../..";
     module.url = "path:./../module-repo";
     profiles.url = "github:holochain-open-dev/profiles/nixify";
 
-    previousDnaVersion.url = "github:holochain-open-dev/infrastructure/cab12a7cfe0c7da510f4887b7bc93321cd0b6960?dir=nix/fixtures/service-repo";
+    # previousDnaVersion.url =
+    #   "github:holochain-open-dev/infrastructure/cab12a7cfe0c7da510f4887b7bc93321cd0b6960?dir=nix/fixtures/service-repo";
   };
 
   outputs = inputs@{ ... }:
