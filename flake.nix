@@ -27,6 +27,8 @@ rec {
               else
                 pkgs.darwin.apple_sdk_11_0;
             in (pkgs.lib.optionals pkgs.stdenv.isDarwin [
+              pkgs.libiconv
+
               apple_sdk.frameworks.AppKit
               apple_sdk.frameworks.WebKit
 
