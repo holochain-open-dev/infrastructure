@@ -49,7 +49,7 @@ let
     pname = "workspace";
     version = cargoToml.package.version;
     cargoBuildCommand =
-      "cargo build --release --locked --workspace ${excludedCrates}";
+      ''RUSTFLAGS="--remap-path-prefix $(pwd)=/build/" cargo build --release --locked --workspace ${excludedCrates}'';
     cargoCheckCommand = "";
     cargoExtraArgs = "";
   };
@@ -65,7 +65,9 @@ let
     (commonArgs // { inherit cargoArtifacts; });
 
   wasm = craneLib.buildPackage
-    (buildPackageCommonArgs // { cargoArtifacts = zomeCargoArtifacts; });
+    (buildPackageCommonArgs // { 
+      # cargoArtifacts = zomeCargoArtifacts; 
+    });
 
   # deterministicWasm = let
   #   zca = referenceZomeCargoArtifacts {
