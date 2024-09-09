@@ -49,7 +49,7 @@ let
     pname = "workspace";
     version = cargoToml.package.version;
     cargoBuildCommand =
-      ''RUSTFLAGS="--remap-path-prefix $(pwd)=/build/" cargo build --release --locked --workspace ${excludedCrates}'';
+      ''RUSTFLAGS="--remap-path-prefix $(pwd)=/build/" cargo build -vv --release --locked --workspace ${excludedCrates}'';
     cargoCheckCommand = "";
     cargoExtraArgs = "";
   };
