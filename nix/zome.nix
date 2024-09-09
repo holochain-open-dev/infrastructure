@@ -1,18 +1,6 @@
-{ lib
-  , workspacePath
-  , referenceZomeCargoArtifacts
-  , cargoArtifacts
-  , pkgs
-  , runCommandLocal
-  , runCommandNoCC
-  , binaryen
-  , deterministicCraneLib
-  , craneLib
-  , crateCargoToml
-  , nonWasmCrates
-  , matchingZomeHash ? null
-  , zome-wasm-hash
-}:
+{ lib, workspacePath, referenceZomeCargoArtifacts, cargoArtifacts, pkgs
+, runCommandLocal, runCommandNoCC, binaryen, deterministicCraneLib, craneLib
+, crateCargoToml, nonWasmCrates, matchingZomeHash ? null, zome-wasm-hash }:
 
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
@@ -79,42 +67,45 @@ let
   wasm = craneLib.buildPackage
     (buildPackageCommonArgs // { cargoArtifacts = zomeCargoArtifacts; });
 
-  deterministicWasm = let
-    zca = referenceZomeCargoArtifacts {
-      system = pkgs.system;
-      craneLib = deterministicCraneLib;
-    };
-    cargoArtifacts =
-      (deterministicCraneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
-      (commonArgs // { cargoArtifacts = zca; });
+  # deterministicWasm = let
+  #   zca = referenceZomeCargoArtifacts {
+  #     system = pkgs.system;
+  #     craneLib = deterministicCraneLib;
+  #   };
+  #   cargoArtifacts =
+  #     (deterministicCraneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
+  #     (commonArgs // { cargoArtifacts = zca; });
 
-    wasm = deterministicCraneLib.buildPackage
-      (buildPackageCommonArgs // { inherit cargoArtifacts; });
-  in runCommandLocal "${crate}-deterministic" {
-    meta = { holochainPackageType = "zome"; };
-  } "	cp ${wasm}/lib/${crate}.wasm $out \n";
+  #   wasm = deterministicCraneLib.buildPackage
+  #     (buildPackageCommonArgs // { inherit cargoArtifacts; });
+  # in runCommandLocal "${crate}-deterministic" {
+  #   meta = { holochainPackageType = "zome"; };
+  # } "	cp ${wasm}/lib/${crate}.wasm $out \n";
 
   release = runCommandLocal crate {
     meta = { holochainPackageType = "zome"; };
     buildInputs = [ binaryen ];
   } ''
-    wasm-opt --strip-debug -Oz -o $out ${deterministicWasm}
+    wasm-opt --strip-debug -Oz -o $out ${wasm}/lib/${crate}.wasm
   '';
 
-  guardedRelease = if matchingZomeHash != null then runCommandLocal "check-zome-${crate}-hash" {
-    srcs = [ release matchingZomeHash.meta.release ];
-    buildInputs = [ zome-wasm-hash ];
-  } ''
-    ORIGINAL_HASH=$(zome-wasm-hash ${matchingZomeHash.meta.release})
-    NEW_HASH=$(zome-wasm-hash ${release})
+  guardedRelease = if matchingZomeHash != null then
+    runCommandLocal "check-zome-${crate}-hash" {
+      srcs = [ release matchingZomeHash.meta.release ];
+      buildInputs = [ zome-wasm-hash ];
+    } ''
+      ORIGINAL_HASH=$(zome-wasm-hash ${matchingZomeHash.meta.release})
+      NEW_HASH=$(zome-wasm-hash ${release})
 
-    if [[ "$ORIGINAL_HASH" != "$NEW_HASH" ]]; then
-      echo "The hash for the new ${crate} zome does not match the hash of the original zome"
-      exit 1
-    fi
+      if [[ "$ORIGINAL_HASH" != "$NEW_HASH" ]]; then
+        echo "The hash for the new ${crate} zome does not match the hash of the original zome"
+        exit 1
+      fi
 
-    cp ${release} $out
-  '' else release;
+      cp ${release} $out
+    ''
+  else
+    release;
 
   debug = runCommandLocal "${crate}-debug" {
     meta = {
@@ -124,4 +115,10 @@ let
   } ''
     cp ${wasm}/lib/${crate}.wasm $out 
   '';
-in debug
+in runCommandLocal crate {
+  outputs = [ "out" "debug" ];
+  meta = { outputsToInstall = [ "out" ]; };
+} ''
+  cp ${debug} $debug
+  cp ${release} $out
+''
