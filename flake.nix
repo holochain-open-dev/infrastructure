@@ -32,18 +32,15 @@ rec {
               apple_sdk.frameworks.AppKit
               apple_sdk.frameworks.WebKit
 
-              (if pkgs.system == "x86_64-darwin" then
-                pkgs.darwin.apple_sdk_11_0.stdenv.mkDerivation {
-                  name = "go";
-                  nativeBuildInputs = with pkgs; [ makeBinaryWrapper go ];
-                  dontBuild = true;
-                  dontUnpack = true;
-                  installPhase = ''
-                    makeWrapper ${pkgs.go}/bin/go $out/bin/go
-                  '';
-                }
-              else
-                pkgs.go)
+              (pkgs.darwin.apple_sdk_11_0.stdenv.mkDerivation {
+                name = "go";
+                nativeBuildInputs = with pkgs; [ makeBinaryWrapper go ];
+                dontBuild = true;
+                dontUnpack = true;
+                installPhase = ''
+                  makeWrapper ${pkgs.go}/bin/go $out/bin/go
+                '';
+              })
             ]));
 
           filterByHolochainPackageType = holochainPackageType: packages:
