@@ -15,3 +15,4 @@ fixt = "0.3.2"
 futures = { version = "0.3", default-features = false }
 hdk = { version = "0.3.2", features = ["encoding", "test_utils"] }
 holochain = { version = "0.3.2", features = ["test_utils"] }
+sqlformat = "=0.2.3"
