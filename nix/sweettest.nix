@@ -1,12 +1,18 @@
-{ dna, lib, cargoArtifacts, buildInputs, workspacePath, craneLib, crateCargoToml
-, ... }:
+{ pkgs, dna, lib, cargoArtifacts, buildInputs, workspacePath, craneLib
+, crateCargoToml, ... }:
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
   crate = cargoToml.package.name;
 
   src = craneLib.cleanCargoSource (craneLib.path workspacePath);
 
-  commonArgs = { inherit cargoArtifacts buildInputs src; };
+  commonArgs = {
+    inherit cargoArtifacts buildInputs src;
+    stdenv = if pkgs.stdenv.isDarwin then
+      pkgs.overrideSDK pkgs.stdenv "11.0"
+    else
+      pkgs.stdenv;
+  };
 
   listCratesFromWorkspace = src:
     let

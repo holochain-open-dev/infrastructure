@@ -152,7 +152,8 @@ rec {
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
             in pkgs.callPackage ./nix/sweettest.nix {
-              inherit dna craneLib crateCargoToml cargoArtifacts workspacePath;
+              inherit pkgs dna craneLib crateCargoToml cargoArtifacts
+                workspacePath;
               buildInputs = buildInputs ++ holochainDeps {
                 inherit pkgs;
                 lib = pkgs.lib;
