@@ -1,7 +1,7 @@
 rec {
   inputs = {
-    # nixpkgs.follows = "holonix/nixpkgs";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.follows = "holonix/nixpkgs";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
     holonix.url = "github:holochain/holonix/main-0.3";
     rust-overlay.follows = "holonix/rust-overlay";
@@ -152,8 +152,7 @@ rec {
               pkgs = holochainPkgs { inherit system; };
               craneLib = holochainCraneLib { inherit system; };
             in pkgs.callPackage ./nix/sweettest.nix {
-              inherit pkgs dna craneLib crateCargoToml cargoArtifacts
-                workspacePath;
+              inherit dna craneLib crateCargoToml cargoArtifacts workspacePath;
               buildInputs = buildInputs ++ holochainDeps {
                 inherit pkgs;
                 lib = pkgs.lib;
