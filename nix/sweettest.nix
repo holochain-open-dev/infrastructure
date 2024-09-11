@@ -6,7 +6,10 @@ let
 
   src = craneLib.cleanCargoSource (craneLib.path workspacePath);
 
-  commonArgs = { inherit cargoArtifacts buildInputs src; };
+  commonArgs = {
+    inherit cargoArtifacts buildInputs src;
+    FIX_SQL_FMT = 1;
+  };
 
   listCratesFromWorkspace = src:
     let
