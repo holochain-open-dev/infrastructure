@@ -197,6 +197,15 @@ rec {
             ] ++ flake.lib.holochainDeps { inherit pkgs lib; };
         };
 
+        devShells.holochainDev = pkgs.mkShell {
+          stdenv = if pkgs.stdenv.isDarwin then
+            pkgs.overrideSDK pkgs.stdenv "11.0"
+          else
+            pkgs.stdenv;
+
+          packages = flake.lib.holochainDeps { inherit pkgs lib; };
+        };
+
         packages.npm-warning = pkgs.writeShellScriptBin "echo-npm-warning" ''
           							echo "
           -----------------
