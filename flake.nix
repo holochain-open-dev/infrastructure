@@ -109,7 +109,6 @@ rec {
                 # CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_RUSTFLAGS =
                 #   " -Clink-arg=-fuse-ld=mold";
                 # CARGO_PROFILE = "release";
-                FIX_SQL_FMT = 1;
                 CARGO_PROFILE = "release";
                 pname = "sweettest";
                 version = "for-holochain-0.3.2";

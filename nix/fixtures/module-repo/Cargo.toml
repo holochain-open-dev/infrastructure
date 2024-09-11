@@ -9,9 +9,3 @@ holochain = "0.3.2"
 
 [profile.release]
 opt-level = "z"
-
-
-[patch.crates-io]
-# Revert to crates.io once https://github.com/holochain/lair/issues/133 is fixed 
-lair_keystore = { git = "https://github.com/guillemcordoba/lair", branch = "fix-sqlformat" }
-lair_keystore_api = { git = "https://github.com/guillemcordoba/lair", branch = "fix-sqlformat" }
