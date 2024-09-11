@@ -19,7 +19,7 @@ rec {
       flake = {
         lib = rec {
           holochainDeps = { pkgs, lib }:
-            (with pkgs; [ perl openssl ])
+            (with pkgs; [ perl openssl go ])
             ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.pkg-config pkgs.go ])
             ++ (let
               apple_sdk = if pkgs.system == "x86_64-darwin" then
@@ -31,16 +31,6 @@ rec {
 
               apple_sdk.frameworks.AppKit
               apple_sdk.frameworks.WebKit
-
-              (apple_sdk.stdenv.mkDerivation {
-                name = "go";
-                nativeBuildInputs = with pkgs; [ makeBinaryWrapper go ];
-                dontBuild = true;
-                dontUnpack = true;
-                installPhase = ''
-                  makeWrapper ${pkgs.go}/bin/go $out/bin/go
-                '';
-              })
             ]));
 
           filterByHolochainPackageType = holochainPackageType: packages:

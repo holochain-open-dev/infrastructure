@@ -2140,8 +2140,7 @@ dependencies = [
 [[package]]
 name = "hc_seed_bundle"
 version = "0.2.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "849aaef544dc9a561bcf1af4cbbc02e4cd24904b623aa1d0311f756fc2a96d38"
+source = "git+https://github.com/guillemcordoba/lair?branch=fix-sqlformat#1061a2e89f800c3416044936a3782923ec2a64df"
 dependencies = [
  "futures",
  "one_err",
@@ -3839,8 +3838,7 @@ dependencies = [
 [[package]]
 name = "lair_keystore"
 version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0da3e3e1bd2644dc2974ef622743cd83f2c661b3c6c67acb00cda4725646def"
+source = "git+https://github.com/guillemcordoba/lair?branch=fix-sqlformat#1061a2e89f800c3416044936a3782923ec2a64df"
 dependencies = [
  "lair_keystore_api",
  "pretty_assertions",
@@ -3855,8 +3853,7 @@ dependencies = [
 [[package]]
 name = "lair_keystore_api"
 version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9519a48df54d2041f8697bba7c3957263a5f2bb720ae6c4954004bad51693c61"
+source = "git+https://github.com/guillemcordoba/lair?branch=fix-sqlformat#1061a2e89f800c3416044936a3782923ec2a64df"
 dependencies = [
  "base64 0.22.1",
  "dunce",
