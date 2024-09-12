@@ -2,8 +2,6 @@ rec {
   inputs = {
     # nixpkgs.follows = "holonix/nixpkgs";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
-    gonixpkgs.url =
-      "github:nixos/nixpkgs/72d8853228c9758820c39b8659415b6d89279493";
 
     holonix.url = "github:holochain/holonix/main-0.3";
     rust-overlay.follows = "holonix/rust-overlay";
@@ -29,7 +27,6 @@ rec {
                 pkgs.darwin.apple_sdk_10_12
               else
                 pkgs.darwin.apple_sdk_11_0;
-              go = inputs.gonixpkgs.legacyPackages.${pkgs.system}.go_1_17;
             in (pkgs.lib.optionals pkgs.stdenv.isDarwin [
               pkgs.libiconv
 
@@ -37,11 +34,11 @@ rec {
               apple_sdk.frameworks.WebKit
               (pkgs.darwin.apple_sdk_11_0.stdenv.mkDerivation {
                 name = "go";
-                nativeBuildInputs = [ pkgs.makeBinaryWrapper go ];
+                nativeBuildInputs = with pkgs; [ makeBinaryWrapper go ];
                 dontBuild = true;
                 dontUnpack = true;
                 installPhase = ''
-                  makeWrapper ${go}/bin/go $out/bin/go
+                  makeWrapper ${pkgs.go}/bin/go $out/bin/go
                 '';
               })
 

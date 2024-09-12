@@ -33,22 +33,6 @@
         "type": "github"
       }
     },
-    "gonixpkgs": {
-      "locked": {
-        "lastModified": 1668086072,
-        "narHash": "sha256-msFoXI5ThCmhTTqgl27hpCXWhaeqxphBaleJAgD8JYM=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "72d8853228c9758820c39b8659415b6d89279493",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "72d8853228c9758820c39b8659415b6d89279493",
-        "type": "github"
-      }
-    },
     "hc-launch": {
       "flake": false,
       "locked": {
@@ -193,7 +177,6 @@
           "holonix",
           "crane"
         ],
-        "gonixpkgs": "gonixpkgs",
         "holonix": "holonix",
         "nixpkgs": "nixpkgs_2",
         "rust-overlay": [
