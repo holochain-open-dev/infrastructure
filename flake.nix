@@ -1,7 +1,7 @@
 rec {
   inputs = {
-    # nixpkgs.follows = "holonix/nixpkgs";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.follows = "holonix/nixpkgs";
+    # nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
     holonix.url = "github:holochain/holonix/main-0.3";
     rust-overlay.follows = "holonix/rust-overlay";
@@ -22,27 +22,22 @@ rec {
           holochainDeps = { pkgs, lib }:
             (with pkgs; [ perl openssl ])
             ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.pkg-config pkgs.go ])
-            ++ (let
-              apple_sdk = if pkgs.system == "x86_64-darwin" then
-                pkgs.darwin.apple_sdk_10_12
-              else
-                pkgs.darwin.apple_sdk_11_0;
-            in (pkgs.lib.optionals pkgs.stdenv.isDarwin [
+            ++ (pkgs.lib.optionals pkgs.stdenv.isDarwin [
               pkgs.libiconv
 
-              apple_sdk.frameworks.AppKit
-              apple_sdk.frameworks.WebKit
+              pkgs.darwin.apple_sdk_11_0.frameworks.AppKit
+              pkgs.darwin.apple_sdk_11_0.frameworks.WebKit
               (pkgs.darwin.apple_sdk_11_0.stdenv.mkDerivation {
                 name = "go";
-                nativeBuildInputs = with pkgs; [ makeBinaryWrapper go ];
+                nativeBuildInputs = with pkgs; [ makeBinaryWrapper go_1_21 ];
                 dontBuild = true;
                 dontUnpack = true;
                 installPhase = ''
-                  makeWrapper ${pkgs.go}/bin/go $out/bin/go
+                  makeWrapper ${pkgs.go_1_21}/bin/go $out/bin/go
                 '';
               })
 
-            ]));
+            ]);
 
           filterByHolochainPackageType = holochainPackageType: packages:
             inputs.nixpkgs.lib.filterAttrs (key: value:
@@ -208,10 +203,7 @@ rec {
         };
 
         devShells.holochainDev = pkgs.mkShell {
-          stdenv = if pkgs.stdenv.isDarwin then
-            pkgs.overrideSDK pkgs.stdenv "11.0"
-          else
-            pkgs.stdenv;
+          CGO_ENABLED = 0;
 
           packages = flake.lib.holochainDeps { inherit pkgs lib; };
         };
