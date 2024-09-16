@@ -1,7 +1,7 @@
 rec {
   inputs = {
-    nixpkgs.follows = "holonix/nixpkgs";
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    # nixpkgs.follows = "holonix/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
     holonix.url = "github:holochain/holonix/main-0.3";
     rust-overlay.follows = "holonix/rust-overlay";
@@ -238,7 +238,7 @@ rec {
                 "    wrapProgram $out/bin/npm \\\n		  --run ${packages.npm-warning}/bin/echo-npm-warning\n  ";
             })
             pkgs.nodejs_20
-            packages.pnpm
+            pkgs.pnpm
             packages.sync-npm-git-dependencies-with-nix
           ];
 
@@ -308,10 +308,10 @@ rec {
           inherit cargoArtifacts;
         });
 
-        packages.pnpm = pkgs.writeShellScriptBin "pnpm" ''
-          #!${pkgs.bash}/bin/bash
-          exec ${pkgs.nodejs_20}/bin/node ${pkgs.nodejs_20}/bin/corepack pnpm@9.7.1 "$@"
-        '';
+        # packages.pnpm = pkgs.writeShellScriptBin "pnpm" ''
+        #   #!${pkgs.bash}/bin/bash
+        #   exec ${pkgs.nodejs_20}/bin/node ${pkgs.nodejs_20}/bin/corepack pnpm@9.7.1 "$@"
+        # '';
       };
     };
 }
