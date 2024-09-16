@@ -205,7 +205,7 @@ rec {
         devShells.holochainDev = pkgs.mkShell {
           CGO_ENABLED = 0;
 
-          packages = flake.lib.holochainDeps { inherit pkgs lib; };
+          buildInputs = flake.lib.holochainDeps { inherit pkgs lib; };
         };
 
         packages.npm-warning = pkgs.writeShellScriptBin "echo-npm-warning" ''
