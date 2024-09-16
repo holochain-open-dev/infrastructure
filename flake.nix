@@ -27,7 +27,7 @@ rec {
 
               pkgs.darwin.apple_sdk.frameworks.AppKit
               pkgs.darwin.apple_sdk.frameworks.WebKit
-              (pkgs.darwin.apple_sdk.stdenv.mkDerivation {
+              (pkgs.darwin.apple_sdk_11_0.stdenv.mkDerivation {
                 name = "go";
                 nativeBuildInputs = with pkgs; [ makeBinaryWrapper go_1_21 ];
                 dontBuild = true;
