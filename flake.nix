@@ -1,6 +1,7 @@
 rec {
   inputs = {
-    nixpkgs.follows = "holonix/nixpkgs";
+    # nixpkgs.follows = "holonix/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
     holonix.url = "github:holochain/holonix/main-0.3";
     rust-overlay.follows = "holonix/rust-overlay";
