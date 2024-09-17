@@ -19,12 +19,23 @@ rec {
       flake = {
         lib = rec {
           holochainDeps = { pkgs, lib }:
-            (with pkgs; [ perl go openssl ])
-            ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.pkg-config ])
-            ++ (lib.optionals pkgs.stdenv.isDarwin [
+            (with pkgs; [ perl openssl ])
+            ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.pkg-config pkgs.go ])
+            ++ (pkgs.lib.optionals pkgs.stdenv.isDarwin [
               pkgs.libiconv
-              pkgs.darwin.apple_sdk.frameworks.Security
-              pkgs.darwin.apple_sdk_11_0.frameworks.CoreFoundation
+
+              pkgs.darwin.apple_sdk.frameworks.AppKit
+              pkgs.darwin.apple_sdk.frameworks.WebKit
+              (pkgs.darwin.apple_sdk_11_0.stdenv.mkDerivation {
+                name = "go";
+                nativeBuildInputs = with pkgs; [ makeBinaryWrapper go ];
+                dontBuild = true;
+                dontUnpack = true;
+                installPhase = ''
+                  makeWrapper ${pkgs.go}/bin/go $out/bin/go
+                '';
+              })
+
             ]);
 
           filterByHolochainPackageType = holochainPackageType: packages:
@@ -190,6 +201,10 @@ rec {
             ] ++ flake.lib.holochainDeps { inherit pkgs lib; };
         };
 
+        devShells.holochainDev = pkgs.mkShell {
+          buildInputs = flake.lib.holochainDeps { inherit pkgs lib; };
+        };
+
         packages.npm-warning = pkgs.writeShellScriptBin "echo-npm-warning" ''
           							echo "
           -----------------
@@ -220,7 +235,7 @@ rec {
                 "    wrapProgram $out/bin/npm \\\n		  --run ${packages.npm-warning}/bin/echo-npm-warning\n  ";
             })
             pkgs.nodejs_20
-            packages.pnpm
+            pkgs.pnpm
             packages.sync-npm-git-dependencies-with-nix
           ];
 
@@ -289,11 +304,6 @@ rec {
           version = cargoToml.package.version;
           inherit cargoArtifacts;
         });
-
-        packages.pnpm = pkgs.writeShellScriptBin "pnpm" ''
-          #!${pkgs.bash}/bin/bash
-          exec ${pkgs.nodejs_20}/bin/node ${pkgs.nodejs_20}/bin/corepack pnpm@9.7.1 "$@"
-        '';
       };
     };
 }

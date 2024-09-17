@@ -19,11 +19,13 @@
         devShells.default = pkgs.mkShell {
           inputsFrom = [
             inputs'.hc-infra.devShells.synchronized-pnpm
+            inputs'.hc-infra.devShells.holochainDev
             # inputs'.hc-infra.devShells.zomeDev
             # inputs'.hc-infra.devShells.sweettestDev
             inputs'.holonix.devShells.default
           ];
           packages = [ pkgs.nodejs_20 ];
+
         };
       };
     };
