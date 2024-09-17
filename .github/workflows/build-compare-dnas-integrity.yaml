@@ -3,7 +3,7 @@ on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
   push: 
-    branches: [ main ]
+    branches: [ main, next ]
   pull_request: 
     branches: [ main ]
 
@@ -11,7 +11,7 @@ jobs:
   build-and-cache:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, macos-13]
 
     runs-on: ${{ matrix.os }}
 
@@ -39,7 +39,7 @@ jobs:
           cachix push holochain-open-dev $(nix path-info --json --accept-flake-config --no-warn-dirty .#compare-dnas-integrity | nix run nixpkgs#jq -- -r 'keys[0]')
 
       - name: Pin compare-dnas-integrity
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.ref_name == 'main'
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
         run: |

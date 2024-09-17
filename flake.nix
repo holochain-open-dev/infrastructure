@@ -79,7 +79,7 @@ rec {
               };
               cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
                 pname = "zome";
-                version = "for-holochain-0.4.0-dev";
+                version = "for-holochain-0.4";
               });
 
             in cargoArtifacts;
@@ -119,7 +119,7 @@ rec {
                   overlays = [ (import inputs.rust-overlay) ];
                 };
 
-                rustToolchain = pkgs.rust-bin.stable."1.77.2".minimal.override {
+                rustToolchain = pkgs.rust-bin.stable."1.80.0".minimal.override {
                   # Set the build targets supported by the toolchain,
                   # wasm32-unknown-unknown is required for trunk.
                   targets = [ "wasm32-unknown-unknown" ];
