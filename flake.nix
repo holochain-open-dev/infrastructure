@@ -1,7 +1,6 @@
 rec {
   inputs = {
-    # nixpkgs.follows = "holonix/nixpkgs";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.follows = "holonix/nixpkgs";
 
     holonix.url = "github:holochain/holonix/main-0.3";
     rust-overlay.follows = "holonix/rust-overlay";
@@ -203,8 +202,6 @@ rec {
         };
 
         devShells.holochainDev = pkgs.mkShell {
-          CGO_ENABLED = 0;
-
           buildInputs = flake.lib.holochainDeps { inherit pkgs lib; };
         };
 
@@ -307,11 +304,6 @@ rec {
           version = cargoToml.package.version;
           inherit cargoArtifacts;
         });
-
-        # packages.pnpm = pkgs.writeShellScriptBin "pnpm" ''
-        #   #!${pkgs.bash}/bin/bash
-        #   exec ${pkgs.nodejs_20}/bin/node ${pkgs.nodejs_20}/bin/corepack pnpm@9.7.1 "$@"
-        # '';
       };
     };
 }
