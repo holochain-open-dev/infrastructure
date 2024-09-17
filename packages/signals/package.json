@@ -19,8 +19,8 @@
 		"prepublish": "npm run build"
 	},
 	"dependencies": {
-		"@holochain-open-dev/utils": "^0.400.0-dev.1",
-		"@holochain/client": "^0.18.0-dev.0",
+		"@holochain-open-dev/utils": "^0.400.0-dev.3",
+		"@holochain/client": "^0.18.0-dev.10",
 		"@shoelace-style/shoelace": "^2.11.2",
 		"async-signals": "^0.1.10",
 		"lit-signal-watcher": "^0.1.1",

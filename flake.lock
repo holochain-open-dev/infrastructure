@@ -154,6 +154,22 @@
         "url": "https://github.com/NixOS/nixpkgs/archive/356624c12086a18f2ea2825fed34523d60ccc4e3.tar.gz"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1726447378,
+        "narHash": "sha256-2yV8nmYE1p9lfmLHhOCbYwQC/W8WYfGQABoGzJOb1JQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "086b448a5d54fd117f4dc2dee55c9f0ff461bdc1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "crane": [
@@ -161,10 +177,7 @@
           "crane"
         ],
         "holonix": "holonix",
-        "nixpkgs": [
-          "holonix",
-          "nixpkgs"
-        ],
+        "nixpkgs": "nixpkgs_2",
         "rust-overlay": [
           "holonix",
           "rust-overlay"
