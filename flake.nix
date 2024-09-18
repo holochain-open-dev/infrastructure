@@ -1,7 +1,7 @@
 rec {
   inputs = {
-    # nixpkgs.follows = "holonix/nixpkgs";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.follows = "holonix/nixpkgs";
+    pnpmnixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
     holonix.url = "github:holochain/holonix/main-0.3";
     rust-overlay.follows = "holonix/rust-overlay";
@@ -236,7 +236,7 @@ rec {
                 "    wrapProgram $out/bin/npm \\\n		  --run ${packages.npm-warning}/bin/echo-npm-warning\n  ";
             })
             pkgs.nodejs_20
-            pkgs.pnpm
+            inputs'.pnpmnixpkgs.legacyPackages.pnpm
             packages.sync-npm-git-dependencies-with-nix
           ];
 
