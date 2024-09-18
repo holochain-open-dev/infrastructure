@@ -168,11 +168,12 @@ rec {
               pkgs = holochainPkgs { inherit system; };
               compare-dnas-integrity =
                 (outputs inputs).packages.${system}.compare-dnas-integrity;
+              dna-hash = (outputs inputs).packages.${system}.dna-hash;
               holochain = inputs.holonix.outputs.packages.${system}.holochain;
 
             in pkgs.callPackage ./nix/dna.nix {
               inherit zomes holochain dnaManifest compare-dnas-integrity
-                matchingIntegrityDna;
+                dna-hash matchingIntegrityDna;
             };
           happ = { system, happManifest, dnas }:
             let
@@ -188,6 +189,7 @@ rec {
         ./crates/scaffold_remote_zome/default.nix
         ./crates/compare_dnas_integrity/default.nix
         ./crates/zome_wasm_hash/default.nix
+        ./crates/dna_hash/default.nix
       ];
 
       systems = builtins.attrNames inputs.holonix.devShells;

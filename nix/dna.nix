@@ -2,7 +2,7 @@
 { dnaManifest, json2yaml, runCommandLocal, pkgs, writeText, holochain
 # If given a DNA, will check whether the DNA hashes for the given `matchingIntegrityDna` and the DNA to be built match
 # If they don't, it will print an error describing which zomes don't match
-, matchingIntegrityDna ? null, compare-dnas-integrity, zomes ? { } }:
+, matchingIntegrityDna ? null, compare-dnas-integrity, dna-hash, zomes ? { } }:
 
 let
   zomeSrcs = builtins.attrValues zomes;
@@ -24,6 +24,7 @@ let
   release = runCommandLocal manifest.name {
     srcs = builtins.map (zome: zome.meta.release) zomeSrcs;
     meta = { holochainPackageType = "dna"; };
+    outputs = [ "out" "hash" ];
   } ''
       mkdir workdir
       cp ${dnaManifestYaml} workdir/dna.yaml
@@ -42,15 +43,18 @@ let
     	
     	${holochain}/bin/hc dna pack workdir
     	mv workdir/${manifest.name}.dna $out
+      ${dna-hash}/bin/dna-hash $out > $hash
   '';
 
   guardedRelease = if matchingIntegrityDna != null then
     runCommandLocal "check-match-dna-${manifest.name}-integrity" {
       srcs = [ release matchingIntegrityDna.meta.release ];
       buildInputs = [ compare-dnas-integrity ];
+      outputs = [ "out" "hash" ];
     } ''
       ${compare-dnas-integrity}/bin/compare-dnas-integrity ${matchingIntegrityDna.meta.release} ${release}
       cp ${release} $out
+      cat ${release.hash} > $hash
     ''
   else
     release;
@@ -62,6 +66,7 @@ let
       release = guardedRelease;
       holochainPackageType = "dna";
     };
+    outputs = [ "out" "hash" ];
   } ''
     	mkdir workdir
     	cp ${dnaManifestYaml} workdir/dna.yaml
@@ -79,5 +84,6 @@ let
       
     	${holochain}/bin/hc dna pack workdir
     	mv workdir/${manifest.name}.dna $out
+      ${dna-hash}/bin/dna-hash $out > $hash
   '';
 in debug
