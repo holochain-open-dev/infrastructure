@@ -83,5 +83,5 @@ in runCommandLocal manifest.name {
   outputs = [ "out" ];
 } ''
   cp ${guardedRelease} $out
-      ${dna-hash}/bin/dna-hash $out > $hash
+  ${dna-hash}/bin/dna-hash $out > $hash
 ''
