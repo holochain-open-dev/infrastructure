@@ -285,7 +285,7 @@
       },
       "locked": {
         "lastModified": 0,
-        "narHash": "sha256-6Cew3rjrGiZSvbngOJDDnnpbM1lh6b3xPYdwfmO9+4k=",
+        "narHash": "sha256-GeGKMrZaGoeqQvuL3XkgR+RY5AYLZ81We0eYdlp0LEM=",
         "path": "./../../..",
         "type": "path"
       },
@@ -1039,7 +1039,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-gyXWWi3KatVkR251nx2AObi6cVz4jjXZo4gc3+RmoqE=",
+        "narHash": "sha256-wew+OBHffXpdAmy1pprc4UX0mM8DZXycO+PIQxO3O2s=",
         "path": "./../module-repo",
         "type": "path"
       },
