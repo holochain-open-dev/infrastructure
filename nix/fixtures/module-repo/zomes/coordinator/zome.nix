@@ -33,7 +33,7 @@
         '';
         zomes = { my_zome = self'.packages.my_zome; };
         inherit system;
-      };
+      }.meta.debug;
       crateCargoToml = ./Cargo.toml;
       cargoArtifacts =
         inputs.hc-infra.lib.holochainCargoArtifacts { inherit system; };
