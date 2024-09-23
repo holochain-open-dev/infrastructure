@@ -21,23 +21,42 @@ let
   dnaManifestJson = writeText "dna.json" (builtins.toJSON manifest');
   dnaManifestYaml = runCommandLocal "json-to-yaml" { }
     "	${json2yaml}/bin/json2yaml ${dnaManifestJson} $out\n"; # Recurse over the zomes, and add the correct bundled zome package by name
-  release = runCommandLocal manifest.name {
-    srcs = builtins.map (zome: zome.meta.release) zomeSrcs;
-    meta = { holochainPackageType = "dna"; };
-    outputs = [ "out" "hash" ];
-  } ''
-      mkdir workdir
-      cp ${dnaManifestYaml} workdir/dna.yaml
 
+  # Debug package
+  debug = runCommandLocal manifest.name {
+    srcs = builtins.map (zome: zome.meta.debug) zomeSrcs;
+  } ''
+    	mkdir workdir
+    	cp ${dnaManifestYaml} workdir/dna.yaml
+      
       ${
         builtins.toString (builtins.map (zome: ''
-          cp ${zomes.${zome.name}.meta.release} ./workdir/${zome.name}.wasm
+          cp ${zomes.${zome.name}.meta.debug} ./workdir/${zome.name}.wasm
         '') manifest'.integrity.zomes)
       }
 
       ${
         builtins.toString (builtins.map (zome: ''
-          cp ${zomes.${zome.name}.meta.release} ./workdir/${zome.name}.wasm
+          cp ${zomes.${zome.name}.meta.debug} ./workdir/${zome.name}.wasm
+        '') manifest'.coordinator.zomes)
+      }
+      
+    	${holochain}/bin/hc dna pack workdir
+    	mv workdir/${manifest.name}.dna $out
+  '';
+
+  release = runCommandLocal "${manifest.name}-release" { srcs = zomeSrcs; } ''
+      mkdir workdir
+      cp ${dnaManifestYaml} workdir/dna.yaml
+
+      ${
+        builtins.toString (builtins.map (zome: ''
+          cp ${zomes.${zome.name}} ./workdir/${zome.name}.wasm
+        '') manifest'.integrity.zomes)
+      }
+      ${
+        builtins.toString (builtins.map (zome: ''
+          cp ${zomes.${zome.name}} ./workdir/${zome.name}.wasm
         '') manifest'.coordinator.zomes)
       }
     	
@@ -48,42 +67,21 @@ let
 
   guardedRelease = if matchingIntegrityDna != null then
     runCommandLocal "check-match-dna-${manifest.name}-integrity" {
-      srcs = [ release matchingIntegrityDna.meta.release ];
+      srcs = [ release matchingIntegrityDna ];
       buildInputs = [ compare-dnas-integrity ];
       outputs = [ "out" "hash" ];
     } ''
-      ${compare-dnas-integrity}/bin/compare-dnas-integrity ${matchingIntegrityDna.meta.release} ${release}
+      ${compare-dnas-integrity}/bin/compare-dnas-integrity ${matchingIntegrityDna} ${release}
       cp ${release} $out
       cat ${release.hash} > $hash
     ''
   else
     release;
 
-  # Debug package
-  debug = runCommandLocal manifest.name {
-    srcs = zomeSrcs;
-    meta = {
-      release = guardedRelease;
-      holochainPackageType = "dna";
-    };
-    outputs = [ "out" "hash" ];
-  } ''
-    	mkdir workdir
-    	cp ${dnaManifestYaml} workdir/dna.yaml
-      
-      ${
-        builtins.toString (builtins.map (zome: ''
-          cp ${zomes.${zome.name}} ./workdir/${zome.name}.wasm
-        '') manifest'.integrity.zomes)
-      }
-      ${
-        builtins.toString (builtins.map (zome: ''
-          cp ${zomes.${zome.name}} ./workdir/${zome.name}.wasm
-        '') manifest'.coordinator.zomes)
-      }
-      
-    	${holochain}/bin/hc dna pack workdir
-    	mv workdir/${manifest.name}.dna $out
+in runCommandLocal manifest.name {
+  meta = { inherit debug; };
+  outputs = [ "out" ];
+} ''
+  cp ${guardedRelease} $out
       ${dna-hash}/bin/dna-hash $out > $hash
-  '';
-in debug
+''
