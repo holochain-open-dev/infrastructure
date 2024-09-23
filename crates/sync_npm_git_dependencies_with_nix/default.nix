@@ -3,7 +3,7 @@
 {
   perSystem = { inputs', pkgs, self', lib, ... }: {
 
-    packages.zome-wasm-hash = let
+    packages.sync-npm-git-dependencies-with-nix = let
       craneLib = inputs.crane.mkLib pkgs;
 
       cratePath = ./.;
