@@ -1,4 +1,4 @@
-name: "build-and-cache"
+name: "build-nix-devshells"
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
@@ -43,6 +43,14 @@ jobs:
         run: |
           cd ./nix/fixtures/module-repo
           nix flake update hc-infra
+          cachix watch-exec holochain-open-dev -- nix build --no-update-lock-file --accept-flake-config -L .#my_zome.meta.debug
+
+      - name: Build zomes
+        if: matrix.os == 'ubuntu-latest'
+        env:
+          CACHIX_AUTH_TOKEN: "${{ secrets.CACHIX_TOKEN_HOLOCHAIN_OPEN_DEV }}"
+        run: |
+          cd ./nix/fixtures/module-repo
           cachix watch-exec holochain-open-dev -- nix build --no-update-lock-file --accept-flake-config -L .#my_zome
 
       - name: Test zomes
