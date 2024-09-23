@@ -5,9 +5,9 @@ use parse_flake_lock::{FlakeLock, FlakeLockParseError, Node};
 use regex::Regex;
 use serde_json::Value;
 use std::{
+    env::current_dir,
     fs::File,
     io::BufReader,
-    path::Path,
     process::{Command, Stdio},
 };
 use thiserror::Error;
@@ -17,7 +17,6 @@ pub enum SynchronizeNpmGitDependenciesWithNixError {
     #[error(transparent)]
     FlakeLockParseError(#[from] FlakeLockParseError),
 
-    /// std::io::Error
     #[error("IO error: {0}")]
     StdIoError(#[from] std::io::Error),
 
@@ -33,7 +32,14 @@ pub enum SynchronizeNpmGitDependenciesWithNixError {
 
 pub fn synchronize_npm_git_dependencies_with_nix(
 ) -> Result<(), SynchronizeNpmGitDependenciesWithNixError> {
-    let flake_lock = FlakeLock::new(Path::new("flake.lock"))?;
+    let flake_lock = current_dir()?.join("flake.lock");
+
+    // Return silently if no "flake.lock" file exists
+    if !flake_lock.exists() {
+        return Ok(());
+    }
+
+    let flake_lock = FlakeLock::new(flake_lock.as_path())?;
 
     let mut announced = false;
     let mut replaced_some_dep = false;
