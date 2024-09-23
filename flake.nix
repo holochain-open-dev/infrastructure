@@ -39,48 +39,15 @@ rec {
 
             ]);
 
-          filterByHolochainPackageType = holochainPackageType: packages:
-            inputs.nixpkgs.lib.filterAttrs (key: value:
-              (builtins.hasAttr "meta" value)
-              && (builtins.hasAttr "holochainPackageType" value.meta)
-              && value.meta.holochainPackageType == holochainPackageType)
-            packages;
+          zomeCargoArtifacts = { system, craneLib ? (let
 
-          filterZomes = filterByHolochainPackageType "zome";
-          filterDnas = filterByHolochainPackageType "dna";
-          filterHapps = filterByHolochainPackageType "happ";
-          filterNpmPackages = filterByHolochainPackageType "npm";
-
-          holochainPkgs = { system }:
-            let
-              pkgs = import inputs.nixpkgs {
-                inherit system;
-                overlays = [ (import inputs.rust-overlay) ];
-              };
-            in pkgs;
-
-          holochainRustToolchain = { system }:
-            let
-              pkgs = holochainPkgs { inherit system; };
-
-              rustToolchain = pkgs.rust-bin.stable."1.77.2".minimal.override {
-                # Set the build targets supported by the toolchain,
-                # wasm32-unknown-unknown is required for trunk.
-                targets = [ "wasm32-unknown-unknown" ];
-              };
-            in rustToolchain;
-
-          holochainCraneLib = { system }:
-            let
-              pkgs = holochainPkgs { inherit system; };
-              rustToolchain = holochainRustToolchain { inherit system; };
-              craneLib =
-                (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
-            in craneLib;
-
-          zomeCargoArtifacts = { system
-            , craneLib ? (holochainCraneLib { inherit system; }), debug ? false
-            }:
+            pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [ (import inputs.rust-overlay) ];
+            };
+            craneLib = (inputs.crane.mkLib pkgs).overrideToolchain
+              inputs.holonix.outputs.packages.${system}.rust;
+          in craneLib), debug ? false }:
             let
               src =
                 craneLib.cleanCargoSource (craneLib.path ./nix/reference-happ);
@@ -98,8 +65,12 @@ rec {
 
           holochainCargoArtifacts = { system }:
             let
-              pkgs = holochainPkgs { inherit system; };
-              craneLib = holochainCraneLib { inherit system; };
+              pkgs = import inputs.nixpkgs {
+                inherit system;
+                overlays = [ (import inputs.rust-overlay) ];
+              };
+              craneLib = (inputs.crane.mkLib pkgs).overrideToolchain
+                inputs.holonix.outputs.packages.${system}.rust;
 
               buildInputs = holochainDeps {
                 inherit pkgs;
@@ -122,40 +93,37 @@ rec {
             in cargoArtifacts;
 
           rustZome = { crateCargoToml, system, workspacePath
-            , nonWasmCrates ? [ ], cargoArtifacts ? null
-            , matchingZomeHash ? null }:
+            , cargoArtifacts ? null, matchingZomeHash ? null }:
             let
-              deterministicCraneLib = let
-                pkgs = import inputs.nixpkgs {
-                  system = "x86_64-linux";
-                  overlays = [ (import inputs.rust-overlay) ];
-                };
+              pkgs = import inputs.nixpkgs {
+                inherit system;
+                overlays = [ (import inputs.rust-overlay) ];
+              };
 
-                rustToolchain = pkgs.rust-bin.stable."1.77.2".minimal.override {
-                  # Set the build targets supported by the toolchain,
-                  # wasm32-unknown-unknown is required for trunk.
-                  targets = [ "wasm32-unknown-unknown" ];
-                };
+              deterministicCraneLib = let
+                rustToolchain =
+                  inputs.holonix.outputs.packages."x86_64-linux".rust;
               in (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
 
-              pkgs = holochainPkgs { inherit system; };
-              craneLib = holochainCraneLib { inherit system; };
-
+              craneLib = (inputs.crane.mkLib pkgs).overrideToolchain
+                inputs.holonix.outputs.packages.${system}.rust;
               zome-wasm-hash =
                 (outputs inputs).packages.${system}.zome-wasm-hash;
 
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
-                cargoArtifacts nonWasmCrates workspacePath matchingZomeHash
-                zome-wasm-hash;
-              referenceZomeCargoArtifacts = flake.lib.zomeCargoArtifacts;
+                cargoArtifacts workspacePath matchingZomeHash zome-wasm-hash;
             };
           sweettest = { system, dna, workspacePath, crateCargoToml
             , buildInputs ? [ ], nativeBuildInputs ? [ ], cargoArtifacts ? null
             }:
             let
-              pkgs = holochainPkgs { inherit system; };
-              craneLib = holochainCraneLib { inherit system; };
+              pkgs = import inputs.nixpkgs {
+                inherit system;
+                overlays = [ (import inputs.rust-overlay) ];
+              };
+              craneLib = (inputs.crane.mkLib pkgs).overrideToolchain
+                inputs.holonix.outputs.packages.${system}.rust;
             in pkgs.callPackage ./nix/sweettest.nix {
               inherit dna craneLib crateCargoToml cargoArtifacts workspacePath;
               buildInputs = buildInputs ++ holochainDeps {
@@ -165,7 +133,10 @@ rec {
             };
           dna = { system, dnaManifest, zomes, matchingIntegrityDna ? null }:
             let
-              pkgs = holochainPkgs { inherit system; };
+              pkgs = import inputs.nixpkgs {
+                inherit system;
+                overlays = [ (import inputs.rust-overlay) ];
+              };
               compare-dnas-integrity =
                 (outputs inputs).packages.${system}.compare-dnas-integrity;
               holochain = inputs.holonix.outputs.packages.${system}.holochain;
@@ -176,7 +147,10 @@ rec {
             };
           happ = { system, happManifest, dnas }:
             let
-              pkgs = holochainPkgs { inherit system; };
+              pkgs = import inputs.nixpkgs {
+                inherit system;
+                overlays = [ (import inputs.rust-overlay) ];
+              };
               holochain = inputs.holonix.outputs.packages.${system}.holochain;
             in pkgs.callPackage ./nix/happ.nix {
               inherit dnas holochain happManifest;

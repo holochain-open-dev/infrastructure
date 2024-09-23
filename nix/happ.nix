@@ -1,6 +1,6 @@
 # Build a hApp
-{ happManifest, holochain, writeText, json2yaml, callPackage, runCommandNoCC
-, runCommandLocal, dnas ? { } }:
+{ happManifest, holochain, writeText, json2yaml, callPackage, runCommandLocal
+, dnas ? { } }:
 
 let
   dnaSrcs = builtins.attrValues dnas;
@@ -19,30 +19,8 @@ let
   happManifestYaml = runCommandLocal "json-to-yaml" { }
     "	${json2yaml}/bin/json2yaml ${happManifestJson} $out\n";
 
-  release = runCommandLocal manifest.name {
-    srcs = builtins.map (dna: dna.meta.release) dnaSrcs;
-    meta = { holochainPackageType = "happ"; };
-  } ''
-      mkdir workdir
-
-    	cp ${happManifestYaml} workdir/happ.yaml
-
-      ${
-        builtins.toString (builtins.map (role: ''
-          cp ${dnas.${role.name}.meta.release} ./workdir/${role.name}.dna 
-        '') manifest'.roles)
-      }
-
-    	${holochain}/bin/hc app pack workdir
-    	mv workdir/${manifest.name}.happ $out
-  '';
-
-  debug = runCommandLocal manifest.name {
-    srcs = dnaSrcs;
-    meta = {
-      inherit release;
-      holochainPackageType = "happ";
-    };
+  debug = runCommandLocal "${manifest.name}-debug" {
+    srcs = builtins.map (dna: dna.meta.debug) dnaSrcs;
   } ''
       mkdir workdir
         
@@ -50,11 +28,28 @@ let
 
       ${
         builtins.toString (builtins.map (role: ''
-          cp ${dnas.${role.name}} ./workdir/${role.name}.dna 
+          cp ${dnas.${role.name}.meta.debug} ./workdir/${role.name}.dna 
         '') manifest.roles)
       }
 
     	${holochain}/bin/hc app pack workdir
     	mv workdir/${manifest.name}.happ $out
   '';
-in debug
+
+in runCommandLocal manifest.name {
+  meta = { inherit debug; };
+  srcs = dnaSrcs;
+} ''
+    mkdir workdir
+
+  	cp ${happManifestYaml} workdir/happ.yaml
+
+    ${
+      builtins.toString (builtins.map (role: ''
+        cp ${dnas.${role.name}} ./workdir/${role.name}.dna 
+      '') manifest'.roles)
+    }
+
+  	${holochain}/bin/hc app pack workdir
+  	mv workdir/${manifest.name}.happ $out
+''
