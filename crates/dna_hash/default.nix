@@ -18,8 +18,8 @@
         buildInputs = self.lib.holochainDeps { inherit pkgs lib; };
       };
       cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-        pname = "workspace";
-        version = "workspace";
+        pname = "t-nesh-workspace";
+        version = "0.4.x";
       });
     in craneLib.buildPackage (commonArgs // {
       pname = crate;

@@ -62,25 +62,23 @@ let
     	
     	${holochain}/bin/hc dna pack workdir
     	mv workdir/${manifest.name}.dna $out
-      ${dna-hash}/bin/dna-hash $out > $hash
   '';
 
   guardedRelease = if matchingIntegrityDna != null then
     runCommandLocal "check-match-dna-${manifest.name}-integrity" {
       srcs = [ release matchingIntegrityDna ];
       buildInputs = [ compare-dnas-integrity ];
-      outputs = [ "out" "hash" ];
+      outputs = [ "out" ];
     } ''
       ${compare-dnas-integrity}/bin/compare-dnas-integrity ${matchingIntegrityDna} ${release}
       cp ${release} $out
-      cat ${release.hash} > $hash
     ''
   else
     release;
 
 in runCommandLocal manifest.name {
   meta = { inherit debug; };
-  outputs = [ "out" ];
+  outputs = [ "out" "hash" ];
 } ''
   cp ${guardedRelease} $out
   ${dna-hash}/bin/dna-hash $out > $hash
