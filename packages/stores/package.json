@@ -1,6 +1,6 @@
 {
 	"name": "@holochain-open-dev/stores",
-	"version": "0.300.0-dev.4",
+	"version": "0.300.0-dev.5",
 	"description": "Re-export of svelte/store, with additional utilities to build reusable holochain-open-dev modules",
 	"author": "guillem.cordoba@gmail.com",
 	"main": "dist/index.js",
@@ -20,8 +20,8 @@
 	},
 	"dependencies": {
 		"@alenaksu/json-viewer": "^2.0.1",
-		"@holochain-open-dev/utils": "^0.300.0-dev.0",
-		"@holochain/client": "^0.17.0-dev.12",
+		"@holochain-open-dev/utils": "^0.400.0-dev.1",
+    "@holochain/client": "^0.18.0-dev.10",
 		"@scoped-elements/cytoscape": "^0.2.0",
 		"@shoelace-style/shoelace": "^2.11.2",
 		"lit": "^3.0.2",
