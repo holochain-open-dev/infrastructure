@@ -2,10 +2,11 @@ import {
   AppClient,
   AppWebsocket,
   AppInfo,
-  AppSignal,
   CellId,
   CellType,
   RoleName,
+  Signal,
+  SignalType,
 } from "@holochain/client";
 
 export function roleNameForCellId(
@@ -31,12 +32,14 @@ export function roleNameForCellId(
 export async function isSignalFromCellWithRole(
   client: AppClient,
   roleName: RoleName,
-  signal: AppSignal
+  signal: Signal
 ): Promise<boolean> {
+  const cellId = signal[SignalType.App] ? signal[SignalType.App].cell_id : signal[SignalType.System].cell_id;
+
   if ((client as AppWebsocket).cachedAppInfo) {
     const role = roleNameForCellId(
       (client as AppWebsocket).cachedAppInfo,
-      signal.cell_id
+      cellId
     );
     if (role) {
       return roleName === role;
@@ -47,7 +50,7 @@ export async function isSignalFromCellWithRole(
   // So in this case we _should_ trigger a new fetch of the app info
 
   const appInfo = await client.appInfo();
-  const role = roleNameForCellId(appInfo, signal.cell_id);
+  const role = roleNameForCellId(appInfo, cellId);
 
   return roleName === role;
 }

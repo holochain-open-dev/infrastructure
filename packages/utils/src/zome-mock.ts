@@ -5,7 +5,6 @@ import {
 	AppEvents,
 	AppInfo,
 	AppNetworkInfoRequest,
-	AppSignalCb,
 	CallZomeRequest,
 	CellId,
 	ClonedCell,
@@ -14,6 +13,7 @@ import {
 	EnableCloneCellRequest,
 	EnableCloneCellResponse,
 	NetworkInfoResponse,
+	SignalCb,
 	decodeHashFromBase64,
 } from '@holochain/client';
 import Emittery, { UnsubscribeFunction } from 'emittery';
@@ -34,6 +34,7 @@ export class ZomeMock implements AppClient {
 		),
 		protected latency: number = 500,
 	) {}
+	installedAppId: string;
 
 	get cellId(): CellId {
 		return [
@@ -96,7 +97,7 @@ export class ZomeMock implements AppClient {
 
 	on<Name extends keyof AppEvents>(
 		eventName: Name | readonly Name[],
-		listener: AppSignalCb,
+		listener: SignalCb,
 	): UnsubscribeFunction {
 		return this.emitter.on(eventName, listener);
 	}
