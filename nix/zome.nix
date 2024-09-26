@@ -1,6 +1,6 @@
-{ lib, workspacePath, cargoArtifacts, runCommandLocal, binaryen
+{ lib, workspacePath, cargoArtifacts, runCommandLocal, runCommandNoCC, binaryen
 , deterministicCraneLib, craneLib, crateCargoToml, matchingZomeHash ? null
-, zome-wasm-hash }:
+, zome-wasm-hash, meta }:
 
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
@@ -101,7 +101,7 @@ let
     meta = { holochainPackageType = "zome"; };
   } "	cp ${wasm}/lib/${crate}.wasm $out \n";
 
-  debug = runCommandLocal "${crate}-debug" { } ''
+  debug = runCommandNoCC "${crate}-debug" { } ''
     cp ${wasm}/lib/${crate}.wasm $out 
   '';
 
@@ -127,13 +127,11 @@ let
   else
     release;
 
-in runCommandLocal crate {
-  meta = { inherit debug; };
+in runCommandNoCC crate {
+  meta = meta // { inherit debug; };
   outputs = [ "out" "hash" ];
   buildInputs = [ zome-wasm-hash ];
 } ''
-
   cp ${guardedRelease} $out
   zome-wasm-hash $out > $hash
-
 ''

@@ -12,7 +12,11 @@
 
   outputs = inputs@{ ... }:
     inputs.holonix.inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ ./zomes/coordinator/zome.nix ./zomes/integrity/zome.nix ];
+      imports = [
+        ./zomes/coordinator/zome.nix
+        ./zomes/integrity/zome.nix
+        inputs.hc-infra.flakeModules.builders
+      ];
 
       systems = builtins.attrNames inputs.holonix.devShells;
       perSystem = { inputs', config, pkgs, system, lib, self', ... }: {

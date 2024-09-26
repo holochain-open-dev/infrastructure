@@ -31,3 +31,6 @@ path-clean = "1"
 dialoguer = "0.11"
 colored = "2.1.0"
 holochain_types = "0.3.2"
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"

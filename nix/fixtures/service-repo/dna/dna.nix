@@ -2,9 +2,8 @@
 
 {
   perSystem = { inputs', config, pkgs, system, lib, self', options, ... }: {
-    packages.my_dna = inputs.hc-infra.outputs.lib.dna {
+    packages.my_dna = inputs.hc-infra.outputs.builders.${system}.dna {
       dnaManifest = ./dna.yaml;
-      inherit system;
       zomes = {
         my_zome = inputs'.module.packages.my_zome;
         my_zome_integrity = inputs'.module.packages.my_zome_integrity;

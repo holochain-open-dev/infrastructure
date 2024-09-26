@@ -1,6 +1,6 @@
 # Build a hApp
-{ happManifest, holochain, writeText, json2yaml, callPackage, runCommandLocal
-, dnas ? { } }:
+{ happManifest, runCommandNoCC, holochain, writeText, json2yaml, callPackage
+, runCommandLocal, dnas ? { }, meta }:
 
 let
   dnaSrcs = builtins.attrValues dnas;
@@ -19,7 +19,7 @@ let
   happManifestYaml = runCommandLocal "json-to-yaml" { }
     "	${json2yaml}/bin/json2yaml ${happManifestJson} $out\n";
 
-  debug = runCommandLocal "${manifest.name}-debug" {
+  debug = runCommandNoCC "${manifest.name}-debug" {
     srcs = builtins.map (dna: dna.meta.debug) dnaSrcs;
   } ''
       mkdir workdir
@@ -36,8 +36,8 @@ let
     	mv workdir/${manifest.name}.happ $out
   '';
 
-in runCommandLocal manifest.name {
-  meta = { inherit debug; };
+in runCommandNoCC manifest.name {
+  meta = meta // { inherit debug; };
   srcs = dnaSrcs;
 } ''
     mkdir workdir

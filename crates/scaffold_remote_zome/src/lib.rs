@@ -343,6 +343,7 @@ fn find_nixified_dnas(file_tree: &FileTree) -> Result<Vec<NixifiedDna>, Scaffold
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
     use build_fs_tree::{dir, file};
     use file_tree_utils::file_content;
 
@@ -426,19 +427,14 @@ coordinator:
   
   inputs = {
     profiles.url = "github:holochain-open-dev/profiles/nixify";
-    nixpkgs.follows = "holochain/nixpkgs";
+    nixpkgs.follows = "holonix/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/weekly";
-
-    holochain = {
-      url = "github:holochain/holochain";
-      inputs.versions.follows = "versions";
-    };
+    holonix.url = "github:holochain/holonix";
     hc-infra.url = "github:holochain-open-dev/utils";
   };
 
   outputs = inputs @ { ... }:
-    inputs.holochain.inputs.flake-parts.lib.mkFlake
+    inputs.holonix.inputs.flake-parts.lib.mkFlake
     {
       inherit inputs;
     }
@@ -447,7 +443,7 @@ coordinator:
         ./dna.nix
       ];
 
-      systems = builtins.attrNames inputs.holochain.devShells;
+      systems = builtins.attrNames inputs.holonix.devShells;
       perSystem =
         { inputs'
         , config
@@ -460,7 +456,7 @@ coordinator:
           devShells.default = pkgs.mkShell {
             inputsFrom = [ 
               inputs'.hc-infra.devShells.synchronized-pnpm
-              inputs'.holochain.devShells.holonix 
+              inputs'.holonix.devShells.default
             ];
           };
         };
@@ -477,20 +473,19 @@ coordinator:
   perSystem =
     { inputs'
     , self'
+    , system
     , ...
     }: {
-  	  packages.my_dna = inputs.hc-infra.outputs.lib.dna {
+  	  packages.my_dna = inputs.hc-infra.outputs.builders.${system}.dna {
         dnaManifest = ./dna.yaml;
-        holochain = inputs'.holochain;
         zomes = {
           profiles_integrity = inputs'.profiles.packages.profiles_integrity;
           profiles = inputs'.profiles.packages.profiles;
         };
       };
 
-  	  packages.another_dna = inputs.hc-infra.outputs.lib.dna {
+  	  packages.another_dna = inputs.hc-infra.outputs.builders.${system}.dna {
         dnaManifest = ./workdir/dna.yaml;
-        holochain = inputs'.holochain;
         zomes = {
         };
       };
@@ -533,31 +528,23 @@ coordinator:
   description = "Template for Holochain app development";
   
   inputs = {
-    nixpkgs.follows = "holochain/nixpkgs";
+    nixpkgs.follows = "holonix/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/weekly";
-
-    holochain = {
-      url = "github:holochain/holochain";
-      inputs.versions.follows = "versions";
-    };
+    holonix.url = "github:holochain/holonix";
     hc-infra.url = "github:holochain-open-dev/utils";
   };
 
   outputs = inputs @ { ... }:
-    inputs.holochain.inputs.flake-parts.lib.mkFlake
+    inputs.holonix.inputs.flake-parts.lib.mkFlake
     {
       inherit inputs;
-      specialArgs = {
-        rootPath = ./.;
-      };
     }
     {
       imports = [
         ./dna.nix
       ];
 
-      systems = builtins.attrNames inputs.holochain.devShells;
+      systems = builtins.attrNames inputs.holonix.devShells;
       perSystem =
         { inputs'
         , config
@@ -570,7 +557,7 @@ coordinator:
           devShells.default = pkgs.mkShell {
             inputsFrom = [ 
               inputs'.hc-infra.devShells.synchronized-pnpm
-              inputs'.holochain.devShells.holonix 
+              inputs'.holonix.devShells.default
             ];
           };
         };
@@ -588,18 +575,17 @@ coordinator:
   perSystem =
     { inputs'
     , self'
+    , system
     , ...
     }: {
-  	  packages.my_dna = inputs.hc-infra.outputs.lib.dna {
+  	  packages.my_dna = inputs.hc-infra.outputs.builders.${system}.dna {
         dnaManifest = ./dna.yaml;
-        holochain = inputs'.holochain;
         zomes = {
         };
       };
 
-  	  packages.another_dna = inputs.hc-infra.outputs.lib.dna {
+  	  packages.another_dna = inputs.hc-infra.outputs.builders.${system}.dna {
         dnaManifest = ./workdir/dna.yaml;
-        holochain = inputs'.holochain;
         zomes = {
         };
       };
