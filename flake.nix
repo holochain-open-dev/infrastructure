@@ -82,13 +82,11 @@
                 ++ self'.dependencies.holochain.buildInputs;
             };
           dna = { dnaManifest, zomes, matchingIntegrityDna ? null, meta ? { } }:
-            let
+            pkgs.callPackage ./nix/dna.nix {
+              inherit zomes dnaManifest matchingIntegrityDna meta;
+              dna-hash = self'.packages.dna-hash;
               compare-dnas-integrity = self'.packages.compare-dnas-integrity;
               holochain = inputs'.holonix.packages.holochain;
-
-            in pkgs.callPackage ./nix/dna.nix {
-              inherit zomes holochain dnaManifest compare-dnas-integrity
-                matchingIntegrityDna meta;
             };
           happ = { happManifest, dnas, meta ? { } }:
             pkgs.callPackage ./nix/happ.nix {
