@@ -1,6 +1,6 @@
 # Build a hApp
-{ happManifest, runCommandNoCC, holochain, writeText, json2yaml, callPackage
-, runCommandLocal, dnas ? { }, meta }:
+{ lib, happManifest, runCommandNoCC, holochain, writeText, json2yaml
+, callPackage, runCommandLocal, dnas ? { }, meta }:
 
 let
   dnaSrcs = builtins.attrValues dnas;
@@ -38,6 +38,7 @@ let
 
 in runCommandNoCC manifest.name {
   meta = meta // { inherit debug; };
+  outputs = [ "out" "dna_hashes" ];
   srcs = dnaSrcs;
 } ''
     mkdir workdir
@@ -52,4 +53,16 @@ in runCommandNoCC manifest.name {
 
   	${holochain}/bin/hc app pack workdir
   	mv workdir/${manifest.name}.happ $out
+
+    export DNA_HASHES=
+
+    ${
+      builtins.toString (builtins.map (role: ''
+        export DNA_HASHES=$DNA_HASHES:$(cat ${dnas.${role.name}.hash}) 
+      '') manifest'.roles)
+    }
+
+    export DNA_HASHES="''${DNA_HASHES:1}"
+    
+    echo $DNA_HASHES > $dna_hashes
 ''
