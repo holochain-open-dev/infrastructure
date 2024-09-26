@@ -15,7 +15,7 @@
       commonArgs = {
         src = craneLib.cleanCargoSource (craneLib.path ../../.);
         doCheck = false;
-        buildInputs = self.lib.holochainDeps { inherit pkgs lib; };
+        buildInputs = self'.dependencies.holochain.buildInputs;
       };
       cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
         pname = "t-nesh-workspace";

@@ -1,8 +1,10 @@
 # Build a DNA
-{ dnaManifest, json2yaml, runCommandLocal, pkgs, writeText, holochain
+{ dnaManifest, json2yaml, runCommandNoCC, runCommandLocal, pkgs, writeText
+, holochain
 # If given a DNA, will check whether the DNA hashes for the given `matchingIntegrityDna` and the DNA to be built match
 # If they don't, it will print an error describing which zomes don't match
-, matchingIntegrityDna ? null, compare-dnas-integrity, dna-hash, zomes ? { } }:
+, matchingIntegrityDna ? null, compare-dnas-integrity, dna-hash, zomes ? { }
+, meta }:
 
 let
   zomeSrcs = builtins.attrValues zomes;
@@ -23,7 +25,7 @@ let
     "	${json2yaml}/bin/json2yaml ${dnaManifestJson} $out\n"; # Recurse over the zomes, and add the correct bundled zome package by name
 
   # Debug package
-  debug = runCommandLocal manifest.name {
+  debug = runCommandNoCC "${manifest.name}-debug" {
     srcs = builtins.map (zome: zome.meta.debug) zomeSrcs;
   } ''
     	mkdir workdir
@@ -76,8 +78,8 @@ let
   else
     release;
 
-in runCommandLocal manifest.name {
-  meta = { inherit debug; };
+in runCommandNoCC manifest.name {
+  meta = meta // { inherit debug; };
   outputs = [ "out" "hash" ];
 } ''
   cp ${guardedRelease} $out

@@ -2,19 +2,16 @@
 
 {
   perSystem = { inputs', self', system, ... }: {
-    packages.my_zome = inputs.hc-infra.outputs.lib.rustZome {
+    packages.my_zome = inputs.hc-infra.outputs.builders.${system}.rustZome {
       workspacePath = inputs.self.outPath;
-      inherit system;
       crateCargoToml = ./Cargo.toml;
-      cargoArtifacts =
-        inputs.hc-infra.lib.zomeCargoArtifacts { inherit system; };
+      cargoArtifacts = inputs'.hc-infra.packages.zomeCargoArtifacts;
       # matchingZomeHash = inputs'.previousZomeVersion.packages.my_zome;
     };
 
-    checks.my_zome = inputs.hc-infra.outputs.lib.sweettest {
+    checks.my_zome = inputs.hc-infra.outputs.builders.${system}.sweettest {
       workspacePath = inputs.self.outPath;
-      inherit system;
-      dna = inputs.hc-infra.outputs.lib.dna {
+      dna = inputs.hc-infra.outputs.builders.${system}.dna {
         dnaManifest = builtins.toFile "dna.yaml" ''
           ---
           manifest_version: "1"
@@ -32,11 +29,9 @@
                 dylib: ~
         '';
         zomes = { my_zome = self'.packages.my_zome; };
-        inherit system;
       }.meta.debug;
       crateCargoToml = ./Cargo.toml;
-      cargoArtifacts =
-        inputs.hc-infra.lib.holochainCargoArtifacts { inherit system; };
+      cargoArtifacts = inputs'.hc-infra.packages.holochainCargoArtifacts;
     };
   };
 }

@@ -32,3 +32,6 @@ dialoguer = "0.11"
 colored = "2.1.0"
 
 holochain_types = { workspace = true }
+
+[dev-dependencies]
+pretty_assertions = "1.4.1"
