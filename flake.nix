@@ -1,4 +1,4 @@
-rec {
+{
   inputs = {
     nixpkgs.follows = "holonix/nixpkgs";
     pnpmnixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
