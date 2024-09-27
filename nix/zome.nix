@@ -97,9 +97,8 @@ let
 
     wasm = deterministicCraneLib.buildPackage
       (buildPackageCommonArgs // { inherit cargoArtifacts; });
-  in runCommandLocal "${crate}-deterministic" {
-    meta = { holochainPackageType = "zome"; };
-  } "	cp ${wasm}/lib/${crate}.wasm $out \n";
+  in runCommandLocal "${crate}-deterministic" { }
+  "	cp ${wasm}/lib/${crate}.wasm $out \n";
 
   debug = runCommandNoCC "${crate}-debug" { } ''
     cp ${wasm}/lib/${crate}.wasm $out 
