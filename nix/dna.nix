@@ -47,7 +47,7 @@ let
     	mv workdir/${manifest.name}.dna $out
   '';
 
-  release = runCommandLocal "${manifest.name}-release" { srcs = zomeSrcs; } ''
+  release = runCommandNoCC "${manifest.name}-release" { srcs = zomeSrcs; } ''
       mkdir workdir
       cp ${dnaManifestYaml} workdir/dna.yaml
 
@@ -67,7 +67,7 @@ let
   '';
 
   guardedRelease = if matchingIntegrityDna != null then
-    runCommandLocal "check-match-dna-${manifest.name}-integrity" {
+    runCommandNoCC "check-match-dna-${manifest.name}-integrity" {
       srcs = [ release matchingIntegrityDna ];
       buildInputs = [ compare-dnas-integrity ];
       outputs = [ "out" ];

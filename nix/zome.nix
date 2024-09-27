@@ -104,12 +104,12 @@ let
     cp ${wasm}/lib/${crate}.wasm $out 
   '';
 
-  release = runCommandLocal crate { buildInputs = [ binaryen ]; } ''
+  release = runCommandNoCC crate { buildInputs = [ binaryen ]; } ''
     wasm-opt --strip-debug -Oz -o $out ${deterministicWasm}
   '';
 
   guardedRelease = if matchingZomeHash != null then
-    runCommandLocal "check-zome-${crate}-hash" {
+    runCommandNoCC "check-zome-${crate}-hash" {
       srcs = [ release matchingZomeHash.meta.release ];
       buildInputs = [ zome-wasm-hash ];
     } ''
