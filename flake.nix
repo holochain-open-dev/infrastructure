@@ -1,4 +1,4 @@
-rec {
+{
   inputs = {
     nixpkgs.follows = "holonix/nixpkgs";
     pnpmnixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
@@ -43,7 +43,7 @@ rec {
             pkgs.darwin.apple_sdk.frameworks.AppKit
             pkgs.darwin.apple_sdk.frameworks.WebKit
             (if pkgs.system == "x86_64-darwin" then
-              (pkgs.darwin.apple_sdk_11_0.stdenv.mkDerivation {
+              (pkgs.stdenv.mkDerivation {
                 name = "go";
                 nativeBuildInputs = with pkgs; [ makeBinaryWrapper go ];
                 dontBuild = true;
