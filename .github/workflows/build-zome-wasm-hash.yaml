@@ -8,7 +8,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-cache:
+  build-zome-wasm-hash:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, macos-13]
