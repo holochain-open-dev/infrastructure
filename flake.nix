@@ -86,7 +86,9 @@
               deterministicCraneLib = let
                 rustToolchain =
                   inputs.holonix.outputs.packages."x86_64-linux".rust;
-              in (inputs.crane.mkLib pkgs).overrideToolchain rustToolchain;
+              in (inputs.crane.mkLib inputs.nixpkgs.outputs.legacyPackages.${
+                  "x86_64-linux"
+                }).overrideToolchain rustToolchain;
 
               craneLib = (inputs.crane.mkLib pkgs).overrideToolchain
                 inputs'.holonix.packages.rust;
