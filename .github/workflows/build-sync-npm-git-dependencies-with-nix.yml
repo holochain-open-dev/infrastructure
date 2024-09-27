@@ -11,7 +11,7 @@ jobs:
   build-sync-npm-git-dependencies-with-nix:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, macos-13]
 
     runs-on: ${{ matrix.os }}
 
