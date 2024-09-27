@@ -8,7 +8,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-cache:
+  build-scaffold-remote-zome:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, macos-13]
