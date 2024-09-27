@@ -20,6 +20,32 @@
       flake = {
         flakeModules.builders = ./nix/builders-option.nix;
         flakeModules.dependencies = ./nix/dependencies-option.nix;
+
+        lib = rec {
+          filterPnpmSources = { lib }:
+            orig_path: type:
+            let
+              path = (toString orig_path);
+              base = baseNameOf path;
+
+              matchesSuffix = lib.any (suffix: lib.hasSuffix suffix base) [
+                ".ts"
+                ".js"
+                ".json"
+                ".yaml"
+                ".html"
+              ];
+            in type == "directory" || matchesSuffix;
+          cleanPnpmDepsSource = { lib }:
+            src:
+            lib.cleanSourceWith {
+              src = lib.cleanSource src;
+              filter = filterPnpmSources { inherit lib; };
+
+              name = "pnpm-workspace";
+            };
+
+        };
       };
 
       imports = [
