@@ -125,8 +125,8 @@ export async function fakeCreateLinkAction(
 	link_type: number = 0,
 	tag: any = undefined,
 ): Promise<Action> {
-	if (base_address) base_address = await fakeActionHash();
-	if (target_address) target_address = await fakeActionHash();
+	if (!base_address) base_address = await fakeActionHash();
+	if (!target_address) target_address = await fakeActionHash();
 
 	return {
 		type: ActionType.CreateLink,
@@ -149,7 +149,7 @@ export async function fakeCreateLinkAction(
 export async function fakeDeleteLinkAction(
 	link_add_address?: ActionHash,
 ): Promise<Action> {
-	if (link_add_address) link_add_address = await fakeActionHash();
+	if (!link_add_address) link_add_address = await fakeActionHash();
 
 	return {
 		type: ActionType.DeleteLink,
