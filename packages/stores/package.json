@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "@alenaksu/json-viewer": "^2.0.1",
-    "@holochain-open-dev/utils": "^0.400.0-dev.1",
-    "@holochain/client": "^0.18.0-dev.8",
+    "@holochain-open-dev/utils": "^0.400.0-dev.3",
+    "@holochain/client": "^0.18.0-dev.13",
     "@scoped-elements/cytoscape": "^0.2.0",
     "@shoelace-style/shoelace": "^2.11.2",
     "lit": "^3.0.2",

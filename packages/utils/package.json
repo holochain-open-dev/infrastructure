@@ -23,7 +23,7 @@
     "publish": "npm run build && npm publish --tag dev"
   },
   "dependencies": {
-    "@holochain/client": "^0.18.0-dev.8",
+    "@holochain/client": "^0.18.0-dev.13",
     "@msgpack/msgpack": "^2.8.0",
     "blakejs": "^1.2.1",
     "emittery": "^1.0.1",
