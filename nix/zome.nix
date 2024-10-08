@@ -100,7 +100,7 @@ let
   in runCommandLocal "${crate}-deterministic" { }
   "	cp ${wasm}/lib/${crate}.wasm $out \n";
 
-  debug = runCommandNoCC "${crate}-debug" { } ''
+  debug = runCommandLocal "${crate}-debug" { } ''
     cp ${wasm}/lib/${crate}.wasm $out 
   '';
 

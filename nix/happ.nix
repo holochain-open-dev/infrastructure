@@ -19,7 +19,7 @@ let
   happManifestYaml = runCommandLocal "json-to-yaml" { }
     "	${json2yaml}/bin/json2yaml ${happManifestJson} $out\n";
 
-  debug = runCommandNoCC "${manifest.name}-debug" {
+  debug = runCommandLocal "${manifest.name}-debug" {
     srcs = builtins.map (dna: dna.meta.debug) dnaSrcs;
   } ''
       mkdir workdir

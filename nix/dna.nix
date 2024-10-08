@@ -25,7 +25,7 @@ let
     "	${json2yaml}/bin/json2yaml ${dnaManifestJson} $out\n"; # Recurse over the zomes, and add the correct bundled zome package by name
 
   # Debug package
-  debug = runCommandNoCC "${manifest.name}-debug" {
+  debug = runCommandLocal "${manifest.name}-debug" {
     srcs = builtins.map (zome: zome.meta.debug) zomeSrcs;
   } ''
     	mkdir workdir
