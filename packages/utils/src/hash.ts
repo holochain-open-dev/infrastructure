@@ -185,7 +185,7 @@ function sortActionKeys(action: Action): Action {
 				prev_action: action.prev_action,
 
 				deletes_address: action.deletes_address,
-				deletes_entry_address: action.deletes_address,
+				deletes_entry_address: action.deletes_entry_address,
 				weight: {
 					bucket_id: weight.bucket_id,
 					units: weight.units,
