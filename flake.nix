@@ -32,7 +32,9 @@
         # inputs.holonix.inputs.flake-parts.flakeModules.flakeModules
       ];
 
-      systems = builtins.attrNames inputs.holonix.devShells;
+      #systems = builtins.attrNames inputs.holonix.devShells;
+        systems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" ];
+
 
       perSystem = { inputs', self', config, pkgs, system, lib, ... }: rec {
         dependencies.holochain.buildInputs = (with pkgs; [ perl openssl ])
