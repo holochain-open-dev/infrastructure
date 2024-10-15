@@ -837,3 +837,108 @@ export function deletedLinksSignal<
 
 	return signal;
 }
+
+// Keeps an up to date list of the entries in the agent's source chain for the given entry type
+export function queryLiveEntriesSignal<
+	T,
+	S extends ActionCommittedSignal<any, any> & any,
+>(
+	client: ZomeClient<S>,
+	queryEntries: () => Promise<Array<EntryRecord<T>>>,
+	entry_type: string,
+	pollIntervalMs: number = 20_000,
+): AsyncSignal<Array<EntryRecord<T>>> {
+	let active = false;
+	let unsubs: () => void | undefined;
+	let queriedEntries: Array<EntryRecord<T>> | undefined;
+	const signal = new Signal.State<AsyncResult<Array<EntryRecord<T>>>>(
+		{ status: 'pending' },
+		{
+			[Signal.subtle.watched]: () => {
+				active = true;
+				const fetch = async () => {
+					if (!active) return;
+
+					const nQueriedEntries = await queryEntries().finally(() => {
+						if (active) {
+							setTimeout(() => fetch(), pollIntervalMs);
+						}
+					});
+					if (
+						queriedEntries === undefined ||
+						!areArrayHashesEqual(
+							queriedEntries.map(r => r.actionHash),
+							nQueriedEntries.map(r => r.actionHash),
+						)
+					) {
+						queriedEntries = nQueriedEntries;
+						signal.set({
+							status: 'completed',
+							value: queriedEntries,
+						});
+					}
+				};
+				fetch().catch(error => {
+					signal.set({
+						status: 'error',
+						error,
+					});
+				});
+				unsubs = client.onSignal(async originalSignal => {
+					if (!active) return;
+					if (!(originalSignal as ActionCommittedSignal<any, any>).type) return;
+					const hcSignal = originalSignal as ActionCommittedSignal<any, any>;
+
+					if (
+						hcSignal.type === 'EntryCreated' &&
+						hcSignal.app_entry.type === entry_type
+					) {
+						const newEntry = new EntryRecord<T>({
+							entry: {
+								Present: {
+									entry_type: 'App',
+									entry: encode(hcSignal.app_entry),
+								},
+							},
+							signed_action: hcSignal.action,
+						});
+						if (!queriedEntries) queriedEntries = [];
+						queriedEntries.push(newEntry);
+						signal.set({
+							status: 'completed',
+							value: queriedEntries,
+						});
+					} else if (hcSignal.type === 'EntryDeleted') {
+						if (
+							queriedEntries?.find(
+								e =>
+									e.actionHash.toString() ===
+									hcSignal.action.hashed.content.deletes_address.toString(),
+							)
+						) {
+							queriedEntries = queriedEntries.filter(
+								e =>
+									e.actionHash.toString() !==
+									hcSignal.action.hashed.content.deletes_address.toString(),
+							);
+							signal.set({
+								status: 'completed',
+								value: queriedEntries,
+							});
+						}
+					}
+				});
+			},
+			[Signal.subtle.unwatched]: () => {
+				signal.set({
+					status: 'pending',
+				});
+				active = false;
+				queriedEntries = undefined;
+				unsubs();
+			},
+		},
+	);
+
+	return signal;
+}
