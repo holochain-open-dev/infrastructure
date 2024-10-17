@@ -118,8 +118,8 @@ export function collectionSignal<
 							maybeSet(
 								(links || []).filter(
 									link =>
-										link.create_link_hash.toString() !==
-										signal.create_link_action.hashed.hash.toString(),
+										encodeHashToBase64(link.create_link_hash) !==
+										encodeHashToBase64(signal.create_link_action.hashed.hash),
 								),
 							);
 						}
@@ -252,8 +252,9 @@ export function latestVersionOfEntrySignal<
 						const nlatestVersion = await fetchLatestVersion();
 						if (nlatestVersion) {
 							if (
-								latestVersion?.actionHash.toString() !==
-								nlatestVersion?.actionHash.toString()
+								!latestVersion ||
+								encodeHashToBase64(latestVersion.actionHash) !==
+									encodeHashToBase64(nlatestVersion.actionHash)
 							) {
 								latestVersion = nlatestVersion;
 								signal.set({
@@ -287,8 +288,10 @@ export function latestVersionOfEntrySignal<
 					if (
 						hcSignal.type === 'EntryUpdated' &&
 						latestVersion &&
-						latestVersion.actionHash.toString() ===
-							hcSignal.action.hashed.content.original_action_address.toString()
+						encodeHashToBase64(latestVersion.actionHash) ===
+							encodeHashToBase64(
+								hcSignal.action.hashed.content.original_action_address,
+							)
 					) {
 						latestVersion = new EntryRecord({
 							entry: {
@@ -383,8 +386,10 @@ export function allRevisionsOfEntrySignal<
 						allRevisions &&
 						allRevisions.find(
 							revision =>
-								revision.actionHash.toString() ===
-								hcSignal.action.hashed.content.original_action_address.toString(),
+								encodeHashToBase64(revision.actionHash) ===
+								encodeHashToBase64(
+									hcSignal.action.hashed.content.original_action_address,
+								),
 						)
 					) {
 						const newRevision = new EntryRecord<T>({
@@ -481,8 +486,9 @@ export function deletesForEntrySignal<
 
 					if (
 						hcSignal.type === 'EntryDeleted' &&
-						hcSignal.action.hashed.content.deletes_address.toString() ===
-							originalActionHash.toString()
+						encodeHashToBase64(
+							hcSignal.action.hashed.content.deletes_address,
+						) === encodeHashToBase64(originalActionHash)
 					) {
 						const lastDeletes = deletes ? deletes : [];
 						deletes = uniquifyActions([...lastDeletes, hcSignal.action]);
@@ -540,7 +546,7 @@ function areArrayHashesEqual(
 	if (array1.length !== array2.length) return false;
 
 	for (let i = 0; i < array1.length; i += 1) {
-		if (array1[i].toString() !== array2[i].toString()) {
+		if (encodeHashToBase64(array1[i]) !== encodeHashToBase64(array2[i])) {
 			return false;
 		}
 	}
@@ -637,12 +643,15 @@ export function liveLinksSignal<
 					if (hcSignal.type === 'LinkCreated') {
 						if (
 							linkType === hcSignal.link_type &&
-							(hcSignal.action.hashed.content.base_address.toString() ===
-								innerBaseAddress.toString() ||
-								retype(
-									hcSignal.action.hashed.content.base_address,
-									HashType.AGENT,
-								).toString() === innerBaseAddress.toString())
+							(encodeHashToBase64(
+								hcSignal.action.hashed.content.base_address,
+							) === encodeHashToBase64(innerBaseAddress) ||
+								encodeHashToBase64(
+									retype(
+										hcSignal.action.hashed.content.base_address,
+										HashType.AGENT,
+									),
+								) === encodeHashToBase64(innerBaseAddress))
 						) {
 							const lastLinks = links ? links : [];
 							maybeSet([...lastLinks, createLinkToLink(hcSignal.action)]);
@@ -650,14 +659,15 @@ export function liveLinksSignal<
 					} else if (hcSignal.type === 'LinkDeleted') {
 						if (
 							linkType === hcSignal.link_type &&
-							hcSignal.create_link_action.hashed.content.base_address.toString() ===
-								innerBaseAddress.toString()
+							encodeHashToBase64(
+								hcSignal.create_link_action.hashed.content.base_address,
+							) === encodeHashToBase64(innerBaseAddress)
 						) {
 							maybeSet(
 								(links ? links : []).filter(
 									link =>
-										link.create_link_hash.toString() !==
-										hcSignal.create_link_action.hashed.hash.toString(),
+										encodeHashToBase64(link.create_link_hash) !==
+										encodeHashToBase64(hcSignal.create_link_action.hashed.hash),
 								),
 							);
 						}
@@ -792,22 +802,23 @@ export function deletedLinksSignal<
 					if (hcSignal.type === 'LinkDeleted') {
 						if (
 							linkType === hcSignal.link_type &&
-							hcSignal.create_link_action.hashed.content.base_address.toString() ===
-								innerBaseAddress.toString()
+							encodeHashToBase64(
+								hcSignal.create_link_action.hashed.content.base_address,
+							) === encodeHashToBase64(innerBaseAddress)
 						) {
 							const lastDeletedLinks = deletedLinks ? deletedLinks : [];
 							const alreadyDeletedTargetIndex = lastDeletedLinks.findIndex(
 								([cl]) =>
-									cl.hashed.hash.toString() ===
-									hcSignal.create_link_action.hashed.hash.toString(),
+									encodeHashToBase64(cl.hashed.hash) ===
+									encodeHashToBase64(hcSignal.create_link_action.hashed.hash),
 							);
 
 							if (alreadyDeletedTargetIndex !== -1) {
 								if (
 									!lastDeletedLinks[alreadyDeletedTargetIndex][1].find(
 										dl =>
-											dl.hashed.hash.toString() ===
-											hcSignal.action.hashed.hash.toString(),
+											encodeHashToBase64(dl.hashed.hash) ===
+											encodeHashToBase64(hcSignal.action.hashed.hash),
 									)
 								) {
 									const clone = cloneDeep(deletedLinks);
@@ -912,14 +923,18 @@ export function queryLiveEntriesSignal<
 						if (
 							queriedEntries?.find(
 								e =>
-									e.actionHash.toString() ===
-									hcSignal.action.hashed.content.deletes_address.toString(),
+									encodeHashToBase64(e.actionHash) ===
+									encodeHashToBase64(
+										hcSignal.action.hashed.content.deletes_address,
+									),
 							)
 						) {
 							queriedEntries = queriedEntries.filter(
 								e =>
-									e.actionHash.toString() !==
-									hcSignal.action.hashed.content.deletes_address.toString(),
+									encodeHashToBase64(e.actionHash) !==
+									encodeHashToBase64(
+										hcSignal.action.hashed.content.deletes_address,
+									),
 							);
 							signal.set({
 								status: 'completed',
