@@ -57,7 +57,7 @@
           ]);
         builders = {
           rustZome = { crateCargoToml, workspacePath, cargoArtifacts ? null
-            , matchingZomeHash ? null, meta ? { } }:
+            , matchingZomeHash ? null, meta ? { }, zomeEnvironmentVars ? { } }:
             let
               deterministicCraneLib = let
                 rustToolchain =
@@ -73,7 +73,7 @@
             in pkgs.callPackage ./nix/zome.nix {
               inherit deterministicCraneLib craneLib crateCargoToml
                 cargoArtifacts workspacePath matchingZomeHash zome-wasm-hash
-                meta;
+                meta zomeEnvironmentVars;
             };
           sweettest = { dna, workspacePath, crateCargoToml, buildInputs ? [ ]
             , nativeBuildInputs ? [ ], cargoArtifacts ? null }:

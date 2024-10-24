@@ -1,6 +1,6 @@
 { lib, workspacePath, cargoArtifacts, runCommandLocal, runCommandNoCC, binaryen
 , deterministicCraneLib, craneLib, crateCargoToml, matchingZomeHash ? null
-, zome-wasm-hash, meta }:
+, zome-wasm-hash, meta, zomeEnvironmentVars ? { } }:
 
 let
   cargoToml = builtins.fromTOML (builtins.readFile crateCargoToml);
@@ -79,7 +79,7 @@ let
     cargoExtraArgs = "";
   };
 
-  buildPackageCommonArgs = commonArgs // {
+  buildPackageCommonArgs = commonArgs // zomeEnvironmentVars // {
     pname = crate;
     version = cargoToml.package.version;
     cargoToml = crateCargoToml;
@@ -89,8 +89,10 @@ let
     (craneLib.callPackage ./buildDepsOnlyWithArtifacts.nix { })
     (commonArgs // { inherit cargoArtifacts; });
 
-  wasm = craneLib.buildPackage
-    (buildPackageCommonArgs // { cargoArtifacts = zomeCargoArtifacts; });
+  wasm = craneLib.buildPackage (buildPackageCommonArgs // {
+    cargoArtifacts = zomeCargoArtifacts;
+    pname = "${crate}-debug";
+  });
 
   deterministicWasm = let
     cargoArtifacts = deterministicCraneLib.buildDepsOnly (commonArgs // { });
