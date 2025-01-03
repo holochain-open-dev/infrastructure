@@ -19,7 +19,8 @@
     "build": "npm run lint && tsc --incremental",
     "build:watch": "tsc --watch --preserveWatchOutput",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "@holochain/client": "^0.18.0",
