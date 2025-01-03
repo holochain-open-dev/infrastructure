@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/utils",
-  "version": "0.400.0-rc.0",
+  "version": "0.400.0",
   "description": "Common utilities to build Holochain web applications",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
@@ -19,11 +19,10 @@
     "build": "npm run lint && tsc --incremental",
     "build:watch": "tsc --watch --preserveWatchOutput",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
-    "test": "vitest run",
-    "publish": "npm run build && npm publish --tag dev"
+    "test": "vitest run"
   },
   "dependencies": {
-    "@holochain/client": "0.18.0-rc.1",
+    "@holochain/client": "^0.18.0",
     "@msgpack/msgpack": "^2.8.0",
     "blakejs": "^1.2.1",
     "emittery": "^1.0.1",
