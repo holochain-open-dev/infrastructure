@@ -2,8 +2,6 @@ import {
   AgentPubKey,
   AppClient,
   AppEvents,
-  AppNetworkInfoRequest,
-  AppCreateCloneCellRequest,
   AppInfo,
   CallZomeRequest,
   CellId,
@@ -13,8 +11,11 @@ import {
   DisableCloneCellResponse,
   EnableCloneCellRequest,
   EnableCloneCellResponse,
-  NetworkInfoResponse,
   SignalCb,
+  CellType,
+  TransportStats,
+  DumpNetworkMetricsResponse,
+  CreateCloneCellRequest,
 } from "@holochain/client";
 import Emittery, { UnsubscribeFunction } from "emittery";
 
@@ -43,15 +44,33 @@ export class ZomeMock implements AppClient {
     ];
   }
 
+  async dumpNetworkStats() {
+    const stats:TransportStats = {
+      backend: "",
+      peer_urls: [],
+      connections: []
+
+    }
+    return stats
+  }
+
+  async dumpNetworkMetrics() {
+    const metrics: DumpNetworkMetricsResponse = {
+
+    }
+    return metrics
+  }
   async appInfo(): Promise<AppInfo> {
     return {
       agent_pub_key: this.myPubKey,
       installed_app_id: "test-app",
+      installed_at: (new Date).getTime(),
       status: "running",
       cell_info: {
         [this.roleName]: [
           {
-            provisioned: {
+            type: CellType.Provisioned,
+            value: {
               cell_id: this.cellId,
               name: this.roleName,
               dna_modifiers: {
@@ -70,7 +89,7 @@ export class ZomeMock implements AppClient {
     };
   }
 
-  createCloneCell(_args: AppCreateCloneCellRequest): Promise<ClonedCell> {
+  createCloneCell(_args: CreateCloneCellRequest): Promise<ClonedCell> {
     throw new Error("Method not implemented.");
   }
 
@@ -83,10 +102,6 @@ export class ZomeMock implements AppClient {
   disableCloneCell(
     _args: DisableCloneCellRequest
   ): Promise<DisableCloneCellResponse> {
-    throw new Error("Method not implemented");
-  }
-
-  networkInfo(_args: AppNetworkInfoRequest): Promise<NetworkInfoResponse> {
     throw new Error("Method not implemented");
   }
 

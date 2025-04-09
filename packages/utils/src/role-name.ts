@@ -1,4 +1,4 @@
-import { AppInfo, CellType, RoleName } from "@holochain/client";
+import { AppInfo, CellType, ClonedCell, RoleName } from "@holochain/client";
 
 // From https://github.com/holochain/holochain-client-js/blob/main/src/api/common.ts#L92
 export const CLONE_ID_DELIMITER = ".";
@@ -28,22 +28,22 @@ export function getCellIdFromRoleName(roleName: RoleName, appInfo: AppInfo) {
       throw new Error(`No cell found with role_name ${roleName}`);
     }
     const cloneCell = appInfo.cell_info[baseRoleName].find(
-      (c) => CellType.Cloned in c && c[CellType.Cloned].clone_id === roleName
+      (c) => c.type == CellType.Cloned && c.value.clone_id === roleName
     );
-    if (!cloneCell || !(CellType.Cloned in cloneCell)) {
+    if (!cloneCell || !(cloneCell.type == CellType.Cloned)) {
       throw new Error(`No clone cell found with clone id ${roleName}`);
     }
-    return cloneCell[CellType.Cloned].cell_id;
+    return cloneCell.value.cell_id;
   }
 
   if (!(roleName in appInfo.cell_info)) {
     throw new Error(`No cell found with role_name ${roleName}`);
   }
   const cell = appInfo.cell_info[roleName].find(
-    (c) => CellType.Provisioned in c
+    (c) => c.type == CellType.Provisioned
   );
-  if (!cell || !(CellType.Provisioned in cell)) {
+  if (!cell || !(cell.type == CellType.Provisioned)) {
     throw new Error(`No provisioned cell found with role_name ${roleName}`);
   }
-  return cell[CellType.Provisioned].cell_id;
+  return cell.value.cell_id;
 }
