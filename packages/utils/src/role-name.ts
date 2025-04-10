@@ -28,9 +28,9 @@ export function getCellIdFromRoleName(roleName: RoleName, appInfo: AppInfo) {
       throw new Error(`No cell found with role_name ${roleName}`);
     }
     const cloneCell = appInfo.cell_info[baseRoleName].find(
-      (c) => c.type == CellType.Cloned && c.value.clone_id === roleName
+      (c) => c.type === CellType.Cloned && c.value.clone_id === roleName
     );
-    if (!cloneCell || !(cloneCell.type == CellType.Cloned)) {
+    if (!cloneCell || !(cloneCell.type === CellType.Cloned)) {
       throw new Error(`No clone cell found with clone id ${roleName}`);
     }
     return cloneCell.value.cell_id;
@@ -40,9 +40,9 @@ export function getCellIdFromRoleName(roleName: RoleName, appInfo: AppInfo) {
     throw new Error(`No cell found with role_name ${roleName}`);
   }
   const cell = appInfo.cell_info[roleName].find(
-    (c) => c.type == CellType.Provisioned
+    (c) => c.type === CellType.Provisioned
   );
-  if (!cell || !(cell.type == CellType.Provisioned)) {
+  if (!cell || !(cell.type === CellType.Provisioned)) {
     throw new Error(`No provisioned cell found with role_name ${roleName}`);
   }
   return cell.value.cell_id;

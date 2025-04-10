@@ -14,7 +14,7 @@ export class ZomeClient<SIGNAL_PAYLOAD> {
   ): UnsubscribeFunction {
     return this.client.on("signal", async (signal) => {
       if (
-        signal.type == "app" &&
+        signal.type === "app" &&
         (await isSignalFromCellWithRole(this.client, this.roleName, signal.value)) &&
         this.zomeName === signal.value.zome_name
       ) {

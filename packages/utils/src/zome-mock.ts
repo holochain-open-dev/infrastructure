@@ -45,26 +45,24 @@ export class ZomeMock implements AppClient {
   }
 
   async dumpNetworkStats() {
-    const stats:TransportStats = {
+    const stats: TransportStats = {
       backend: "",
       peer_urls: [],
-      connections: []
-
-    }
-    return stats
+      connections: [],
+    };
+    return stats;
   }
 
   async dumpNetworkMetrics() {
-    const metrics: DumpNetworkMetricsResponse = {
-
-    }
-    return metrics
+    const metrics: DumpNetworkMetricsResponse = {};
+    return metrics;
   }
+
   async appInfo(): Promise<AppInfo> {
     return {
       agent_pub_key: this.myPubKey,
       installed_app_id: "test-app",
-      installed_at: (new Date).getTime(),
+      installed_at: new Date().getTime(),
       status: "running",
       cell_info: {
         [this.roleName]: [

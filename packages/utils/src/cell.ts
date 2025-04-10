@@ -14,11 +14,11 @@ export function roleNameForCellId(
 ): RoleName | undefined {
   for (const [role, cells] of Object.entries(appInfo.cell_info)) {
     for (const c of cells) {
-      if (c.type == CellType.Provisioned) {
+      if (c.type === CellType.Provisioned) {
         if (c.value.cell_id.toString() === cellId.toString()) {
           return role;
         }
-      } else if (c.type == CellType.Cloned) {
+      } else if (c.type === CellType.Cloned) {
         if (c.value.cell_id.toString() === cellId.toString()) {
           return c[CellType.Cloned].clone_id;
         }

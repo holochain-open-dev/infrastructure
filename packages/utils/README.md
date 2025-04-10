@@ -2,9 +2,9 @@
 
 Utilities to build Holochain web applications.
 
-## HoloHashMap 
+## HoloHashMap
 
-Map of `HoloHash` to any JS object. 
+Map of `HoloHash` to any JS object.
 
 We can't really use well normal JS objects to index by holo hashes because we lose the ability to compare hashes together. Namely, in JS `console.log(new Uint8Array([1]) == new Uint8Array([1]))` prints `false`.
 
@@ -44,7 +44,7 @@ Some variants exist for this type:
 
 ### LazyHoloHashMap
 
-This is an special kind of map, where there is no `set` function, only `get`. 
+This is an special kind of map, where there is no `set` function, only `get`.
 
 Instead, a callback function is passed as the constructor. Then, whenever `get` is called, if it's the first time that the given hash is requested, it will call the callback and initialize the value of the hash with its result. If that hash was already initialized, it will just return that value.
 
@@ -75,19 +75,19 @@ import { EntryRecord } from '@holochain-open-dev/utils';
 
 // Imagine a zome function that returns a record,
 // but we know its entry type
-const record: Record = await callZome(...);             
+const record: Record = await callZome(...);
 
 // Then we can type it
-const profileRecord = new EntryRecord<Profile>(record); 
+const profileRecord = new EntryRecord<Profile>(record);
 
 // Access its entry easily
-const profile: Profile = profileRecord.entry;           
+const profile: Profile = profileRecord.entry;
 
 // Access its action easily, timestamp will be in milliseconds
-const action: Action = profileRecord.action;            
+const action: Action = profileRecord.action;
 
 // Access its entry hash easily
-const entryHash: EntryHash = profileRecord.entryHash;   
+const entryHash: EntryHash = profileRecord.entryHash;
 
 // Access its action hash easily
 const actionHash: ActionHash = profileRecord.actionHash;
@@ -103,13 +103,13 @@ import { RecordBag } from '@holochain-open-dev/utils';
 
 // Imagine a zome function that returns a list of records,
 // but we know their entry type
-const records: Record[] = await callZome(...);          
+const records: Record[] = await callZome(...);
 
 // Then we can type it
 const profiles = new RecordBag<Profile>(records);
 
 // Map of entry hash -> entry
-const profileEntries: EntryHashMap<Profile> = profiles.entryMap; 
+const profileEntries: EntryHashMap<Profile> = profiles.entryMap;
 
 // Map of action hash -> action
 // Timestamps are in milliseconds
@@ -122,6 +122,6 @@ const entryActions: EntryHashMap<ActionHash[]> = profiles.entryActions;
 const authorMap: AgentPubKeyMap<ActionHash[]> = profiles.authorMap;
 
 // Get the array of all records
-const profileEntries: Array<EntryRecord<Profile>> = profiles.entryRecords; 
+const profileEntries: Array<EntryRecord<Profile>> = profiles.entryRecords;
 ```
 
