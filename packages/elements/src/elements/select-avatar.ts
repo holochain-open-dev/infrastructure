@@ -64,18 +64,17 @@ export class SelectAvatar extends LitElement implements FormField {
         img.onload = () => {
           this.value = resizeAndExport(img);
           this._avatarFilePicker.value = "";
+          this.dispatchEvent(
+            new CustomEvent("avatar-selected", {
+              composed: true,
+              bubbles: true,
+              detail: {
+                avatar: this.value,
+              },
+            })
+          );
         };
         img.src = e.target?.result as string;
-
-        this.dispatchEvent(
-          new CustomEvent("avatar-selected", {
-            composed: true,
-            bubbles: true,
-            detail: {
-              avatar: img.src,
-            },
-          })
-        );
       };
       reader.readAsDataURL(this._avatarFilePicker.files[0]);
     }
