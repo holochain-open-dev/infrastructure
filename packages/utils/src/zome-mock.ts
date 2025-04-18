@@ -63,7 +63,7 @@ export class ZomeMock implements AppClient {
       agent_pub_key: this.myPubKey,
       installed_app_id: "test-app",
       installed_at: new Date().getTime(),
-      status: "running",
+      status: { type: "running" },
       cell_info: {
         [this.roleName]: [
           {
@@ -73,12 +73,7 @@ export class ZomeMock implements AppClient {
               name: this.roleName,
               dna_modifiers: {
                 network_seed: "",
-                origin_time: Date.now(),
                 properties: undefined,
-                quantum_time: {
-                  secs: Date.now() / 1000,
-                  nanos: 0,
-                },
               },
             },
           },

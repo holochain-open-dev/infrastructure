@@ -1,6 +1,6 @@
 {
 	"name": "@holochain-open-dev/signals",
-	"version": "0.400.0",
+	"version": "0.500.0-rc.0",
 	"description": "Holochain async-signals to build reusable holochain-open-dev modules",
 	"author": "guillem.cordoba@gmail.com",
 	"main": "dist/index.js",
@@ -19,8 +19,8 @@
 		"prepublish": "npm run build"
 	},
 	"dependencies": {
-		"@holochain-open-dev/utils": "^0.400.0",
-    "@holochain/client": "^0.18.0",
+		"@holochain-open-dev/utils": "^0.500.0-rc.3",
+    "@holochain/client": "^0.19.0-rc.1",
     "@shoelace-style/shoelace": "^2.19.1",
 		"async-signals": "^0.1.7",
 		"lit-signal-watcher": "^0.1.0",
