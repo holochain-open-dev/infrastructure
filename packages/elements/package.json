@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@holo-host/identicon": "^0.1.0",
-    "@holochain/client": "^0.19.0-rc.1",
+    "@holochain/client": "^0.19.0",
     "@lit/localize": "^0.12.0",
     "@mdi/js": "^7.1.96",
     "@shoelace-style/shoelace": "^2.19.1",

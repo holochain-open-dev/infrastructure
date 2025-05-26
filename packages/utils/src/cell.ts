@@ -20,7 +20,7 @@ export function roleNameForCellId(
         }
       } else if (c.type === CellType.Cloned) {
         if (c.value.cell_id.toString() === cellId.toString()) {
-          return c[CellType.Cloned].clone_id;
+          return c.value.clone_id;
         }
       }
     }
