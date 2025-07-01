@@ -82,6 +82,9 @@ export function lazyLoad<T>(load: () => Promise<T>): AsyncReadable<T> {
  * The value of the store will be replaced with the polling result, only if the polling is successful and the new value is different from the old one.
  * If the polling throws an error, that error is discarded.
  *
+ * Optionally, a firstLoad callback can be passed as an argument which is used for the first polling cycle. This is useful
+ * for example if the first polling cycle should fetch data locally and only subsequent polls should go to the network.
+ *
  * ```ts
  * import { lazyLoadAndPoll } from '@holochain-open-dev/stores';
  *
@@ -92,23 +95,36 @@ export function lazyLoad<T>(load: () => Promise<T>): AsyncReadable<T> {
  */
 export function lazyLoadAndPoll<T>(
   load: () => Promise<T>,
-  pollIntervalMs: number
+  pollIntervalMs: number,
+  firstLoad?: () => Promise<T>
 ): AsyncReadable<T> {
   return readable<AsyncStatus<T>>({ status: "pending" }, (set) => {
     let interval;
     let currentValue;
-    let firstLoad = true;
-    async function l() {
-      const v = await load();
-      if (firstLoad || !isEqual(v, currentValue)) {
-        currentValue = v;
-        firstLoad = false;
-        set({ status: "complete", value: v });
+    let isFirstLoad = true;
+    async function loadInner() {
+      let value;
+      if (isFirstLoad && !!firstLoad) {
+        value = await firstLoad();
+      } else {
+        value = await load();
+      }
+      if (isFirstLoad || !isEqual(value, currentValue)) {
+        currentValue = value;
+        isFirstLoad = false;
+        set({ status: "complete", value });
       }
     }
-    l()
+    loadInner()
       .then(() => {
-        interval = setInterval(() => l().catch(() => {}), pollIntervalMs);
+        interval = setInterval(
+          () =>
+            loadInner().catch((e) => {
+              // eslint-disable-next-line no-console
+              console.warn("lazyLoadAndPoll failed to poll: ", e);
+            }),
+          pollIntervalMs
+        );
       })
       .catch((e) => {
         set({ status: "error", error: e });
