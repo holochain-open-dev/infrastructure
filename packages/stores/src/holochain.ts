@@ -453,7 +453,8 @@ export function liveLinksStore<
   baseAddress: BASE,
   fetchLinks: () => Promise<Array<Link>>,
   linkType: LinkTypeForSignal<S>,
-  pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS
+  firstFetchLinks?: () => Promise<Array<Link>>,
+  pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS,
 ): AsyncReadable<Array<Link>> {
   let innerBaseAddress = baseAddress;
   if (getHashType(innerBaseAddress) === HashType.AGENT) {
@@ -462,6 +463,7 @@ export function liveLinksStore<
   return asyncReadable(async (set) => {
     let links: Link[];
     let active = true;
+    let isFirstFetch = firstFetchLinks !== undefined;
 
     const maybeSet = (newLinksValue: Link[]) => {
       if (!active) return;
@@ -482,7 +484,12 @@ export function liveLinksStore<
     };
     const fetch = async () => {
       if (!active) return;
-      const nlinks = await fetchLinks().finally(() => {
+      let fetchFn = fetchLinks
+      if (isFirstFetch) {
+        isFirstFetch = false
+        fetchFn = firstFetchLinks
+      }
+      const nlinks = await fetchFn().finally(() => {
         if (active) {
           setTimeout(() => fetch(), pollIntervalMs);
         }
