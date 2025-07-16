@@ -55,9 +55,9 @@ test("liveLinks only updates once if no new links exist", async () => {
   await new Promise(async (resolve, reject) => {
     unsubs = store.subscribe((value) => {
       if (value.status === "complete") {
-        numUpdated++;
+        numUpdated += 1;
 
-        if (numUpdated > 1) reject("Multiple updates");
+        if (numUpdated > 1) reject(new Error("Multiple updates"));
       }
     });
 
@@ -72,10 +72,10 @@ test("liveLinks only updates once if no new links exist", async () => {
   await new Promise(async (resolve, reject) => {
     store.subscribe((value) => {
       if (value.status === "complete") {
-        numUpdated2++;
+        numUpdated2 += 1;
         // console.log(value.value);
 
-        if (numUpdated2 > 1) reject("Multiple updates");
+        if (numUpdated2 > 1) reject(new Error("Multiple updates"));
       } else if (value.status === "error") reject(value.error);
     });
 
@@ -169,7 +169,7 @@ test("latestVersionOfEntry store works", async () => {
 });
 
 test("allRevisionsOfEntryStore works", async () => {
-  let record = await fakeRecord(
+  const record = await fakeRecord(
     await fakeCreateAction(),
     fakeEntry({ some: "entry" })
   );
@@ -251,6 +251,32 @@ test("liveLinksStore works", async () => {
   assert.equal(latestLinks.length, 2);
 });
 
+test("liveLinksStore with firstLinkFetch works", async () => {
+  const localLink = await fakeLink();
+  const links = [localLink, await fakeLink(), await fakeLink()];
+  const linksLocal = [localLink];
+  const linksStore = liveLinksStore(
+    new ZomeClient(new ZomeMock("", "")),
+    await fakeActionHash(),
+    async () => links,
+    "",
+    100,
+    async () => linksLocal,
+  );
+
+  linksStore.subscribe(() => { });
+
+  let latestLinks = await toPromise(linksStore);
+
+  assert.equal(latestLinks.length, 1);
+
+  await sleep(110);
+
+  latestLinks = await toPromise(linksStore);
+
+  assert.equal(latestLinks.length, 3);
+});
+
 test("deleteLinksStore works", async () => {
   const deletedLinks = [
     [
@@ -285,10 +311,10 @@ test("deleteLinksStore works", async () => {
 });
 
 test("immutableEntryStore caches its results", async () => {
-  let entry = fakeRecord(fakeCreateAction());
+  const entry = fakeRecord(fakeCreateAction());
   let requests = 0;
   const store = immutableEntryStore(async () => {
-    requests++;
+    requests += 1;
     return entry;
   });
 
