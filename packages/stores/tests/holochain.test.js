@@ -233,7 +233,6 @@ test("liveLinksStore works", async () => {
     await fakeActionHash(),
     async () => links,
     "",
-    undefined,
     100
   );
 
@@ -261,8 +260,8 @@ test("liveLinksStore with firstLinkFetch works", async () => {
     await fakeActionHash(),
     async () => links,
     "",
+    100,
     async () => linksLocal,
-    100
   );
 
   linksStore.subscribe(() => { });

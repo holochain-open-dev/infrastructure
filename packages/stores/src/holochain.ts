@@ -453,8 +453,8 @@ export function liveLinksStore<
   baseAddress: BASE,
   fetchLinks: () => Promise<Array<Link>>,
   linkType: LinkTypeForSignal<S>,
-  firstFetchLinks?: () => Promise<Array<Link>>,
   pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS,
+  firstFetchLinks: () => Promise<Array<Link>> = undefined,
 ): AsyncReadable<Array<Link>> {
   let innerBaseAddress = baseAddress;
   if (getHashType(innerBaseAddress) === HashType.AGENT) {
