@@ -484,12 +484,12 @@ export function liveLinksStore<
     };
     const fetch = async () => {
       if (!active) return;
-      let fetchFn = fetchLinks
       if (isFirstFetch) {
         isFirstFetch = false
-        fetchFn = firstFetchLinks
+        const firstLinks = await firstFetchLinks();
+        maybeSet(firstLinks);
       }
-      const nlinks = await fetchFn().finally(() => {
+      const nlinks = await fetchLinks().finally(() => {
         if (active) {
           setTimeout(() => fetch(), pollIntervalMs);
         }
