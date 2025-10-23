@@ -1,16 +1,8 @@
-import { HoloHashed } from '@holochain/client';
+import { HoloHashed, DnaDefinition } from '@holochain/client';
 
 export interface DnaFile {
-  dna: HoloHashed<DnaDef>;
+  dna: HoloHashed<DnaDefinition>;
   code: Array<WasmCode>;
 }
 
-export interface DnaDef {
-  name: string;
-  network_seed: string;
-  properties: Uint8Array;
-  zomes: Zomes;
-}
-
-export type Zomes = Array<[string, { wasm_hash: Array<Uint8Array> }]>;
 export type WasmCode = [Uint8Array, { code: Array<number> }];
