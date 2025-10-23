@@ -13,10 +13,6 @@
     "build": "npm run lint && tsc",
     "prepublish": "npm run build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/holochain-open-dev/core-types.git"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -45,7 +41,7 @@
     "arrowParens": "avoid"
   },
   "bugs": {
-    "url": "https://github.com/holochain-open-dev/core-types/issues"
+    "url": "https://github.com/holochain-open-dev/infrastructure/issues"
   },
-  "homepage": "https://github.com/holochain-open-dev/core-types#readme"
+  "homepage": "https://github.com/holochain-open-dev/infrastructure/tree/main/packages/core-types#readme"
 }
