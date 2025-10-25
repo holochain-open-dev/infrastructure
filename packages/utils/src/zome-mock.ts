@@ -63,7 +63,7 @@ export class ZomeMock implements AppClient {
       agent_pub_key: this.myPubKey,
       installed_app_id: "test-app",
       installed_at: new Date().getTime(),
-      status: { type: "running" },
+      status: { type: "enabled" },
       cell_info: {
         [this.roleName]: [
           {
