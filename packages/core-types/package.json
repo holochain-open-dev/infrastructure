@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@holochain/client": "^0.20.0"
+    "@holochain/client": "^0.20.1"
   },
   "devDependencies": {
     "@types/libsodium-wrappers": "^0.7.10",
