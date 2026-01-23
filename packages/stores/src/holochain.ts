@@ -3,7 +3,6 @@ import {
   EntryRecord,
   getHashType,
   HashType,
-  HoloHashMap,
   LinkTypeForSignal,
   retype,
   ZomeClient,
@@ -17,6 +16,7 @@ import {
   DeleteLink,
   encodeHashToBase64,
   HoloHash,
+  HoloHashMap,
   SignedActionHashed,
   Link,
 } from "@holochain/client";

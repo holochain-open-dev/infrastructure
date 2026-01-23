@@ -1,16 +1,10 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "esnext",
-    "target": "es2020",
-    "sourceMap": true,
     "baseUrl": "src",
-    "declaration": true,
     "declarationDir": "dist",
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "incremental": true,
     "outDir": "dist",
-    "allowSyntheticDefaultImports": true
+    "rootDir": "./src"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules/**/*", "dist", "tests"]

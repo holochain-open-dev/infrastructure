@@ -1,11 +1,15 @@
-import { HoloHash } from "@holochain/client";
-import { GetonlyMap, HoloHashMap, LazyHoloHashMap } from "./holo-hash-map.js";
+import { HoloHash, HoloHashMap, LazyHoloHashMap } from "@holochain/client";
+
+// Subset of ReadonlyMap, with only the get function
+export interface GetonlyMap<K, V> {
+    get(key: K): V;
+}
 
 // Create a new slice of this map that contains only the given keys
 export function slice<K extends HoloHash, V>(
   map: GetonlyMap<K, V>,
   keys: K[]
-): ReadonlyMap<K, V> {
+): HoloHashMap<K, V> {
   const newMap = new HoloHashMap<K, V>();
 
   for (const key of keys) {
@@ -16,9 +20,9 @@ export function slice<K extends HoloHash, V>(
 
 // Create a new map with only the keys that pass the given filter function
 export function pick<K extends HoloHash, V>(
-  map: ReadonlyMap<K, V>,
+  map: HoloHashMap<K, V>,
   filter: (key: K) => boolean
-): ReadonlyMap<K, V> {
+): HoloHashMap<K, V> {
   const values = pickBy(map, (_v, k) => filter(k));
 
   return new HoloHashMap(
@@ -28,7 +32,7 @@ export function pick<K extends HoloHash, V>(
 
 // Create a new map with only the key-value pairs that pass the given filter function
 export function pickBy<K extends HoloHash, V>(
-  map: ReadonlyMap<K, V>,
+  map: HoloHashMap<K, V>,
   filter: (value: V, key: K) => boolean
 ): HoloHashMap<K, V> {
   const entries = Array.from(map.entries()).filter(([key, value]) =>
@@ -40,7 +44,7 @@ export function pickBy<K extends HoloHash, V>(
 
 // Create a new map maintaining the keys while mapping the values with the given mapping function
 export function mapValues<K extends HoloHash, V, U>(
-  map: ReadonlyMap<K, V>,
+  map: HoloHashMap<K, V>,
   mappingFn: (value: V, key: K) => U
 ): HoloHashMap<K, U> {
   const mappedMap = new HoloHashMap<K, U>();

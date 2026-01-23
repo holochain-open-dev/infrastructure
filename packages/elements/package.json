@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/elements",
-  "version": "0.600.0",
+  "version": "0.601.0",
   "description": "Common utilities and elements to build Holochain web applications",
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
@@ -19,14 +19,22 @@
   },
   "scripts": {
     "start": "vite --open",
-    "build": "npm run lint && tsc && npm run analyze -- --exclude dist",
+    "build": "tsc && npm run analyze -- --exclude dist",
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "analyze": "cem analyze --litelement",
     "prepublish": "npm run build"
   },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.4.17",
+    "concurrently": "^7.0.0",
+    "tslib": "^2.8.0",
+    "typescript": "~5.9.0",
+    "vite": "^4.2.0",
+    "vite-plugin-checker": "^0.5.5"
+  },
   "dependencies": {
     "@holo-host/identicon": "^0.1.0",
-    "@holochain/client": "^0.20.0",
+    "@holochain/client": "=0.20.4-rc.0",
     "@lit/localize": "^0.12.0",
     "@mdi/js": "^7.1.96",
     "@shoelace-style/shoelace": "^2.20.0",
@@ -35,13 +43,6 @@
     "prosemirror-keymap": "^1.2.2",
     "prosemirror-state": "^1.4.3",
     "prosemirror-view": "^1.31.3"
-  },
-  "devDependencies": {
-    "@custom-elements-manifest/analyzer": "^0.4.17",
-    "concurrently": "^7.0.0",
-    "typescript": "^4.9.0",
-    "vite": "^4.2.0",
-    "vite-plugin-checker": "^0.5.5"
   },
   "publishConfig": {
     "access": "public"

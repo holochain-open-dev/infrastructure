@@ -4,7 +4,6 @@ export * from "./entry.js";
 export * from "./action-committed-signal.js";
 export * from "./zome-client.js";
 export * from "./zome-mock.js";
-export * from "./holo-hash-map.js";
 export * from "./map-utils.js";
 export * from "./timestamp.js";
 export * from "./record-bag.js";

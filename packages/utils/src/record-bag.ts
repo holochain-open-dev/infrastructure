@@ -5,15 +5,13 @@ import {
   NewEntryAction,
   Record,
   Update,
+  ActionHashMap,
+  AgentPubKeyMap,
+  EntryHashMap,
 } from "@holochain/client";
 import uniqWith from "lodash-es/uniqWith.js";
 import isEqual from "lodash-es/isEqual.js";
 
-import {
-  ActionHashMap,
-  AgentPubKeyMap,
-  EntryHashMap,
-} from "./holo-hash-map.js";
 import { EntryRecord } from "./entry-record.js";
 import { mapValues } from "./map-utils.js";
 

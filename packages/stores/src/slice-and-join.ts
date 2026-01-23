@@ -1,5 +1,5 @@
-import { GetonlyMap, HoloHashMap, slice } from "@holochain-open-dev/utils";
-import { HoloHash } from "@holochain/client";
+import { GetonlyMap, slice } from "@holochain-open-dev/utils";
+import { HoloHash, HoloHashMap } from "@holochain/client";
 import { joinAsyncMap } from "./join-map.js";
 import { AsyncReadable } from "./async-readable.js";
 import { JoinAsyncOptions } from "./async-derived.js";
@@ -12,7 +12,7 @@ export function sliceAndJoin<H extends HoloHash, T>(
   map: GetonlyMap<H, AsyncReadable<Option<T>>>,
   hashes: Array<H>,
   joinOptions?: JoinAsyncOptions
-): AsyncReadable<ReadonlyMap<H, T>> {
+): AsyncReadable<HoloHashMap<H, T>> {
   const s = slice(map, hashes);
 
   const hs = new HoloHashMap(

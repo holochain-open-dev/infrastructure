@@ -1093,7 +1093,7 @@
               "kind": "field",
               "name": "autocorrect",
               "type": {
-                "text": "string"
+                "text": "boolean"
               },
               "description": "Indicates whether the browser's autocorrect feature is on or off."
             },

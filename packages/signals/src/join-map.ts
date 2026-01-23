@@ -1,5 +1,4 @@
-import { HoloHashMap } from '@holochain-open-dev/utils';
-import { HoloHash } from '@holochain/client';
+import { HoloHash, HoloHashMap } from '@holochain/client';
 import { AsyncResult, JoinAsyncOptions, joinAsync } from 'async-signals';
 
 type AsyncResultValue<T> = T extends AsyncResult<infer U> ? U : never;
@@ -8,9 +7,9 @@ type AsyncResultValue<T> = T extends AsyncResult<infer U> ? U : never;
  * Joins all the results in a HoloHashMap of `AsyncSignals`
  */
 export function joinAsyncMap<K extends HoloHash, V extends AsyncResult<any>>(
-	map: ReadonlyMap<K, V>,
+	map: HoloHashMap<K, V>,
 	joinOptions?: JoinAsyncOptions,
-): AsyncResult<ReadonlyMap<K, AsyncResultValue<V>>> {
+): AsyncResult<HoloHashMap<K, AsyncResultValue<V>>> {
 	const resultsArray = Array.from(map.entries()).map(([key, result]) => {
 		if (result.status !== 'completed') return result;
 		const value = [key, result.value] as [K, AsyncResultValue<V>];
@@ -27,5 +26,5 @@ export function joinAsyncMap<K extends HoloHash, V extends AsyncResult<any>>(
 	return {
 		status: 'completed',
 		value,
-	} as AsyncResult<ReadonlyMap<K, AsyncResultValue<V>>>;
+	} as AsyncResult<HoloHashMap<K, AsyncResultValue<V>>>;
 }
