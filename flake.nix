@@ -18,7 +18,7 @@
         inputsFrom = [ inputs'.holonix.devShells.default ];
 
         packages = (with pkgs; [
-          nodejs_20
+          nodejs_22
           binaryen
           # more packages go here
           cargo-nextest
