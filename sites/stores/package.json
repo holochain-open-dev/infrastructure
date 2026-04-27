@@ -18,7 +18,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
     "deepmerge": "^4.2.2",
-    "rimraf": "^3.0.2",
-    "vite": "^4.4.9"
+    "rimraf": "^5.0.10",
+    "vite": "^6.4.2"
   }
 }

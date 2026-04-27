@@ -3,7 +3,8 @@ import { vitePlugins } from "@mythosthesia/reveal-course-preset/vite-plugins.js"
 
 export default defineConfig({
   optimizeDeps: {
-    disabled: true,
+    noDiscovery: true,
+    include: undefined,
   },
   base: "/common/stores",
   plugins: vitePlugins,
