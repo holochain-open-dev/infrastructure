@@ -20,7 +20,6 @@
   "scripts": {
     "start": "vite --open",
     "build": "tsc && npm run analyze -- --exclude dist",
-    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "analyze": "cem analyze --litelement",
     "prepublish": "npm run build"
   },

@@ -4,7 +4,6 @@ import {
   EntryHash,
   HoloHash,
 } from "@holochain/client";
-// @ts-ignore
 import blake from "blakejs";
 import { encode } from "@msgpack/msgpack";
 import { Base64 } from "js-base64";

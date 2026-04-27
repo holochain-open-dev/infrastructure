@@ -9,5 +9,5 @@ npm i @holochain-open-dev/core-types
 ## Usage
 
 ```ts
-import type { DhtOpHashB64 } from '@holochain-open-dev/core-types';
+import type { DhtOpHashB64 } from "@holochain-open-dev/core-types";
 ```

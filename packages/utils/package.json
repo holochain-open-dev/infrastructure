@@ -6,7 +6,9 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/holochain-open-dev/common.git"
@@ -18,7 +20,6 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch --preserveWatchOutput",
-    "lint": "eslint --ext .ts,.html . --ignore-path .gitignore",
     "test": "vitest run",
     "prepublish": "npm run build"
   },

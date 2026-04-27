@@ -2,11 +2,12 @@ import { Readable } from "svelte/store";
 import { derived } from "./derived.js";
 import { AsyncReadable, AsyncStatus } from "./async-readable.js";
 
-type StoreValue<T> = T extends AsyncReadable<infer U>
-  ? U
-  : T extends Readable<infer U>
-  ? U
-  : never;
+type StoreValue<T> =
+  T extends AsyncReadable<infer U>
+    ? U
+    : T extends Readable<infer U>
+      ? U
+      : never;
 type AsyncStoreValue<T> = T extends AsyncReadable<infer U> ? U : never;
 
 const isPromise = (v) => typeof v === "object" && typeof v.then === "function";
@@ -94,7 +95,7 @@ export function joinAsync<T, U, V, W>(
     AsyncReadable<T>,
     AsyncReadable<U>,
     AsyncReadable<V>,
-    AsyncReadable<W>
+    AsyncReadable<W>,
   ],
   joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W]>;
@@ -104,7 +105,7 @@ export function joinAsync<T, U, V, W, X>(
     AsyncReadable<U>,
     AsyncReadable<V>,
     AsyncReadable<W>,
-    AsyncReadable<X>
+    AsyncReadable<X>,
   ],
   joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X]>;
@@ -115,7 +116,7 @@ export function joinAsync<T, U, V, W, X, Y>(
     AsyncReadable<V>,
     AsyncReadable<W>,
     AsyncReadable<X>,
-    AsyncReadable<Y>
+    AsyncReadable<Y>,
   ],
   joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y]>;
@@ -127,7 +128,7 @@ export function joinAsync<T, U, V, W, X, Y, Z>(
     AsyncReadable<W>,
     AsyncReadable<X>,
     AsyncReadable<Y>,
-    AsyncReadable<Z>
+    AsyncReadable<Z>,
   ],
   joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y, Z]>;
@@ -140,7 +141,7 @@ export function joinAsync<T, U, V, W, X, Y, Z, A>(
     AsyncReadable<X>,
     AsyncReadable<Y>,
     AsyncReadable<Z>,
-    AsyncReadable<A>
+    AsyncReadable<A>,
   ],
   joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y, Z, A]>;
@@ -154,7 +155,7 @@ export function joinAsync<T, U, V, W, X, Y, Z, A, B>(
     AsyncReadable<Y>,
     AsyncReadable<Z>,
     AsyncReadable<A>,
-    AsyncReadable<B>
+    AsyncReadable<B>,
   ],
   joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y, Z, A, B]>;
@@ -169,7 +170,7 @@ export function joinAsync<T, U, V, W, X, Y, Z, A, B, C>(
     AsyncReadable<Z>,
     AsyncReadable<A>,
     AsyncReadable<B>,
-    AsyncReadable<C>
+    AsyncReadable<C>,
   ],
   joinOptions?: JoinAsyncOptions
 ): AsyncReadable<[T, U, V, W, X, Y, Z, A, B, C]>;

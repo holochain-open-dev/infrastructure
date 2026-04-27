@@ -54,7 +54,7 @@ export function createLinkToLink(
  * Useful for collections
  */
 export function collectionStore<
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   fetchCollection: () => Promise<Link[]>,
@@ -174,7 +174,7 @@ export function immutableEntryStore<T>(
  */
 export function latestVersionOfEntryStore<
   T,
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   fetchLatestVersion: () => Promise<EntryRecord<T> | undefined>,
@@ -261,7 +261,7 @@ export function latestVersionOfEntryStore<
  */
 export function allRevisionsOfEntryStore<
   T,
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   fetchAllRevisions: () => Promise<Array<EntryRecord<T>>>,
@@ -334,7 +334,7 @@ export function allRevisionsOfEntryStore<
  * Useful for entries that can be deleted
  */
 export function deletesForEntryStore<
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   originalActionHash: ActionHash,
@@ -447,14 +447,14 @@ function uniquifyActions<T extends Action>(
  */
 export function liveLinksStore<
   BASE extends HoloHash,
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   baseAddress: BASE,
   fetchLinks: () => Promise<Array<Link>>,
   linkType: LinkTypeForSignal<S>,
   pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS,
-  firstFetchLinks: () => Promise<Array<Link>> = undefined,
+  firstFetchLinks: () => Promise<Array<Link>> = undefined
 ): AsyncReadable<Array<Link>> {
   let innerBaseAddress = baseAddress;
   if (getHashType(innerBaseAddress) === HashType.AGENT) {
@@ -485,7 +485,7 @@ export function liveLinksStore<
     const fetch = async () => {
       if (!active) return;
       if (isFirstFetch) {
-        isFirstFetch = false
+        isFirstFetch = false;
         const firstLinks = await firstFetchLinks();
         maybeSet(firstLinks);
       }
@@ -544,7 +544,7 @@ export function liveLinksStore<
  */
 export function deletedLinksStore<
   BASE extends HoloHash,
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   baseAddress: BASE,

@@ -1,4 +1,9 @@
-import { CallZomeRequest, AppClient, RoleNameCallZomeRequest, Signal } from "@holochain/client";
+import {
+  CallZomeRequest,
+  AppClient,
+  RoleNameCallZomeRequest,
+  Signal,
+} from "@holochain/client";
 import { UnsubscribeFunction } from "emittery";
 import { isSignalFromCellWithRole } from "./cell.js";
 
@@ -15,7 +20,11 @@ export class ZomeClient<SIGNAL_PAYLOAD> {
     return this.client.on("signal", async (signal) => {
       if (
         signal.type === "app" &&
-        (await isSignalFromCellWithRole(this.client, this.roleName, signal.value)) &&
+        (await isSignalFromCellWithRole(
+          this.client,
+          this.roleName,
+          signal.value
+        )) &&
         this.zomeName === signal.value.zome_name
       ) {
         listener(signal.value.payload as SIGNAL_PAYLOAD);
