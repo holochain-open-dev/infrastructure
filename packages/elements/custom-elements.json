@@ -262,7 +262,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./shared-styles.js\""
+            "module": "src/shared-styles.js"
           }
         },
         {
@@ -270,7 +270,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./form-field-controller.js\""
+            "module": "src/form-field-controller.js"
           }
         },
         {
@@ -278,7 +278,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./on-submit.js\""
+            "module": "src/on-submit.js"
           }
         },
         {
@@ -286,7 +286,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./holo-hash-property.js\""
+            "module": "src/holo-hash-property.js"
           }
         },
         {
@@ -294,7 +294,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./icon.js\""
+            "module": "src/icon.js"
           }
         },
         {
@@ -302,7 +302,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./notify.js\""
+            "module": "src/notify.js"
           }
         },
         {
@@ -310,7 +310,7 @@
           "name": "*",
           "declaration": {
             "name": "*",
-            "package": "\"./date-utils.js\""
+            "module": "src/date-utils.js"
           }
         }
       ]
@@ -429,7 +429,7 @@
           "type": {
             "text": "array"
           },
-          "default": "[\n  css`\n    .row {\n      display: flex;\n      flex-direction: row;\n    }\n    .column {\n      display: flex;\n      flex-direction: column;\n    }\n    .small-margin {\n      margin-top: 6px;\n    }\n    .big-margin {\n      margin-top: 23px;\n    }\n\n    .fill {\n      flex: 1;\n      height: 100%;\n    }\n\n    .title {\n      font-size: 20px;\n    }\n\n    .center-content {\n      align-items: center;\n      justify-content: center;\n    }\n\n    .placeholder {\n      color: var(--sl-color-gray-700);\n    }\n\n    .flex-scrollable-parent {\n      position: relative;\n      display: flex;\n      flex: 1;\n    }\n\n    .flex-scrollable-container {\n      position: absolute;\n      top: 0;\n      left: 0;\n      right: 0;\n      bottom: 0;\n    }\n\n    .flex-scrollable-x {\n      max-width: 100%;\n      overflow-x: auto;\n    }\n    .flex-scrollable-y {\n      max-height: 100%;\n      overflow-y: auto;\n    }\n    :host {\n      color: var(--sl-color-neutral-1000);\n    }\n\n    sl-card {\n      display: flex;\n    }\n    sl-card::part(base) {\n      flex: 1;\n    }\n    sl-card::part(body) {\n      display: flex;\n      flex: 1;\n    }\n    sl-drawer::part(body) {\n      display: flex;\n    }\n  `,\n]"
+          "default": "[ css` .row { display: flex; flex-direction: row; } .column { display: flex; flex-direction: column; } .small-margin { margin-top: 6px; } .big-margin { margin-top: 23px; } .fill { flex: 1; height: 100%; } .title { font-size: 20px; } .center-content { align-items: center; justify-content: center; } .placeholder { color: var(--sl-color-gray-700); } .flex-scrollable-parent { position: relative; display: flex; flex: 1; } .flex-scrollable-container { position: absolute; top: 0; left: 0; right: 0; bottom: 0; } .flex-scrollable-x { max-width: 100%; overflow-x: auto; } .flex-scrollable-y { max-height: 100%; overflow-y: auto; } :host { color: var(--sl-color-neutral-1000); } sl-card { display: flex; } sl-card::part(base) { flex: 1; } sl-card::part(body) { display: flex; flex: 1; } sl-drawer::part(body) { display: flex; } `, ]"
         }
       ],
       "exports": [
@@ -458,32 +458,37 @@
               "type": {
                 "text": "boolean"
               },
-              "default": "false"
+              "default": "false",
+              "attribute": "tooltip"
             },
             {
               "kind": "field",
               "name": "headline",
               "type": {
                 "text": "string | undefined"
-              }
+              },
+              "attribute": "headline"
             },
             {
               "kind": "field",
               "name": "error",
               "type": {
                 "text": "any"
-              }
+              },
+              "attribute": "error"
             },
             {
               "kind": "field",
               "name": "iconSize",
               "type": {
                 "text": "string | undefined"
-              }
+              },
+              "attribute": "icon-size"
             },
             {
               "kind": "field",
-              "name": "_iconSize"
+              "name": "_iconSize",
+              "readonly": true
             },
             {
               "kind": "method",
@@ -498,10 +503,42 @@
               "name": "renderTooltip"
             }
           ],
+          "attributes": [
+            {
+              "name": "tooltip",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "tooltip"
+            },
+            {
+              "name": "headline",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "headline"
+            },
+            {
+              "name": "error",
+              "type": {
+                "text": "any"
+              },
+              "fieldName": "error"
+            },
+            {
+              "name": "icon-size",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "iconSize"
+            }
+          ],
           "superclass": {
             "name": "LitElement",
             "package": "lit"
           },
+          "tagName": "display-error",
           "customElement": true
         }
       ],
@@ -509,6 +546,14 @@
         {
           "kind": "js",
           "name": "DisplayError",
+          "declaration": {
+            "name": "DisplayError",
+            "module": "src/elements/display-error.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "display-error",
           "declaration": {
             "name": "DisplayError",
             "module": "src/elements/display-error.ts"
@@ -530,7 +575,8 @@
               "name": "hash",
               "type": {
                 "text": "HoloHash"
-              }
+              },
+              "attribute": "hash"
             },
             {
               "kind": "field",
@@ -539,7 +585,8 @@
                 "text": "number"
               },
               "default": "32",
-              "description": "Size of the identicon in pixels."
+              "description": "Size of the identicon in pixels.",
+              "attribute": "size"
             },
             {
               "kind": "field",
@@ -548,7 +595,8 @@
                 "text": "\"square\" | \"circle\""
               },
               "default": "\"circle\"",
-              "description": "Shape of the identicon."
+              "description": "Shape of the identicon.",
+              "attribute": "shape"
             },
             {
               "kind": "field",
@@ -557,7 +605,8 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Disables showing the tooltip for the hash"
+              "description": "Disables showing the tooltip for the hash",
+              "attribute": "disable-tooltip"
             },
             {
               "kind": "field",
@@ -566,7 +615,8 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Disable copying of the hash on click"
+              "description": "Disable copying of the hash on click",
+              "attribute": "disable-copy"
             },
             {
               "kind": "field",
@@ -605,17 +655,64 @@
             },
             {
               "kind": "field",
-              "name": "strHash"
+              "name": "strHash",
+              "readonly": true
             },
             {
               "kind": "method",
               "name": "renderCanvas"
             }
           ],
+          "attributes": [
+            {
+              "name": "hash",
+              "type": {
+                "text": "HoloHash"
+              },
+              "fieldName": "hash"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "number"
+              },
+              "default": "32",
+              "description": "Size of the identicon in pixels.",
+              "fieldName": "size"
+            },
+            {
+              "name": "shape",
+              "type": {
+                "text": "\"square\" | \"circle\""
+              },
+              "default": "\"circle\"",
+              "description": "Shape of the identicon.",
+              "fieldName": "shape"
+            },
+            {
+              "name": "disable-tooltip",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables showing the tooltip for the hash",
+              "fieldName": "disableTooltip"
+            },
+            {
+              "name": "disable-copy",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disable copying of the hash on click",
+              "fieldName": "disableCopy"
+            }
+          ],
           "superclass": {
             "name": "LitElement",
             "package": "lit"
           },
+          "tagName": "holo-identicon",
           "customElement": true
         }
       ],
@@ -623,6 +720,14 @@
         {
           "kind": "js",
           "name": "HoloIdenticon",
+          "declaration": {
+            "name": "HoloIdenticon",
+            "module": "src/elements/holo-identicon.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "holo-identicon",
           "declaration": {
             "name": "HoloIdenticon",
             "module": "src/elements/holo-identicon.ts"
@@ -645,7 +750,8 @@
               "type": {
                 "text": "string"
               },
-              "default": "\"avatar\""
+              "default": "\"avatar\"",
+              "attribute": "name"
             },
             {
               "kind": "field",
@@ -653,7 +759,8 @@
               "type": {
                 "text": "boolean"
               },
-              "default": "false"
+              "default": "false",
+              "attribute": "required"
             },
             {
               "kind": "field",
@@ -661,14 +768,16 @@
               "type": {
                 "text": "\"circle\" | \"square\" | \"rounded\""
               },
-              "default": "\"circle\""
+              "default": "\"circle\"",
+              "attribute": "shape"
             },
             {
               "kind": "field",
               "name": "value",
               "type": {
                 "text": "string | undefined"
-              }
+              },
+              "attribute": "value"
             },
             {
               "kind": "field",
@@ -676,21 +785,24 @@
               "type": {
                 "text": "boolean"
               },
-              "default": "false"
+              "default": "false",
+              "attribute": "disabled"
             },
             {
               "kind": "field",
               "name": "defaultValue",
               "type": {
                 "text": "string | undefined"
-              }
+              },
+              "attribute": "defaultValue"
             },
             {
               "kind": "field",
               "name": "label",
               "type": {
                 "text": "string"
-              }
+              },
+              "attribute": "label"
             },
             {
               "kind": "field",
@@ -738,10 +850,66 @@
               }
             }
           ],
+          "attributes": [
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"avatar\"",
+              "fieldName": "name"
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "required"
+            },
+            {
+              "name": "shape",
+              "type": {
+                "text": "\"circle\" | \"square\" | \"rounded\""
+              },
+              "default": "\"circle\"",
+              "fieldName": "shape"
+            },
+            {
+              "name": "value",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "value"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "disabled"
+            },
+            {
+              "name": "defaultValue",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "defaultValue"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "fieldName": "label"
+            }
+          ],
           "superclass": {
             "name": "LitElement",
             "package": "lit"
           },
+          "tagName": "select-avatar",
           "customElement": true
         }
       ],
@@ -749,6 +917,14 @@
         {
           "kind": "js",
           "name": "SelectAvatar",
+          "declaration": {
+            "name": "SelectAvatar",
+            "module": "src/elements/select-avatar.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "select-avatar",
           "declaration": {
             "name": "SelectAvatar",
             "module": "src/elements/select-avatar.ts"
@@ -770,21 +946,24 @@
               "name": "label",
               "type": {
                 "text": "string | undefined"
-              }
+              },
+              "attribute": "label"
             },
             {
               "kind": "field",
               "name": "name",
               "type": {
                 "text": "string | undefined"
-              }
+              },
+              "attribute": "name"
             },
             {
               "kind": "field",
               "name": "defaultValue",
               "type": {
                 "text": "Date | number | string | undefined"
-              }
+              },
+              "attribute": "defaultValue"
             },
             {
               "kind": "field",
@@ -792,7 +971,8 @@
               "type": {
                 "text": "boolean"
               },
-              "default": "false"
+              "default": "false",
+              "attribute": "required"
             },
             {
               "kind": "field",
@@ -800,21 +980,24 @@
               "type": {
                 "text": "boolean"
               },
-              "default": "false"
+              "default": "false",
+              "attribute": "disabled"
             },
             {
               "kind": "field",
               "name": "min",
               "type": {
                 "text": "Date | number | string | undefined"
-              }
+              },
+              "attribute": "min"
             },
             {
               "kind": "field",
               "name": "max",
               "type": {
                 "text": "Date | number | string | undefined"
-              }
+              },
+              "attribute": "max"
             },
             {
               "kind": "field",
@@ -860,13 +1043,68 @@
               "name": "value",
               "type": {
                 "text": "string | undefined"
-              }
+              },
+              "readonly": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "label",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "label"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string | undefined"
+              },
+              "fieldName": "name"
+            },
+            {
+              "name": "defaultValue",
+              "type": {
+                "text": "Date | number | string | undefined"
+              },
+              "fieldName": "defaultValue"
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "required"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "fieldName": "disabled"
+            },
+            {
+              "name": "min",
+              "type": {
+                "text": "Date | number | string | undefined"
+              },
+              "fieldName": "min"
+            },
+            {
+              "name": "max",
+              "type": {
+                "text": "Date | number | string | undefined"
+              },
+              "fieldName": "max"
             }
           ],
           "superclass": {
             "name": "LitElement",
             "package": "lit"
           },
+          "tagName": "sl-datetime-input",
           "customElement": true
         }
       ],
@@ -874,6 +1112,14 @@
         {
           "kind": "js",
           "name": "SlDatetimeInput",
+          "declaration": {
+            "name": "SlDatetimeInput",
+            "module": "src/elements/sl-datetime-input.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "sl-datetime-input",
           "declaration": {
             "name": "SlDatetimeInput",
             "module": "src/elements/sl-datetime-input.ts"
@@ -903,12 +1149,12 @@
               }
             }
           ],
-          "description": "Runs when observed properties change, e.g. @property or @state, but before the component updates. To wait for an\nupdate to complete after a change occurs, use `await this.updateComplete` in the handler. To start watching after the\ninitial update/render, use `{ waitUntilFirstUpdate: true }` or `this.hasUpdated` in the handler.\n\nUsage:"
+          "description": "Runs when observed properties change, e.g."
         },
         {
           "kind": "variable",
           "name": "styles",
-          "default": "css`\n  :host {\n    box-sizing: border-box;\n  }\n\n  :host *,\n  :host *::before,\n  :host *::after {\n    box-sizing: inherit;\n  }\n\n  [hidden] {\n    display: none !important;\n  }\n\n  :host {\n    display: block;\n  }\n  .form-control .form-control__label {\n    display: none;\n  }\n\n  .form-control .form-control__help-text {\n    display: none;\n  }\n\n  /* Label */\n  .form-control--has-label .form-control__label {\n    display: inline-block;\n    color: var(--sl-input-label-color);\n    margin-bottom: var(--sl-spacing-3x-small);\n  }\n\n  .form-control--has-label.form-control--small .form-control__label {\n    font-size: var(--sl-input-label-font-size-small);\n  }\n\n  .form-control--has-label.form-control--medium .form-control__label {\n    font-size: var(--sl-input-label-font-size-medium);\n  }\n\n  .form-control--has-label.form-control--large .form-control__label {\n    font-size: var(--sl-input-label-font-size-large);\n  }\n\n  :host([required]) .form-control--has-label .form-control__label::after {\n    content: var(--sl-input-required-content);\n    margin-inline-start: var(--sl-input-required-content-offset);\n    color: var(--sl-input-required-content-color);\n  }\n\n  /* Help text */\n  .form-control--has-help-text .form-control__help-text {\n    display: block;\n    color: var(--sl-input-help-text-color);\n    margin-top: var(--sl-spacing-3x-small);\n  }\n\n  .form-control--has-help-text.form-control--small .form-control__help-text {\n    font-size: var(--sl-input-help-text-font-size-small);\n  }\n\n  .form-control--has-help-text.form-control--medium .form-control__help-text {\n    font-size: var(--sl-input-help-text-font-size-medium);\n  }\n\n  .form-control--has-help-text.form-control--large .form-control__help-text {\n    font-size: var(--sl-input-help-text-font-size-large);\n  }\n\n  .form-control--has-help-text.form-control--radio-group\n    .form-control__help-text {\n    margin-top: var(--sl-spacing-2x-small);\n  }\n\n  .textarea {\n    display: flex;\n    align-items: center;\n    position: relative;\n    width: 100%;\n    font-family: var(--sl-input-font-family);\n    font-weight: var(--sl-input-font-weight);\n    line-height: var(--sl-line-height-normal);\n    letter-spacing: var(--sl-input-letter-spacing);\n    vertical-align: middle;\n    transition:\n      var(--sl-transition-fast) color,\n      var(--sl-transition-fast) border,\n      var(--sl-transition-fast) box-shadow,\n      var(--sl-transition-fast) background-color;\n    cursor: text;\n  }\n\n  /* Standard textareas */\n  .textarea--standard {\n    background-color: var(--sl-input-background-color);\n    border: solid var(--sl-input-border-width) var(--sl-input-border-color);\n  }\n\n  .textarea--standard:hover:not(.textarea--disabled) {\n    background-color: var(--sl-input-background-color-hover);\n    border-color: var(--sl-input-border-color-hover);\n  }\n  .textarea--standard:hover:not(.textarea--disabled) .textarea__control {\n    color: var(--sl-input-color-hover);\n  }\n\n  .textarea--standard.textarea--focused:not(.textarea--disabled) {\n    background-color: var(--sl-input-background-color-focus);\n    border-color: var(--sl-input-border-color-focus);\n    color: var(--sl-input-color-focus);\n    box-shadow: 0 0 0 var(--sl-focus-ring-width)\n      var(--sl-input-focus-ring-color);\n  }\n\n  .textarea--standard.textarea--focused:not(.textarea--disabled)\n    .textarea__control {\n    color: var(--sl-input-color-focus);\n  }\n\n  .textarea--standard.textarea--disabled {\n    background-color: var(--sl-input-background-color-disabled);\n    border-color: var(--sl-input-border-color-disabled);\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .textarea--standard.textarea--disabled .textarea__control {\n    color: var(--sl-input-color-disabled);\n  }\n\n  .textarea--standard.textarea--disabled .textarea__control::placeholder {\n    color: var(--sl-input-placeholder-color-disabled);\n  }\n\n  /* Filled textareas */\n  .textarea--filled {\n    border: none;\n    background-color: var(--sl-input-filled-background-color);\n    color: var(--sl-input-color);\n  }\n\n  .textarea--filled:hover:not(.textarea--disabled) {\n    background-color: var(--sl-input-filled-background-color-hover);\n  }\n\n  .textarea--filled.textarea--focused:not(.textarea--disabled) {\n    background-color: var(--sl-input-filled-background-color-focus);\n    outline: var(--sl-focus-ring);\n    outline-offset: var(--sl-focus-ring-offset);\n  }\n\n  .textarea--filled.textarea--disabled {\n    background-color: var(--sl-input-filled-background-color-disabled);\n    opacity: 0.5;\n    cursor: not-allowed;\n  }\n\n  .textarea__control {\n    flex: 1 1 auto;\n    font-family: inherit;\n    font-size: inherit;\n    font-weight: inherit;\n    line-height: 1.4;\n    color: var(--sl-input-color);\n    border: none;\n    background: none;\n    box-shadow: none;\n    cursor: inherit;\n    -webkit-appearance: none;\n  }\n\n  .textarea__control::-webkit-search-decoration,\n  .textarea__control::-webkit-search-cancel-button,\n  .textarea__control::-webkit-search-results-button,\n  .textarea__control::-webkit-search-results-decoration {\n    -webkit-appearance: none;\n  }\n\n  .textarea__control::placeholder {\n    color: var(--sl-input-placeholder-color);\n    user-select: none;\n  }\n\n  .textarea__control:focus {\n    outline: none;\n  }\n\n  /*\n   * Size modifiers\n   */\n\n  .textarea--small {\n    border-radius: var(--sl-input-border-radius-small);\n    font-size: var(--sl-input-font-size-small);\n  }\n\n  .textarea--small .textarea__control {\n    padding: 0.5em var(--sl-input-spacing-small);\n  }\n\n  .textarea--medium {\n    border-radius: var(--sl-input-border-radius-medium);\n    font-size: var(--sl-input-font-size-medium);\n  }\n\n  .textarea--medium .textarea__control {\n    padding: 0.5em var(--sl-input-spacing-medium);\n  }\n\n  .textarea--large {\n    border-radius: var(--sl-input-border-radius-large);\n    font-size: var(--sl-input-font-size-large);\n  }\n\n  .textarea--large .textarea__control {\n    padding: 0.5em var(--sl-input-spacing-large);\n  }\n\n  /*\n   * Resize types\n   */\n\n  .textarea--resize-none .textarea__control {\n    resize: none;\n  }\n\n  .textarea--resize-vertical .textarea__control {\n    resize: vertical;\n  }\n\n  .textarea--resize-auto .textarea__control {\n    height: auto;\n    resize: none;\n    overflow-y: hidden;\n  }\n\n  p {\n    margin: 0 !important;\n    font-size: var(--sl-input-font-size-medium);\n  }\n  .textarea__control {\n    height: 105px;\n    overflow-y: auto;\n  }\n  .ProseMirror {\n    outline: none;\n    word-wrap: break-word;\n    white-space: pre-wrap;\n    white-space: break-spaces;\n  }\n`"
+          "default": "css` :host { box-sizing: border-box; } :host *, :host *::before, :host *::after { box-sizing: inherit; } [hidden] { display: none !important; } :host { display: block; } .form-control .form-control__label { display: none; } .form-control .form-control__help-text { display: none; } /* Label */ .form-control--has-label .form-control__label { display: inline-block; color: var(--sl-input-label-color); margin-bottom: var(--sl-spacing-3x-small); } .form-control--has-label.form-control--small .form-control__label { font-size: var(--sl-input-label-font-size-small); } .form-control--has-label.form-control--medium .form-control__label { font-size: var(--sl-input-label-font-size-medium); } .form-control--has-label.form-control--large .form-control__label { font-size: var(--sl-input-label-font-size-large); } :host([required]) .form-control--has-label .form-control__label::after { content: var(--sl-input-required-content); margin-inline-start: var(--sl-input-required-content-offset); color: var(--sl-input-required-content-color); } /* Help text */ .form-control--has-help-text .form-control__help-text { display: block; color: var(--sl-input-help-text-color); margin-top: var(--sl-spacing-3x-small); } .form-control--has-help-text.form-control--small .form-control__help-text { font-size: var(--sl-input-help-text-font-size-small); } .form-control--has-help-text.form-control--medium .form-control__help-text { font-size: var(--sl-input-help-text-font-size-medium); } .form-control--has-help-text.form-control--large .form-control__help-text { font-size: var(--sl-input-help-text-font-size-large); } .form-control--has-help-text.form-control--radio-group .form-control__help-text { margin-top: var(--sl-spacing-2x-small); } .textarea { display: flex; align-items: center; position: relative; width: 100%; font-family: var(--sl-input-font-family); font-weight: var(--sl-input-font-weight); line-height: var(--sl-line-height-normal); letter-spacing: var(--sl-input-letter-spacing); vertical-align: middle; transition: var(--sl-transition-fast) color, var(--sl-transition-fast) border, var(--sl-transition-fast) box-shadow, var(--sl-transition-fast) background-color; cursor: text; } /* Standard textareas */ .textarea--standard { background-color: var(--sl-input-background-color); border: solid var(--sl-input-border-width) var(--sl-input-border-color); } .textarea--standard:hover:not(.textarea--disabled) { background-color: var(--sl-input-background-color-hover); border-color: var(--sl-input-border-color-hover); } .textarea--standard:hover:not(.textarea--disabled) .textarea__control { color: var(--sl-input-color-hover); } .textarea--standard.textarea--focused:not(.textarea--disabled) { background-color: var(--sl-input-background-color-focus); border-color: var(--sl-input-border-color-focus); color: var(--sl-input-color-focus); box-shadow: 0 0 0 var(--sl-focus-ring-width) var(--sl-input-focus-ring-color); } .textarea--standard.textarea--focused:not(.textarea--disabled) .textarea__control { color: var(--sl-input-color-focus); } .textarea--standard.textarea--disabled { background-color: var(--sl-input-background-color-disabled); border-color: var(--sl-input-border-color-disabled); opacity: 0.5; cursor: not-allowed; } .textarea--standard.textarea--disabled .textarea__control { color: var(--sl-input-color-disabled); } .textarea--standard.textarea--disabled .textarea__control::placeholder { color: var(--sl-input-placeholder-color-disabled); } /* Filled textareas */ .textarea--filled { border: none; background-color: var(--sl-input-filled-background-color); color: var(--sl-input-color); } .textarea--filled:hover:not(.textarea--disabled) { background-color: var(--sl-input-filled-background-color-hover); } .textarea--filled.textarea--focused:not(.textarea--disabled) { background-color: var(--sl-input-filled-background-color-focus); outline: var(--sl-focus-ring); outline-offset: var(--sl-focus-ring-offset); } .textarea--filled.textarea--disabled { background-color: var(--sl-input-filled-background-color-disabled); opacity: 0.5; cursor: not-allowed; } .textarea__control { flex: 1 1 auto; font-family: inherit; font-size: inherit; font-weight: inherit; line-height: 1.4; color: var(--sl-input-color); border: none; background: none; box-shadow: none; cursor: inherit; -webkit-appearance: none; } .textarea__control::-webkit-search-decoration, .textarea__control::-webkit-search-cancel-button, .textarea__control::-webkit-search-results-button, .textarea__control::-webkit-search-results-decoration { -webkit-appearance: none; } .textarea__control::placeholder { color: var(--sl-input-placeholder-color); user-select: none; } .textarea__control:focus { outline: none; } /* * Size modifiers */ .textarea--small { border-radius: var(--sl-input-border-radius-small); font-size: var(--sl-input-font-size-small); } .textarea--small .textarea__control { padding: 0.5em var(--sl-input-spacing-small); } .textarea--medium { border-radius: var(--sl-input-border-radius-medium); font-size: var(--sl-input-font-size-medium); } .textarea--medium .textarea__control { padding: 0.5em var(--sl-input-spacing-medium); } .textarea--large { border-radius: var(--sl-input-border-radius-large); font-size: var(--sl-input-font-size-large); } .textarea--large .textarea__control { padding: 0.5em var(--sl-input-spacing-large); } /* * Resize types */ .textarea--resize-none .textarea__control { resize: none; } .textarea--resize-vertical .textarea__control { resize: vertical; } .textarea--resize-auto .textarea__control { height: auto; resize: none; overflow-y: hidden; } p { margin: 0 !important; font-size: var(--sl-input-font-size-medium); } .textarea__control { height: 105px; overflow-y: auto; } .ProseMirror { outline: none; word-wrap: break-word; white-space: pre-wrap; white-space: break-spaces; } `"
         },
         {
           "kind": "class",
@@ -919,6 +1165,7 @@
               "kind": "field",
               "name": "formControlController",
               "privacy": "private",
+              "readonly": true,
               "default": "new FormFieldController(this)"
             },
             {
@@ -951,7 +1198,8 @@
               "type": {
                 "text": "string"
               },
-              "default": "\"\""
+              "default": "\"\"",
+              "attribute": "title"
             },
             {
               "kind": "field",
@@ -960,7 +1208,8 @@
                 "text": "string"
               },
               "default": "\"\"",
-              "description": "The name of the textarea, submitted as a name/value pair with form data."
+              "description": "The name of the textarea, submitted as a name/value pair with form data.",
+              "attribute": "name"
             },
             {
               "kind": "field",
@@ -973,7 +1222,9 @@
                 "text": "\"small\" | \"medium\" | \"large\""
               },
               "default": "\"medium\"",
-              "description": "The textarea's size."
+              "description": "The textarea's size.",
+              "attribute": "size",
+              "reflects": true
             },
             {
               "kind": "field",
@@ -982,7 +1233,9 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Draws a filled textarea."
+              "description": "Draws a filled textarea.",
+              "attribute": "filled",
+              "reflects": true
             },
             {
               "kind": "field",
@@ -991,7 +1244,8 @@
                 "text": "string"
               },
               "default": "\"\"",
-              "description": "The textarea's label. If you need to display HTML, use the `label` slot instead."
+              "description": "The textarea's label. If you need to display HTML, use the `label` slot instead.",
+              "attribute": "label"
             },
             {
               "kind": "field",
@@ -1000,7 +1254,8 @@
                 "text": "string"
               },
               "default": "\"\"",
-              "description": "The textarea's help text. If you need to display HTML, use the `help-text` slot instead."
+              "description": "The textarea's help text. If you need to display HTML, use the `help-text` slot instead.",
+              "attribute": "help-text"
             },
             {
               "kind": "field",
@@ -1009,7 +1264,8 @@
                 "text": "string"
               },
               "default": "\"\"",
-              "description": "Placeholder text to show as a hint when the input is empty."
+              "description": "Placeholder text to show as a hint when the input is empty.",
+              "attribute": "placeholder"
             },
             {
               "kind": "field",
@@ -1018,7 +1274,8 @@
                 "text": "number"
               },
               "default": "4",
-              "description": "The number of rows to display by default."
+              "description": "The number of rows to display by default.",
+              "attribute": "rows"
             },
             {
               "kind": "field",
@@ -1027,7 +1284,8 @@
                 "text": "\"none\" | \"vertical\" | \"auto\""
               },
               "default": "\"vertical\"",
-              "description": "Controls how the textarea can be resized."
+              "description": "Controls how the textarea can be resized.",
+              "attribute": "resize"
             },
             {
               "kind": "field",
@@ -1036,7 +1294,9 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Disables the textarea."
+              "description": "Disables the textarea.",
+              "attribute": "disabled",
+              "reflects": true
             },
             {
               "kind": "field",
@@ -1045,7 +1305,9 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Makes the textarea readonly."
+              "description": "Makes the textarea readonly.",
+              "attribute": "readonly",
+              "reflects": true
             },
             {
               "kind": "field",
@@ -1054,7 +1316,9 @@
                 "text": "string"
               },
               "default": "\"\"",
-              "description": "By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you\nto place the form control outside of a form and associate it with the form that has this `id`. The form must be in\nthe same document or shadow root for this to work."
+              "description": "By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you\nto place the form control outside of a form and associate it with the form that has this `id`. The form must be in\nthe same document or shadow root for this to work.",
+              "attribute": "form",
+              "reflects": true
             },
             {
               "kind": "field",
@@ -1063,7 +1327,9 @@
                 "text": "boolean"
               },
               "default": "false",
-              "description": "Makes the textarea a required field."
+              "description": "Makes the textarea a required field.",
+              "attribute": "required",
+              "reflects": true
             },
             {
               "kind": "field",
@@ -1071,7 +1337,8 @@
               "type": {
                 "text": "number"
               },
-              "description": "The minimum length of input that will be considered valid."
+              "description": "The minimum length of input that will be considered valid.",
+              "attribute": "minlength"
             },
             {
               "kind": "field",
@@ -1079,7 +1346,8 @@
               "type": {
                 "text": "number"
               },
-              "description": "The maximum length of input that will be considered valid."
+              "description": "The maximum length of input that will be considered valid.",
+              "attribute": "maxlength"
             },
             {
               "kind": "field",
@@ -1087,7 +1355,8 @@
               "type": {
                 "text": "| \"off\"\n    | \"none\"\n    | \"on\"\n    | \"sentences\"\n    | \"words\"\n    | \"characters\""
               },
-              "description": "Controls whether and how text input is automatically capitalized as it is entered by the user."
+              "description": "Controls whether and how text input is automatically capitalized as it is entered by the user.",
+              "attribute": "autocapitalize"
             },
             {
               "kind": "field",
@@ -1095,7 +1364,8 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "Indicates whether the browser's autocorrect feature is on or off."
+              "description": "Indicates whether the browser's autocorrect feature is on or off.",
+              "attribute": "autocorrect"
             },
             {
               "kind": "field",
@@ -1103,7 +1373,8 @@
               "type": {
                 "text": "string"
               },
-              "description": "Specifies what permission the browser has to provide assistance in filling out form field values. Refer to\n[this page on MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) for available values."
+              "description": "Specifies what permission the browser has to provide assistance in filling out form field values. Refer to\n[this page on MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) for available values.",
+              "attribute": "autocomplete"
             },
             {
               "kind": "field",
@@ -1111,7 +1382,8 @@
               "type": {
                 "text": "boolean"
               },
-              "description": "Indicates that the input should receive focus on page load."
+              "description": "Indicates that the input should receive focus on page load.",
+              "attribute": "autofocus"
             },
             {
               "kind": "field",
@@ -1119,7 +1391,8 @@
               "type": {
                 "text": "| \"enter\"\n    | \"done\"\n    | \"go\"\n    | \"next\"\n    | \"previous\"\n    | \"search\"\n    | \"send\""
               },
-              "description": "Used to customize the label or icon of the Enter key on virtual keyboards."
+              "description": "Used to customize the label or icon of the Enter key on virtual keyboards.",
+              "attribute": "enterkeyhint"
             },
             {
               "kind": "field",
@@ -1128,7 +1401,8 @@
                 "text": "boolean"
               },
               "default": "true",
-              "description": "Enables spell checking on the textarea."
+              "description": "Enables spell checking on the textarea.",
+              "attribute": "spellcheck"
             },
             {
               "kind": "field",
@@ -1136,7 +1410,8 @@
               "type": {
                 "text": "| \"none\"\n    | \"text\"\n    | \"decimal\"\n    | \"numeric\"\n    | \"tel\"\n    | \"search\"\n    | \"email\"\n    | \"url\""
               },
-              "description": "Tells the browser what type of data will be entered by the user, allowing it to display the appropriate virtual\nkeyboard on supportive devices."
+              "description": "Tells the browser what type of data will be entered by the user, allowing it to display the appropriate virtual\nkeyboard on supportive devices.",
+              "attribute": "inputmode"
             },
             {
               "kind": "field",
@@ -1145,7 +1420,8 @@
                 "text": "string"
               },
               "default": "\"\"",
-              "description": "The default value of the form control. Primarily used for resetting the form control."
+              "description": "The default value of the form control. Primarily used for resetting the form control.",
+              "attribute": "defaultValue"
             },
             {
               "kind": "field",
@@ -1306,10 +1582,211 @@
               }
             }
           ],
+          "attributes": [
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "fieldName": "title"
+            },
+            {
+              "name": "name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The name of the textarea, submitted as a name/value pair with form data.",
+              "fieldName": "name"
+            },
+            {
+              "name": "size",
+              "type": {
+                "text": "\"small\" | \"medium\" | \"large\""
+              },
+              "default": "\"medium\"",
+              "description": "The textarea's size.",
+              "fieldName": "size"
+            },
+            {
+              "name": "filled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Draws a filled textarea.",
+              "fieldName": "filled"
+            },
+            {
+              "name": "label",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The textarea's label. If you need to display HTML, use the `label` slot instead.",
+              "fieldName": "label"
+            },
+            {
+              "name": "help-text",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The textarea's help text. If you need to display HTML, use the `help-text` slot instead.",
+              "fieldName": "helpText"
+            },
+            {
+              "name": "placeholder",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "Placeholder text to show as a hint when the input is empty.",
+              "fieldName": "placeholder"
+            },
+            {
+              "name": "rows",
+              "type": {
+                "text": "number"
+              },
+              "default": "4",
+              "description": "The number of rows to display by default.",
+              "fieldName": "rows"
+            },
+            {
+              "name": "resize",
+              "type": {
+                "text": "\"none\" | \"vertical\" | \"auto\""
+              },
+              "default": "\"vertical\"",
+              "description": "Controls how the textarea can be resized.",
+              "fieldName": "resize"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Disables the textarea.",
+              "fieldName": "disabled"
+            },
+            {
+              "name": "readonly",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Makes the textarea readonly.",
+              "fieldName": "readonly"
+            },
+            {
+              "name": "form",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "By default, form controls are associated with the nearest containing `<form>` element. This attribute allows you\nto place the form control outside of a form and associate it with the form that has this `id`. The form must be in\nthe same document or shadow root for this to work.",
+              "fieldName": "form"
+            },
+            {
+              "name": "required",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Makes the textarea a required field.",
+              "fieldName": "required"
+            },
+            {
+              "name": "minlength",
+              "type": {
+                "text": "number"
+              },
+              "description": "The minimum length of input that will be considered valid.",
+              "fieldName": "minlength"
+            },
+            {
+              "name": "maxlength",
+              "type": {
+                "text": "number"
+              },
+              "description": "The maximum length of input that will be considered valid.",
+              "fieldName": "maxlength"
+            },
+            {
+              "name": "autocapitalize",
+              "type": {
+                "text": "| \"off\"\n    | \"none\"\n    | \"on\"\n    | \"sentences\"\n    | \"words\"\n    | \"characters\""
+              },
+              "description": "Controls whether and how text input is automatically capitalized as it is entered by the user.",
+              "fieldName": "autocapitalize"
+            },
+            {
+              "name": "autocorrect",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Indicates whether the browser's autocorrect feature is on or off.",
+              "fieldName": "autocorrect"
+            },
+            {
+              "name": "autocomplete",
+              "type": {
+                "text": "string"
+              },
+              "description": "Specifies what permission the browser has to provide assistance in filling out form field values. Refer to\n[this page on MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) for available values.",
+              "fieldName": "autocomplete"
+            },
+            {
+              "name": "autofocus",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Indicates that the input should receive focus on page load.",
+              "fieldName": "autofocus"
+            },
+            {
+              "name": "enterkeyhint",
+              "type": {
+                "text": "| \"enter\"\n    | \"done\"\n    | \"go\"\n    | \"next\"\n    | \"previous\"\n    | \"search\"\n    | \"send\""
+              },
+              "description": "Used to customize the label or icon of the Enter key on virtual keyboards.",
+              "fieldName": "enterkeyhint"
+            },
+            {
+              "name": "spellcheck",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "true",
+              "description": "Enables spell checking on the textarea.",
+              "fieldName": "spellcheck"
+            },
+            {
+              "name": "inputmode",
+              "type": {
+                "text": "| \"none\"\n    | \"text\"\n    | \"decimal\"\n    | \"numeric\"\n    | \"tel\"\n    | \"search\"\n    | \"email\"\n    | \"url\""
+              },
+              "description": "Tells the browser what type of data will be entered by the user, allowing it to display the appropriate virtual\nkeyboard on supportive devices.",
+              "fieldName": "inputmode"
+            },
+            {
+              "name": "defaultValue",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "description": "The default value of the form control. Primarily used for resetting the form control.",
+              "fieldName": "defaultValue"
+            }
+          ],
           "superclass": {
             "name": "LitElement",
             "package": "lit"
           },
+          "tagName": "sl-textarea-prosemirror",
           "customElement": true
         }
       ],
@@ -1333,6 +1810,14 @@
         {
           "kind": "js",
           "name": "SlTextareaProsemirror",
+          "declaration": {
+            "name": "SlTextareaProsemirror",
+            "module": "src/elements/sl-textarea-prosemirror.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "sl-textarea-prosemirror",
           "declaration": {
             "name": "SlTextareaProsemirror",
             "module": "src/elements/sl-textarea-prosemirror.ts"
