@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/core-types",
-  "version": "0.601.0",
+  "version": "0.700.0-dev.0",
   "description": "Typescript types for holochain core",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -16,14 +16,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/libsodium-wrappers": "^0.7.14",
-    "@types/node": "^20.8.9",
-    "@types/ws": "^8.2.0",
-    "gh-pages": "^3.1.0",
+    "@types/node": "^22.0.0",
+    "@types/ws": "^8.18.1",
+    "gh-pages": "^6.3.0",
     "typescript": "~5.9"
   },
   "dependencies": {
-    "@holochain/client": "=0.20.4-rc.0"
+    "@holochain/client": "=0.21.0-dev.2"
   },
   "bugs": {
     "url": "https://github.com/holochain-open-dev/infrastructure/issues"

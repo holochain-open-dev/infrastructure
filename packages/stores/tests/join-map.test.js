@@ -2,7 +2,7 @@ import { expect, it } from "vitest";
 import { get, readable } from "svelte/store";
 import { fromUint8Array, toUint8Array } from "js-base64";
 import { joinAsyncMap, asyncReadable, joinMap, mapAndJoin } from "../src";
-import { HoloHashMap } from "@holochain-open-dev/utils";
+import { HoloHashMap } from "@holochain/client";
 
 const sleep = (ms) => new Promise((r) => setTimeout(() => r(), ms));
 
