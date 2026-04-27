@@ -9,8 +9,8 @@ Map of `HoloHash` to any JS object.
 We can't really use well normal JS objects to index by holo hashes because we lose the ability to compare hashes together. Namely, in JS `console.log(new Uint8Array([1]) == new Uint8Array([1]))` prints `false`.
 
 ```ts
-import { AgentPubKey } from '@holochain/client';
-import { HoloHashMap } from '@holochain-open-dev/utils';
+import { AgentPubKey } from "@holochain/client";
+import { HoloHashMap } from "@holochain-open-dev/utils";
 
 // Imagine we have out public key
 const myAgentPubKey = appInfo.cell_info[0].cell_id[1];
@@ -21,18 +21,18 @@ const map = new HoloHashMap<AgentPubKey, number>();
 map.set(myAgentPubKey, 1);
 
 // Get the value for an entry
-console.log(map.get(myAgentPubKey));                // Will print `1`
+console.log(map.get(myAgentPubKey)); // Will print `1`
 
 // Check if the key exists
-console.log(map.has(myAgentPubKey));                // Will print `true`
+console.log(map.has(myAgentPubKey)); // Will print `true`
 
 // Get iterators for the entries
 
-console.log(Array.from(map.keys()));                // Will print an array with MYAGENTPUBKEY as the only member
-console.log(Array.from(map.values()));              // Will print `[1]`
-console.log(Array.from(map.entries()));             // Will print an array with `[MYAGENTPUBKEY, 1]` as the only member
+console.log(Array.from(map.keys())); // Will print an array with MYAGENTPUBKEY as the only member
+console.log(Array.from(map.values())); // Will print `[1]`
+console.log(Array.from(map.entries())); // Will print an array with `[MYAGENTPUBKEY, 1]` as the only member
 
-map.delete(myAgentPubKey);                          // Will delete this member
+map.delete(myAgentPubKey); // Will delete this member
 ```
 
 Some variants exist for this type:
@@ -49,13 +49,15 @@ This is an special kind of map, where there is no `set` function, only `get`.
 Instead, a callback function is passed as the constructor. Then, whenever `get` is called, if it's the first time that the given hash is requested, it will call the callback and initialize the value of the hash with its result. If that hash was already initialized, it will just return that value.
 
 ```ts
-import { AgentPubKey, fakeAgentPubKey } from '@holochain/client';
-import { LazyHoloHashMap } from '@holochain-open-dev/utils';
+import { AgentPubKey, fakeAgentPubKey } from "@holochain/client";
+import { LazyHoloHashMap } from "@holochain-open-dev/utils";
 
 const pubKey = fakeAgentPubKey();
 
 // Imagine we want to fetch the profile of the agent whenever an agent public key is requested
-const lazyMap = new LazyHoloHashMap((agent: AgentPubKey) => callZome('get_profile', agent));
+const lazyMap = new LazyHoloHashMap((agent: AgentPubKey) =>
+  callZome("get_profile", agent)
+);
 
 console.log(lazyMap.get(pubKey)); // Will print a pending promise
 
@@ -93,7 +95,7 @@ const entryHash: EntryHash = profileRecord.entryHash;
 const actionHash: ActionHash = profileRecord.actionHash;
 ```
 
-##  RecordBag
+## RecordBag
 
 Utility to type a list of `Records` and extract useful information from them.
 
@@ -124,4 +126,3 @@ const authorMap: AgentPubKeyMap<ActionHash[]> = profiles.authorMap;
 // Get the array of all records
 const profileEntries: Array<EntryRecord<Profile>> = profiles.entryRecords;
 ```
-

@@ -1,0 +1,6 @@
+dist/
+dist-rollup/
+node_modules/
+package-lock.json
+custom-elements.json
+flake.lock

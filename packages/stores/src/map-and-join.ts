@@ -1,5 +1,5 @@
 import { mapValues } from "@holochain-open-dev/utils";
-import {HoloHash, HoloHashMap} from "@holochain/client";
+import { HoloHash, HoloHashMap } from "@holochain/client";
 import { JoinAsyncOptions } from "./async-derived.js";
 import { AsyncReadable } from "./async-readable.js";
 import { joinAsyncMap } from "./join-map.js";

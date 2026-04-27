@@ -23,5 +23,5 @@
     "emitDeclarationOnly": false,
     "removeComments": true,
     "skipLibCheck": true
-  },
+  }
 }

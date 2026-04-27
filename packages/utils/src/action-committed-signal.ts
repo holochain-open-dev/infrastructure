@@ -12,7 +12,7 @@ import {
  */
 export type ActionCommittedSignal<
   ET extends { type: string },
-  LT extends string
+  LT extends string,
 > =
   | {
       type: "EntryCreated";
@@ -42,9 +42,5 @@ export type ActionCommittedSignal<
       link_type: LT;
     };
 
-export type LinkTypeForSignal<S> = S extends ActionCommittedSignal<
-  any,
-  infer LT
->
-  ? LT
-  : string;
+export type LinkTypeForSignal<S> =
+  S extends ActionCommittedSignal<any, infer LT> ? LT : string;

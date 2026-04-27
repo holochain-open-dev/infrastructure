@@ -2,7 +2,7 @@ import { HoloHash, HoloHashMap, LazyHoloHashMap } from "@holochain/client";
 
 // Subset of ReadonlyMap, with only the get function
 export interface GetonlyMap<K, V> {
-    get(key: K): V;
+  get(key: K): V;
 }
 
 // Create a new slice of this map that contains only the given keys
