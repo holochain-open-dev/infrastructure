@@ -10,7 +10,7 @@ export function hashState() {
 
 export function hashProperty(
   attributeName: string
-): PropertyDeclaration<Object | null, unknown> {
+): PropertyDeclaration<object | null, unknown> {
   return {
     attribute: attributeName,
     type: Object,

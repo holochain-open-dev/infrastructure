@@ -52,7 +52,7 @@ export function createLinkToLink(
  * Useful for collections
  */
 export function collectionSignal<
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   fetchCollection: () => Promise<Link[]>,
@@ -231,7 +231,7 @@ export function immutableEntrySignal<T>(
  */
 export function latestVersionOfEntrySignal<
   T,
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   fetchLatestVersion: () => Promise<EntryRecord<T> | undefined>,
@@ -331,7 +331,7 @@ export function latestVersionOfEntrySignal<
  */
 export function allRevisionsOfEntrySignal<
   T,
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   fetchAllRevisions: () => Promise<Array<EntryRecord<T>>>,
@@ -428,7 +428,7 @@ export function allRevisionsOfEntrySignal<
  * Useful for entries that can be deleted
  */
 export function deletesForEntrySignal<
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   originalActionHash: ActionHash,
@@ -569,7 +569,7 @@ function uniquifyActions<T extends Action>(
  */
 export function liveLinksSignal<
   BASE extends HoloHash,
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   baseAddress: BASE,
@@ -685,7 +685,7 @@ export function liveLinksSignal<
  */
 export function deletedLinksSignal<
   BASE extends HoloHash,
-  S extends ActionCommittedSignal<any, any> & any
+  S extends ActionCommittedSignal<any, any> & any,
 >(
   client: ZomeClient<S>,
   baseAddress: BASE,
@@ -727,7 +727,7 @@ export function deletedLinksSignal<
           newDeletedLinks: Array<
             [
               SignedActionHashed<CreateLink>,
-              Array<SignedActionHashed<DeleteLink>>
+              Array<SignedActionHashed<DeleteLink>>,
             ]
           >
         ) => {

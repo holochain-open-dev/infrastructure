@@ -11,9 +11,10 @@ type Stores =
   | Array<Readable<any>>;
 
 /** One or more values from `Readable` stores. */
-type StoresValues<T> = T extends Readable<infer U>
-  ? U
-  : { [K in keyof T]: T[K] extends Readable<infer U> ? U : never };
+type StoresValues<T> =
+  T extends Readable<infer U>
+    ? U
+    : { [K in keyof T]: T[K] extends Readable<infer U> ? U : never };
 
 /**
  * Derived value store by synchronizing one or more readable stores and
@@ -57,7 +58,7 @@ export function derived<S extends Stores, T>(
 
 export function derived<T>(
   stores: Stores,
-  fn: Function,
+  fn: (...args: any[]) => any,
   initial_value?: T
 ): Derived<T> {
   const store = nativeDerive(stores, fn as any, initial_value);

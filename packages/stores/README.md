@@ -15,19 +15,20 @@ An `AsyncReadable<T>` is a `Readable` store that executes the given `Promise` th
 - `complete`: the promise was completed.
 
 ```js
-import { asyncReadable } from '@holochain-open-dev/stores';
+import { asyncReadable } from "@holochain-open-dev/stores";
 
-const someResult = asyncReadable(async set => {
+const someResult = asyncReadable(async (set) => {
   const value = await fetch("https://some/url");
   set(value);
 });
 
 // Use as a normal svelte store
-someResult.subscribe(status => { console.log(status); }); // Will first print `{ status: 'pending' }`, and later print `{ status: 'complete', value: ... }`
+someResult.subscribe((status) => {
+  console.log(status);
+}); // Will first print `{ status: 'pending' }`, and later print `{ status: 'complete', value: ... }`
 ```
 
 Like normal `readable` stores, it returns an unsubscribe function that gets called when the last subscriber unsubscribes:
-
 
 ```js
 import { asyncReadable } from '@holochain-open-dev/stores';
@@ -50,7 +51,7 @@ const someResult = asyncReadable(async set => {
 Constructs an `AsyncReadable<T>` with the result of a promise, which it will execute only when the first subscriber subscribes.
 
 ```ts
-import { lazyLoad } from '@holochain-open-dev/stores';
+import { lazyLoad } from "@holochain-open-dev/stores";
 
 const someResult = lazyLoad(async () => fetch("https://some/url"));
 
@@ -64,7 +65,7 @@ Really similar to `lazyLoad`, but adds polling with the given poll interval to t
 The value of the store will be replaced with the polling result, only if the polling is successful. If the polling throws an error, that error is discarded.
 
 ```ts
-import { lazyLoadAndPoll } from '@holochain-open-dev/stores';
+import { lazyLoadAndPoll } from "@holochain-open-dev/stores";
 
 const someResult = lazyLoadAndPoll(async () => fetch("https://some/url"), 1000); // Poll every one second
 
@@ -78,11 +79,15 @@ Derives an `AsyncReadable` only when the state of the given store is completed.
 Example:
 
 ```js
-import { asyncDerived, asyncReadable } from '@holochain-open-dev/stores';
+import { asyncDerived, asyncReadable } from "@holochain-open-dev/stores";
 
-const asyncReadable = asyncReadable(async set => set(await fetch("https://some/url")));
+const asyncReadable = asyncReadable(async (set) =>
+  set(await fetch("https://some/url"))
+);
 
-const composedResult = asyncDerived(asyncReadable, async (result) => fetch(`https://some/other/dependant/${result}`));
+const composedResult = asyncDerived(asyncReadable, async (result) =>
+  fetch(`https://some/other/dependant/${result}`)
+);
 ```
 
 ## deriveStore
@@ -92,9 +97,9 @@ Sometimes it's not enough to derive a value from an existing store. Sometimes yo
 Imagine a nested store:
 
 ```ts
-import { writable } from '@holochain-open-dev/stores';
+import { writable } from "@holochain-open-dev/stores";
 const globalStore = writable({
-  featureStore: writable(1)
+  featureStore: writable(1),
 });
 ```
 
@@ -103,14 +108,14 @@ How can I "unnest" `featureStore` from `globalStore`? With `deriveStore`!
 It works just like `derived`, but expects the function to return a `Readable` store.
 
 ```ts
-import { writable, deriveStore } from '@holochain-open-dev/stores';
+import { writable, deriveStore } from "@holochain-open-dev/stores";
 const globalStore = writable({
-  featureStore: writable(1)
+  featureStore: writable(1),
 });
 
-const unnestedStore = deriveStore(globalStore, v => v.featureStore);
+const unnestedStore = deriveStore(globalStore, (v) => v.featureStore);
 
-console.log(get(unnestedStore)) // Prints "1"
+console.log(get(unnestedStore)); // Prints "1"
 ```
 
 ## asyncDeriveStore
@@ -118,17 +123,21 @@ console.log(get(unnestedStore)) // Prints "1"
 Works exactly as `deriveStore`, but receives an `AsyncReadable` instead of just a `Readable`.
 
 ```ts
-import { LazyHoloHashMap } from '@holochain-open-dev/utils';
-import { asyncDeriveStore, asyncReadable } from '@holochain-open-dev/stores';
+import { LazyHoloHashMap } from "@holochain-open-dev/utils";
+import { asyncDeriveStore, asyncReadable } from "@holochain-open-dev/stores";
 
 // Imagine we create an `AsyncReadable` store that gets my public key whenever it is subscribed to for the first time
-const myPubKey = lazyLoad(() => callZome('get_my_pub_key'));
+const myPubKey = lazyLoad(() => callZome("get_my_pub_key"));
 
 // And we have a `HoloHashMap` of `AsyncReadable`s that fetch the profile for each public key
-const agentsProfiles = new LazyHoloHashMap((agent: AgentPubKey) => callZome('get_profile', agent));
+const agentsProfiles = new LazyHoloHashMap((agent: AgentPubKey) =>
+  callZome("get_profile", agent)
+);
 
 // And then we want to combine both stores: get the profile for my public key
-const myProfile = asyncDeriveStore(myPubKey, pubKey => agentsProfiles.get(pubKey));
+const myProfile = asyncDeriveStore(myPubKey, (pubKey) =>
+  agentsProfiles.get(pubKey)
+);
 ```
 
 ## joinAsync
@@ -136,10 +145,10 @@ const myProfile = asyncDeriveStore(myPubKey, pubKey => agentsProfiles.get(pubKey
 Joins a list of `AsyncReadable`s to convert it into a single `AsyncReadable` of a list of the resolved values.
 
 ```ts
-import { join, asyncReadable } from '@holochain-open-dev/stores';
+import { join, asyncReadable } from "@holochain-open-dev/stores";
 
-const asyncReadable1 = asyncReadable(async set => set(1));
-const asyncReadable2 = asyncReadable(async set => set(2));
+const asyncReadable1 = asyncReadable(async (set) => set(1));
+const asyncReadable2 = asyncReadable(async (set) => set(2));
 
 const joinedStores = joinAsync([asyncReadable1, asyncReadable2]);
 console.log(joinedStores); // Will print `{ status: 'complete', value: [1, 2] }`
@@ -152,13 +161,23 @@ Exactly like `joinAsync` but for `HoloHashMap`s.
 Converts a map of `AsyncReadable`s into an `AsyncReadable` of a map of the resolved values.
 
 ```ts
-import { HoloHashMap, fakeEntryHash, fakeActionHash } from '@holochain-open-dev/utils';
-import { joinAsyncMap } from '@holochain-open-dev/stores';
+import {
+  HoloHashMap,
+  fakeEntryHash,
+  fakeActionHash,
+} from "@holochain-open-dev/utils";
+import { joinAsyncMap } from "@holochain-open-dev/stores";
 
 const map = new HoloHashMap();
 
-map.put(fakeActionHash(), asyncReadable(async set => set(1)));
-map.put(fakeEntryHash(), asyncReadable(async set => set(1)));
+map.put(
+  fakeActionHash(),
+  asyncReadable(async (set) => set(1))
+);
+map.put(
+  fakeEntryHash(),
+  asyncReadable(async (set) => set(1))
+);
 
 const mapStore = joinAsyncMap(map);
 console.log(mapStore); // Will print `{ status: 'complete', value: <HoloHashMap with these values: { [fakeActionHash()]: 1, [fakeEntryHash()]: 2] }> }`
@@ -172,7 +191,7 @@ Each step may return an `AsyncReadable`, `Readable`, `Promise` or just a raw val
 Very useful for chaining tasks that have dependencies between their values together.
 
 ```js
-import { lazyLoad, pipe } from '@holochain-open-dev/stores';
+import { lazyLoad, pipe } from "@holochain-open-dev/stores";
 
 const asyncReadableStore = lazyLoad(async () => {
   await sleep(1);
@@ -181,27 +200,28 @@ const asyncReadableStore = lazyLoad(async () => {
 const pipeStore = pipe(
   asyncReadableStore,
   (n1) =>
-    lazyLoad(async () => {  // Step with `AsyncReadable`
+    lazyLoad(async () => {
+      // Step with `AsyncReadable`
       await sleep(1);
       return n1 + 1;
     }),
   (n2) => readable(n2 + 1), // Step with `Readable`
-  async (n3) => {           // Step with `Promise`
+  async (n3) => {
+    // Step with `Promise`
     await sleep(1);
     return n3 + 1;
   },
-  (n4) => n4 + 1            // Step with raw value
+  (n4) => n4 + 1 // Step with raw value
 );
-pipeStore.subscribe(value => console.log(value)); // Use like any other store, will print "5" after 3 milliseconds
+pipeStore.subscribe((value) => console.log(value)); // Use like any other store, will print "5" after 3 milliseconds
 ```
-
 
 ## debugStore
 
 It can be hard to debug what's happening with complex pipes. `window.__debugStore` is available if you add this import anywhere in your app:
 
 ```js
-import '@holochain-open-dev/stores/dist/debug-store.js';
+import "@holochain-open-dev/stores/dist/debug-store.js";
 ```
 
 so that if something weird is happening in your application, you can open your browser and type:
@@ -211,4 +231,3 @@ window.__debugStore(myStore);
 ```
 
 This will scan the values of the given store and all its dependencies it's derived from, and show a visualizer in the form of a drawer in the bottom of the page.
-

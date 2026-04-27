@@ -15,19 +15,19 @@ Whenever it succeeds, it caches the value so that any subsequent requests are ca
 Useful for entries that can't be updated.
 
 ```ts
-import { Link } from '@holochain/client';
-import { LazyHoloHashMap, EntryRecord } from '@holochain-open-dev/utils';
-import { AsyncSignal, immutableEntrySignal } from '@holochain-open-dev/signals';
+import { Link } from "@holochain/client";
+import { LazyHoloHashMap, EntryRecord } from "@holochain-open-dev/utils";
+import { AsyncSignal, immutableEntrySignal } from "@holochain-open-dev/signals";
 
-import { PostsClient } from './posts-client.js';
-import { Post } from './types.js';
+import { PostsClient } from "./posts-client.js";
+import { Post } from "./types.js";
 
 export class PostsStore {
-
   constructor(public postsClient: PostsClient) {}
 
-  posts: LazyHoloHashMap<ActionHash, EntryRecord<Post>> = new LazyHoloHashMap((postHash: ActionHash) => 
-    immutableEntrySignal(() => this.postsClient.getPost(postHash))
+  posts: LazyHoloHashMap<ActionHash, EntryRecord<Post>> = new LazyHoloHashMap(
+    (postHash: ActionHash) =>
+      immutableEntrySignal(() => this.postsClient.getPost(postHash))
   );
 }
 ```
@@ -41,21 +41,25 @@ Will do so by calling the given every 20 seconds calling the given fetch functio
 Useful for entries that can be updated.
 
 ```ts
-import { Link } from '@holochain/client';
-import { LazyHoloHashMap, EntryRecord } from '@holochain-open-dev/utils';
-import { AsyncSignal, latestVersionOfEntrySignal } from '@holochain-open-dev/signals';
+import { Link } from "@holochain/client";
+import { LazyHoloHashMap, EntryRecord } from "@holochain-open-dev/utils";
+import {
+  AsyncSignal,
+  latestVersionOfEntrySignal,
+} from "@holochain-open-dev/signals";
 
-import { PostsClient } from './posts-client.js';
-import { Post } from './types.js';
+import { PostsClient } from "./posts-client.js";
+import { Post } from "./types.js";
 
 export class PostsStore {
-
   constructor(public postsClient: PostsClient) {}
 
-  posts: LazyHoloHashMap<ActionHash, EntryRecord<Post>> = new LazyHoloHashMap((postHash: ActionHash) => 
-    latestVersionOfEntrySignal(
-      this.postsClient, // Give the client so that it can listen to the `EntryUpdated` signal
-      () => this.postsClient.getLatestPost(postHash)), // Fetch the latest version of the post
+  posts: LazyHoloHashMap<ActionHash, EntryRecord<Post>> = new LazyHoloHashMap(
+    (postHash: ActionHash) =>
+      latestVersionOfEntrySignal(
+        this.postsClient, // Give the client so that it can listen to the `EntryUpdated` signal
+        () => this.postsClient.getLatestPost(postHash)
+      ) // Fetch the latest version of the post
   );
 }
 ```
@@ -69,22 +73,27 @@ Will do so by calling the given every 20 seconds calling the given fetch functio
 Useful for entries that can be updated.
 
 ```ts
-import { Link } from '@holochain/client';
-import { LazyHoloHashMap, EntryRecord } from '@holochain-open-dev/utils';
-import { AsyncSignal, allRevisionsOfEntrySignal } from '@holochain-open-dev/signals';
+import { Link } from "@holochain/client";
+import { LazyHoloHashMap, EntryRecord } from "@holochain-open-dev/utils";
+import {
+  AsyncSignal,
+  allRevisionsOfEntrySignal,
+} from "@holochain-open-dev/signals";
 
-import { PostsClient } from './posts-client.js';
-import { Post } from './types.js';
+import { PostsClient } from "./posts-client.js";
+import { Post } from "./types.js";
 
 export class PostsStore {
-
   constructor(public postsClient: PostsClient) {}
 
-  posts: LazyHoloHashMap<ActionHash, Array<EntryRecord<Post>>> = new LazyHoloHashMap((postHash: ActionHash) => 
-    allRevisionsOfEntrySignal(
-      this.postsClient, // Give the client so that it can listen to the `EntryUpdated` signal
-      () => this.postsClient.getAllRevisionsForPost(postHash)), // Fetch all the revisions for the post
-  );
+  posts: LazyHoloHashMap<ActionHash, Array<EntryRecord<Post>>> =
+    new LazyHoloHashMap(
+      (postHash: ActionHash) =>
+        allRevisionsOfEntrySignal(
+          this.postsClient, // Give the client so that it can listen to the `EntryUpdated` signal
+          () => this.postsClient.getAllRevisionsForPost(postHash)
+        ) // Fetch all the revisions for the post
+    );
 }
 ```
 
@@ -97,26 +106,30 @@ Will do so by calling the given every 20 seconds calling the given fetch functio
 Useful for entries that can be deleted.
 
 ```ts
-import { Link } from '@holochain/client';
-import { LazyHoloHashMap, EntryRecord } from '@holochain-open-dev/utils';
-import { AsyncSignal, deletesForEntrySignal } from '@holochain-open-dev/signals';
+import { Link } from "@holochain/client";
+import { LazyHoloHashMap, EntryRecord } from "@holochain-open-dev/utils";
+import {
+  AsyncSignal,
+  deletesForEntrySignal,
+} from "@holochain-open-dev/signals";
 
-import { PostsClient } from './posts-client.js';
-import { Post } from './types.js';
+import { PostsClient } from "./posts-client.js";
+import { Post } from "./types.js";
 
 export class PostsStore {
-
   constructor(public postsClient: PostsClient) {}
 
-  posts: LazyHoloHashMap<ActionHash, Array<SignedActionHashed<Delete>>> = new LazyHoloHashMap((postHash: ActionHash) => 
-    deletesForEntrySignal(
-      this.postsClient, // Give the client so that it can listen to the `EntryDeleted` signal
-      postHash, // Hash of the original `Create` action
-      () => this.postsClient.getAllDeletesForPost(postHash)), // Fetch all the delete actions for the post
-  );
+  posts: LazyHoloHashMap<ActionHash, Array<SignedActionHashed<Delete>>> =
+    new LazyHoloHashMap(
+      (postHash: ActionHash) =>
+        deletesForEntrySignal(
+          this.postsClient, // Give the client so that it can listen to the `EntryDeleted` signal
+          postHash, // Hash of the original `Create` action
+          () => this.postsClient.getAllDeletesForPost(postHash)
+        ) // Fetch all the delete actions for the post
+    );
 }
 ```
-
 
 ### collectionSignal
 
@@ -127,19 +140,18 @@ Will do so by calling the given every 20 seconds calling the given fetch functio
 Useful for collections
 
 ```ts
-import { Link } from '@holochain/client';
-import { AsyncSignal, collectionSignal } from '@holochain-open-dev/signals';
+import { Link } from "@holochain/client";
+import { AsyncSignal, collectionSignal } from "@holochain-open-dev/signals";
 
-import { PostsClient } from './posts-client.js';
+import { PostsClient } from "./posts-client.js";
 
 export class PostsStore {
-
   constructor(public postsClient: PostsClient) {}
 
   allPostsSignal: AsyncSignal<Array<Link>> = collectionSignal(
     this.postsClient,
     async () => this.postsClient.getAllPosts(), // Request to fetch the initial list of posts
-    "AllPosts", // Link type for the collection
+    "AllPosts" // Link type for the collection
   );
 }
 ```
@@ -153,20 +165,19 @@ Will do so by calling the given fetch callback every 20 seconds, and listening t
 Useful for link types.
 
 ```ts
-import { Link } from '@holochain/client';
-import { AsyncSignal, collectionSignal } from '@holochain-open-dev/signals';
+import { Link } from "@holochain/client";
+import { AsyncSignal, collectionSignal } from "@holochain-open-dev/signals";
 
-import { PostsClient } from './posts-client.js';
+import { PostsClient } from "./posts-client.js";
 
 export class PostsStore {
-
   constructor(public postsClient: PostsClient) {}
 
   myPostsSignal: AsyncSignal<Array<Link>> = liveLinksSignal(
     this.postsClient,
     this.postsClient.client.myPubKey, // Base address for the links
     () => this.postsClient.getMyPosts(), // Fetch the live links
-    'AuthorToPosts', // Link type
+    "AuthorToPosts" // Link type
   );
 }
 ```
@@ -180,20 +191,23 @@ Will do so by calling the given every 20 seconds calling the given fetch functio
 Useful for link types and collections with some form of archive retrieving functionality
 
 ```ts
-import { Link } from '@holochain/client';
-import { AsyncSignal, collectionSignal } from '@holochain-open-dev/signals';
+import { Link } from "@holochain/client";
+import { AsyncSignal, collectionSignal } from "@holochain-open-dev/signals";
 
-import { PostsClient } from './posts-client.js';
+import { PostsClient } from "./posts-client.js";
 
 export class PostsStore {
-
   constructor(public postsClient: PostsClient) {}
 
-  myDeletedPostsSignal: AsyncSignal<Array<[SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]>> = deletedLinksSignal(
+  myDeletedPostsSignal: AsyncSignal<
+    Array<
+      [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
+    >
+  > = deletedLinksSignal(
     this.postsClient,
     this.postsClient.client.myPubKey, // Base address for the links
-    () => this.postsClient.getMyDeletedPosts(), // Fetch the deleted links 
-    'AuthorToPosts', // Link type
+    () => this.postsClient.getMyDeletedPosts(), // Fetch the deleted links
+    "AuthorToPosts" // Link type
   );
 }
 ```

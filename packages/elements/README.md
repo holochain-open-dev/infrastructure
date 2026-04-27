@@ -58,9 +58,9 @@ Example usage:
 
 ```ts
 import { mdiAlertCircleOutline } from "@mdi/js";
-import { wrapPathInSvg } from '@holochain-open-dev/elements';
+import { wrapPathInSvg } from "@holochain-open-dev/elements";
 
-function  renderIcon() {
+function renderIcon() {
   return html`
     <sl-icon
       style="color: red; height: 64px; width: 64px;"

@@ -6,7 +6,9 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": "./dist/index.js",
     "./dist/*": "./dist/*"
@@ -14,7 +16,6 @@
   "scripts": {
     "start": "vite --open",
     "build": "tsc",
-    "lint": "eslint --ext .ts . --ignore-path .gitignore",
     "test": "vitest run",
     "prepublish": "npm run build"
   },

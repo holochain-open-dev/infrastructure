@@ -102,7 +102,7 @@ test("liveLinks makes the request again after being unsubscribed from", async ()
   await toPromise(store);
   await toPromise(store);
 
-  assert.equal(requests, 4)
+  assert.equal(requests, 4);
 });
 
 test("collection store works", async () => {
@@ -114,7 +114,7 @@ test("collection store works", async () => {
     100
   );
 
-  collection.subscribe(() => { });
+  collection.subscribe(() => {});
 
   let collectionLinks = await toPromise(collection);
 
@@ -144,7 +144,7 @@ test("latestVersionOfEntry store works", async () => {
     100
   );
 
-  latestVersion.subscribe(() => { });
+  latestVersion.subscribe(() => {});
 
   let latestRecord = await toPromise(latestVersion);
 
@@ -180,7 +180,7 @@ test("allRevisionsOfEntryStore works", async () => {
     100
   );
 
-  allRevisionsStore.subscribe(() => { });
+  allRevisionsStore.subscribe(() => {});
 
   let latestAllRevisions = await toPromise(allRevisionsStore);
 
@@ -211,7 +211,7 @@ test("deletesForEntry works", async () => {
     100
   );
 
-  deletesStore.subscribe(() => { });
+  deletesStore.subscribe(() => {});
 
   let latestDeletes = await toPromise(deletesStore);
 
@@ -236,7 +236,7 @@ test("liveLinksStore works", async () => {
     100
   );
 
-  linksStore.subscribe(() => { });
+  linksStore.subscribe(() => {});
 
   let latestLinks = await toPromise(linksStore);
 
@@ -261,10 +261,10 @@ test("liveLinksStore with firstLinkFetch works", async () => {
     async () => links,
     "",
     100,
-    async () => linksLocal,
+    async () => linksLocal
   );
 
-  linksStore.subscribe(() => { });
+  linksStore.subscribe(() => {});
 
   let latestLinks = await toPromise(linksStore);
 
@@ -292,7 +292,7 @@ test("deleteLinksStore works", async () => {
     100
   );
 
-  deletedStore.subscribe(() => { });
+  deletedStore.subscribe(() => {});
 
   let latestDeletedLinks = await toPromise(deletedStore);
 
@@ -318,13 +318,13 @@ test("immutableEntryStore caches its results", async () => {
     return entry;
   });
 
-  let unsubs = store.subscribe(() => { });
+  let unsubs = store.subscribe(() => {});
 
   await sleep(10);
 
   unsubs();
 
-  unsubs = store.subscribe(() => { });
+  unsubs = store.subscribe(() => {});
 
   assert.equal(requests, 1);
 });
