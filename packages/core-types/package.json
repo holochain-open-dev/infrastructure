@@ -1,6 +1,6 @@
 {
   "name": "@holochain-open-dev/core-types",
-  "version": "0.601.1",
+  "version": "0.601.2",
   "description": "Typescript types for holochain core",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -22,7 +22,7 @@
     "typescript": "~5.9"
   },
   "dependencies": {
-    "@holochain/client": "=0.20.4"
+    "@holochain/client": "^0.20.5"
   },
   "bugs": {
     "url": "https://github.com/holochain-open-dev/infrastructure/issues"
