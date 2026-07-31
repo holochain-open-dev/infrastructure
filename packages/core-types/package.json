@@ -22,7 +22,7 @@
     "typescript": "~5.9"
   },
   "dependencies": {
-    "@holochain/client": "=0.21.0"
+    "@holochain/client": "^0.21.0"
   },
   "bugs": {
     "url": "https://github.com/holochain-open-dev/infrastructure/issues"
