@@ -1,17 +1,16 @@
 import {
-  Action,
   ActionHash,
-  Delete,
-  NewEntryAction,
-  Record,
-  Update,
   ActionHashMap,
   AgentPubKeyMap,
+  Delete,
   EntryHashMap,
+  Record,
+  Update,
 } from "@holochain/client";
 import uniqWith from "lodash-es/uniqWith.js";
 import isEqual from "lodash-es/isEqual.js";
 
+import { AnyAction, NewEntryActionData } from "./action.js";
 import { EntryRecord } from "./entry-record.js";
 import { mapValues } from "./map-utils.js";
 
@@ -21,7 +20,7 @@ export class RecordBag<T> {
 
   // Map of action hash -> action
   // Timestamp is in milliseconds
-  public actionMap = new ActionHashMap<Action>();
+  public actionMap = new ActionHashMap<AnyAction>();
 
   // Map of entry hash -> all the actions that have created or updated to that entry
   public entryActions = new EntryHashMap<ActionHash[]>();
@@ -42,7 +41,7 @@ export class RecordBag<T> {
     return mapValues(temp, (actions) =>
       actions
         .map((action) =>
-          this.entryMap.get((action as NewEntryAction).entry_hash)
+          this.entryMap.get((action.data as NewEntryActionData).entry_hash)
         )
         .filter((entry) => entry !== undefined)
     );
@@ -88,22 +87,20 @@ export class RecordBag<T> {
       }
       this.actionMap.set(entryRecord.actionHash, entryRecord.action);
 
-      if (!this.authorMap.has(entryRecord.action.author)) {
-        this.authorMap.set(entryRecord.action.author, []);
+      const author = entryRecord.action.header.author;
+      if (!this.authorMap.has(author)) {
+        this.authorMap.set(author, []);
       }
       this.authorMap.set(
-        entryRecord.action.author,
+        author,
         uniqWith(
-          [
-            ...this.authorMap.get(entryRecord.action.author),
-            entryRecord.actionHash,
-          ],
+          [...this.authorMap.get(author), entryRecord.actionHash],
           isEqual
         )
       );
 
-      if ((entryRecord.action as Update).original_action_address) {
-        const originalActionAddress = (entryRecord.action as Update)
+      if ((entryRecord.action.data as Update).original_action_address) {
+        const originalActionAddress = (entryRecord.action.data as Update)
           .original_action_address;
         const currentUpdates = this.updates.get(originalActionAddress);
         this.updates.set(
@@ -111,8 +108,8 @@ export class RecordBag<T> {
           uniqWith([...currentUpdates, entryRecord.actionHash], isEqual)
         );
       }
-      if ((entryRecord.action as Delete).deletes_address) {
-        const originalActionAddress = (entryRecord.action as Delete)
+      if ((entryRecord.action.data as Delete).deletes_address) {
+        const originalActionAddress = (entryRecord.action.data as Delete)
           .deletes_address;
         const currentDeletes = this.deletes.get(originalActionAddress);
         this.deletes.set(

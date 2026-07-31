@@ -1,11 +1,6 @@
-import {
-  Create,
-  CreateLink,
-  Delete,
-  DeleteLink,
-  SignedActionHashed,
-  Update,
-} from "@holochain/client";
+import { Create, CreateLink, Delete, DeleteLink, Update } from "@holochain/client";
+
+import { SignedTypedActionHashed } from "./action.js";
 
 /**
  * The type for the signal that the scaffolding tool produces in the post_commit of the coordinator zomes
@@ -16,29 +11,29 @@ export type ActionCommittedSignal<
 > =
   | {
       type: "EntryCreated";
-      action: SignedActionHashed<Create>;
+      action: SignedTypedActionHashed<Create>;
       app_entry: ET;
     }
   | {
       type: "EntryUpdated";
-      action: SignedActionHashed<Update>;
+      action: SignedTypedActionHashed<Update>;
       app_entry: ET;
       original_app_entry: ET;
     }
   | {
       type: "EntryDeleted";
-      action: SignedActionHashed<Delete>;
+      action: SignedTypedActionHashed<Delete>;
       original_app_entry: ET;
     }
   | {
       type: "LinkCreated";
-      action: SignedActionHashed<CreateLink>;
+      action: SignedTypedActionHashed<CreateLink>;
       link_type: LT;
     }
   | {
       type: "LinkDeleted";
-      action: SignedActionHashed<DeleteLink>;
-      create_link_action: SignedActionHashed<CreateLink>;
+      action: SignedTypedActionHashed<DeleteLink>;
+      create_link_action: SignedTypedActionHashed<CreateLink>;
       link_type: LT;
     };
 

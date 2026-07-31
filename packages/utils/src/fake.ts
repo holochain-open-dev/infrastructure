@@ -1,40 +1,46 @@
 import { encode } from "@msgpack/msgpack";
 import {
-  Record,
   Action,
+  ActionHash,
   ActionType,
+  AgentPubKey,
   Entry,
   EntryHash,
-  AgentPubKey,
-  ActionHash,
+  Record,
   RecordEntry,
-  fakeEntryHash,
-  fakeAgentPubKey,
   fakeActionHash,
+  fakeAgentPubKey,
+  fakeEntryHash,
   randomByteArray,
 } from "@holochain/client";
+
+import { AnyAction } from "./action.js";
 import { hash, HashType } from "./hash.js";
 
 export async function fakeCreateAction(
   entry_hash?: EntryHash,
   author?: AgentPubKey
-): Promise<Action> {
+): Promise<AnyAction> {
   if (!entry_hash) entry_hash = await fakeEntryHash();
   if (!author) author = await fakeAgentPubKey();
   return {
-    type: ActionType.Create,
-    author,
-    timestamp: Date.now() * 1000,
-    action_seq: 10,
-    prev_action: await fakeActionHash(),
-    entry_type: {
-      App: {
-        entry_index: 0,
-        visibility: "Public",
-        zome_index: 0,
-      },
+    header: {
+      author,
+      timestamp: Date.now() * 1000,
+      action_seq: 10,
+      prev_action: await fakeActionHash(),
     },
-    entry_hash,
+    data: {
+      type: ActionType.Create,
+      entry_type: {
+        App: {
+          entry_index: 0,
+          visibility: "Public",
+          zome_index: 0,
+        },
+      },
+      entry_hash,
+    },
   };
 }
 
@@ -49,18 +55,22 @@ export async function fakeDeleteEntry(
   deletes_address?: ActionHash,
   deletes_entry_address?: EntryHash,
   author?: AgentPubKey
-): Promise<Action> {
+): Promise<AnyAction> {
   if (!deletes_address) deletes_address = await fakeActionHash();
   if (!deletes_entry_address) deletes_entry_address = await fakeEntryHash();
   if (!author) author = await fakeAgentPubKey();
   return {
-    type: ActionType.Delete,
-    author,
-    timestamp: Date.now() * 1000,
-    action_seq: 10,
-    prev_action: await fakeActionHash(),
-    deletes_address,
-    deletes_entry_address,
+    header: {
+      author,
+      timestamp: Date.now() * 1000,
+      action_seq: 10,
+      prev_action: await fakeActionHash(),
+    },
+    data: {
+      type: ActionType.Delete,
+      deletes_address,
+      deletes_entry_address,
+    },
   };
 }
 
@@ -69,32 +79,36 @@ export async function fakeUpdateEntry(
   original_entry_address?: EntryHash,
   author?: AgentPubKey,
   entry: Entry = fakeEntry()
-): Promise<Action> {
+): Promise<AnyAction> {
   if (!original_action_address)
     original_action_address = await fakeActionHash();
   if (!original_entry_address) original_entry_address = await fakeEntryHash();
   if (!author) author = await fakeAgentPubKey();
   return {
-    type: ActionType.Update,
-    author,
-    timestamp: Date.now() * 1000,
-    action_seq: 10,
-    prev_action: await fakeActionHash(),
-    original_entry_address,
-    original_action_address,
-    entry_hash: hash(entry, HashType.ENTRY),
-    entry_type: {
-      App: {
-        entry_index: 0,
-        visibility: "Public",
-        zome_index: 0,
+    header: {
+      author,
+      timestamp: Date.now() * 1000,
+      action_seq: 10,
+      prev_action: await fakeActionHash(),
+    },
+    data: {
+      type: ActionType.Update,
+      original_entry_address,
+      original_action_address,
+      entry_hash: hash(entry, HashType.ENTRY),
+      entry_type: {
+        App: {
+          entry_index: 0,
+          visibility: "Public",
+          zome_index: 0,
+        },
       },
     },
   };
 }
 
 export async function fakeRecord(
-  action: Action,
+  action: AnyAction,
   entry?: Entry | undefined
 ): Promise<Record> {
   let recordEntry: RecordEntry = {
@@ -110,7 +124,7 @@ export async function fakeRecord(
     entry: recordEntry,
     signed_action: {
       hashed: {
-        content: action,
+        content: action as Action,
         hash: hash(action, HashType.ACTION),
       },
       signature: await randomByteArray(256),
@@ -123,40 +137,44 @@ export async function fakeCreateLinkAction(
   target_address?: ActionHash,
   link_type: number = 0,
   tag: any = undefined
-): Promise<Action> {
+): Promise<AnyAction> {
   if (base_address) base_address = await fakeActionHash();
   if (target_address) target_address = await fakeActionHash();
 
   return {
-    type: ActionType.CreateLink,
-    author: await fakeAgentPubKey(),
-    timestamp: Date.now() * 1000,
-    action_seq: 10,
-    prev_action: await fakeActionHash(),
-    base_address,
-    target_address,
-    link_type,
-    tag,
-    zome_index: 0,
-    weight: {
-      bucket_id: 0,
-      units: 1,
+    header: {
+      author: await fakeAgentPubKey(),
+      timestamp: Date.now() * 1000,
+      action_seq: 10,
+      prev_action: await fakeActionHash(),
+    },
+    data: {
+      type: ActionType.CreateLink,
+      base_address,
+      target_address,
+      link_type,
+      tag,
+      zome_index: 0,
     },
   };
 }
 
 export async function fakeDeleteLinkAction(
   link_add_address?: ActionHash
-): Promise<Action> {
+): Promise<AnyAction> {
   if (link_add_address) link_add_address = await fakeActionHash();
 
   return {
-    type: ActionType.DeleteLink,
-    author: await fakeAgentPubKey(),
-    timestamp: Date.now() * 1000,
-    action_seq: 10,
-    prev_action: await fakeActionHash(),
-    base_address: link_add_address,
-    link_add_address,
+    header: {
+      author: await fakeAgentPubKey(),
+      timestamp: Date.now() * 1000,
+      action_seq: 10,
+      prev_action: await fakeActionHash(),
+    },
+    data: {
+      type: ActionType.DeleteLink,
+      base_address: link_add_address,
+      link_add_address,
+    },
   };
 }

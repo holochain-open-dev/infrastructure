@@ -1,3 +1,4 @@
+export * from "./action.js";
 export * from "./hash.js";
 export * from "./fake.js";
 export * from "./entry.js";

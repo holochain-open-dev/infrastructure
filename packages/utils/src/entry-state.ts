@@ -1,4 +1,6 @@
-import { Action, ActionHash } from "@holochain/client";
+import { ActionHash } from "@holochain/client";
+
+import { AnyAction } from "./action.js";
 import { EntryRecord } from "./entry-record.js";
 import { RecordBag } from "./record-bag.js";
 
@@ -17,10 +19,10 @@ export function entryState<T>(
 
   const updatesActionsHashes = bag.updates.get(originalActionHash) || [];
   const updatesActions = updatesActionsHashes
-    .map((h) => [h, bag.actionMap.get(h)] as [ActionHash, Action])
+    .map((h) => [h, bag.actionMap.get(h)] as [ActionHash, AnyAction])
     .filter((a) => a[1] !== undefined);
   const orderedActions = updatesActions.sort(
-    (a, b) => b[1].timestamp - a[1].timestamp
+    (a, b) => b[1].header.timestamp - a[1].header.timestamp
   );
 
   const lastActionHash =

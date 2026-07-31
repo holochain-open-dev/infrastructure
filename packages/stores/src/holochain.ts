@@ -1,14 +1,15 @@
 import {
   ActionCommittedSignal,
+  AnyActionData,
   EntryRecord,
   getHashType,
   HashType,
   LinkTypeForSignal,
   retype,
+  SignedTypedActionHashed,
   ZomeClient,
 } from "@holochain-open-dev/utils";
 import {
-  Action,
   ActionHash,
   CreateLink,
   decodeHashFromBase64,
@@ -17,7 +18,6 @@ import {
   encodeHashToBase64,
   HoloHash,
   HoloHashMap,
-  SignedActionHashed,
   Link,
 } from "@holochain/client";
 import { encode } from "@msgpack/msgpack";
@@ -30,16 +30,16 @@ import { retryUntilSuccess } from "./retry-until-success.js";
 const DEFAULT_POLL_INTERVAL_MS = 20_000; // 20 seconds
 
 export function createLinkToLink(
-  createLink: SignedActionHashed<CreateLink>
+  createLink: SignedTypedActionHashed<CreateLink>
 ): Link {
   return {
-    base: createLink.hashed.content.base_address,
-    author: createLink.hashed.content.author,
-    link_type: createLink.hashed.content.link_type,
-    tag: createLink.hashed.content.tag,
-    target: createLink.hashed.content.target_address,
-    timestamp: createLink.hashed.content.timestamp,
-    zome_index: createLink.hashed.content.zome_index,
+    base: createLink.hashed.content.data.base_address,
+    author: createLink.hashed.content.header.author,
+    link_type: createLink.hashed.content.data.link_type,
+    tag: createLink.hashed.content.data.tag,
+    target: createLink.hashed.content.data.target_address,
+    timestamp: createLink.hashed.content.header.timestamp,
+    zome_index: createLink.hashed.content.data.zome_index,
     create_link_hash: createLink.hashed.hash,
   };
 }
@@ -225,7 +225,7 @@ export function latestVersionOfEntryStore<
         signal.type === "EntryUpdated" &&
         latestVersion &&
         latestVersion.actionHash.toString() ===
-          signal.action.hashed.content.original_action_address.toString()
+          signal.action.hashed.content.data.original_action_address.toString()
       ) {
         latestVersion = new EntryRecord({
           entry: {
@@ -301,7 +301,7 @@ export function allRevisionsOfEntryStore<
         allRevisions.find(
           (revision) =>
             revision.actionHash.toString() ===
-            signal.action.hashed.content.original_action_address.toString()
+            signal.action.hashed.content.data.original_action_address.toString()
         )
       ) {
         const newRevision = new EntryRecord<T>({
@@ -338,12 +338,12 @@ export function deletesForEntryStore<
 >(
   client: ZomeClient<S>,
   originalActionHash: ActionHash,
-  fetchDeletes: () => Promise<Array<SignedActionHashed<Delete>>>,
+  fetchDeletes: () => Promise<Array<SignedTypedActionHashed<Delete>>>,
   pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS
-): AsyncReadable<Array<SignedActionHashed<Delete>>> {
+): AsyncReadable<Array<SignedTypedActionHashed<Delete>>> {
   return asyncReadable(async (set) => {
     let active = true;
-    let deletes: Array<SignedActionHashed<Delete>>;
+    let deletes: Array<SignedTypedActionHashed<Delete>>;
     const fetch = async () => {
       if (!active) return;
       const ndeletes = await fetchDeletes().finally(() => {
@@ -370,7 +370,7 @@ export function deletesForEntryStore<
 
       if (
         signal.type === "EntryDeleted" &&
-        signal.action.hashed.content.deletes_address.toString() ===
+        signal.action.hashed.content.data.deletes_address.toString() ===
           originalActionHash.toString()
       ) {
         deletes = [...deletes, signal.action];
@@ -387,13 +387,23 @@ export function deletesForEntryStore<
 export const sortLinksByTimestampAscending = (linkA: Link, linkB: Link) =>
   linkA.timestamp - linkB.timestamp;
 export const sortDeletedLinksByTimestampAscending = (
-  linkA: [SignedActionHashed<CreateLink>, SignedActionHashed<DeleteLink>[]],
-  linkB: [SignedActionHashed<CreateLink>, SignedActionHashed<DeleteLink>[]]
-) => linkA[0].hashed.content.timestamp - linkB[0].hashed.content.timestamp;
+  linkA: [
+    SignedTypedActionHashed<CreateLink>,
+    SignedTypedActionHashed<DeleteLink>[],
+  ],
+  linkB: [
+    SignedTypedActionHashed<CreateLink>,
+    SignedTypedActionHashed<DeleteLink>[],
+  ]
+) =>
+  linkA[0].hashed.content.header.timestamp -
+  linkB[0].hashed.content.header.timestamp;
 export const sortActionsByTimestampAscending = (
-  actionA: SignedActionHashed<any>,
-  actionB: SignedActionHashed<any>
-) => actionA[0].hashed.content.timestamp - actionB[0].hashed.content.timestamp;
+  actionA: SignedTypedActionHashed,
+  actionB: SignedTypedActionHashed
+) =>
+  actionA.hashed.content.header.timestamp -
+  actionB.hashed.content.header.timestamp;
 
 export function uniquify<H extends HoloHash>(array: Array<H>): Array<H> {
   const strArray = array.map((h) => encodeHashToBase64(h));
@@ -425,10 +435,10 @@ function areArrayHashesEqual(
   return true;
 }
 
-function uniquifyActions<T extends Action>(
-  actions: Array<SignedActionHashed<T>>
-): Array<SignedActionHashed<T>> {
-  const map = new HoloHashMap<ActionHash, SignedActionHashed<T>>();
+function uniquifyActions<D extends AnyActionData>(
+  actions: Array<SignedTypedActionHashed<D>>
+): Array<SignedTypedActionHashed<D>> {
+  const map = new HoloHashMap<ActionHash, SignedTypedActionHashed<D>>();
   for (const a of actions) {
     map.set(a.hashed.hash, a);
   }
@@ -505,7 +515,7 @@ export function liveLinksStore<
       if (signal.type === "LinkCreated") {
         if (
           linkType === signal.link_type &&
-          signal.action.hashed.content.base_address.toString() ===
+          signal.action.hashed.content.data.base_address.toString() ===
             innerBaseAddress.toString()
         ) {
           maybeSet([...links, createLinkToLink(signal.action)]);
@@ -513,7 +523,7 @@ export function liveLinksStore<
       } else if (signal.type === "LinkDeleted") {
         if (
           linkType === signal.link_type &&
-          signal.create_link_action.hashed.content.base_address.toString() ===
+          signal.create_link_action.hashed.content.data.base_address.toString() ===
             innerBaseAddress.toString()
         ) {
           maybeSet(
@@ -550,13 +560,13 @@ export function deletedLinksStore<
   baseAddress: BASE,
   fetchDeletedLinks: () => Promise<
     Array<
-      [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
+      [SignedTypedActionHashed<CreateLink>, Array<SignedTypedActionHashed<DeleteLink>>]
     >
   >,
   linkType: LinkTypeForSignal<S>,
   pollIntervalMs: number = DEFAULT_POLL_INTERVAL_MS
 ): AsyncReadable<
-  Array<[SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]>
+  Array<[SignedTypedActionHashed<CreateLink>, Array<SignedTypedActionHashed<DeleteLink>>]>
 > {
   let innerBaseAddress = baseAddress;
   if (getHashType(innerBaseAddress) === HashType.AGENT) {
@@ -564,13 +574,13 @@ export function deletedLinksStore<
   }
   return asyncReadable(async (set) => {
     let deletedLinks: Array<
-      [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
+      [SignedTypedActionHashed<CreateLink>, Array<SignedTypedActionHashed<DeleteLink>>]
     >;
     let active = true;
 
     const maybeSet = (
       newDeletedLinks: Array<
-        [SignedActionHashed<CreateLink>, Array<SignedActionHashed<DeleteLink>>]
+        [SignedTypedActionHashed<CreateLink>, Array<SignedTypedActionHashed<DeleteLink>>]
       >
     ) => {
       if (!active) return;
@@ -619,7 +629,7 @@ export function deletedLinksStore<
       if (signal.type === "LinkDeleted") {
         if (
           linkType === signal.link_type &&
-          signal.create_link_action.hashed.content.base_address.toString() ===
+          signal.create_link_action.hashed.content.data.base_address.toString() ===
             innerBaseAddress.toString()
         ) {
           const alreadyDeletedTargetIndex = deletedLinks.findIndex(

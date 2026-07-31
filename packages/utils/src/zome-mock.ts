@@ -13,7 +13,7 @@ import {
   EnableCloneCellResponse,
   SignalCb,
   CellType,
-  TransportStats,
+  DumpNetworkStatsResponse,
   DumpNetworkMetricsResponse,
   CreateCloneCellRequest,
 } from "@holochain/client";
@@ -45,10 +45,13 @@ export class ZomeMock implements AppClient {
   }
 
   async dumpNetworkStats() {
-    const stats: TransportStats = {
-      backend: "",
-      peer_urls: [],
-      connections: [],
+    const stats: DumpNetworkStatsResponse = {
+      transport_stats: {
+        backend: "",
+        peer_urls: [],
+        connections: [],
+      },
+      blocked_message_counts: {},
     };
     return stats;
   }
