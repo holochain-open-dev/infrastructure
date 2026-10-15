@@ -16,6 +16,10 @@ import {
   DumpNetworkStatsResponse,
   DumpNetworkMetricsResponse,
   CreateCloneCellRequest,
+  SendDirectSignalRequest,
+  SendDirectSignalResponse,
+  GrantDirectSignalCapabilityRequest,
+  GrantDirectSignalCapabilityResponse,
 } from "@holochain/client";
 import Emittery, { UnsubscribeFunction } from "emittery";
 
@@ -98,6 +102,18 @@ export class ZomeMock implements AppClient {
   disableCloneCell(
     _args: DisableCloneCellRequest
   ): Promise<DisableCloneCellResponse> {
+    throw new Error("Method not implemented");
+  }
+
+  sendDirectSignal(
+    _args: SendDirectSignalRequest
+  ): Promise<SendDirectSignalResponse> {
+    throw new Error("Method not implemented");
+  }
+
+  grantDirectSignalCapability(
+    _args: GrantDirectSignalCapabilityRequest
+  ): Promise<GrantDirectSignalCapabilityResponse> {
     throw new Error("Method not implemented");
   }
 
