@@ -2,6 +2,11 @@
   "name": "@holochain-open-dev/stores",
   "version": "0.701.0",
   "description": "Re-export of svelte/store, with additional utilities to build reusable holochain-open-dev modules",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holochain-open-dev/infrastructure.git",
+    "directory": "packages/stores"
+  },
   "author": "guillem.cordoba@gmail.com",
   "main": "dist/index.js",
   "module": "dist/index.js",

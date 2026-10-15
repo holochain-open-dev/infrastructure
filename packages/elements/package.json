@@ -11,7 +11,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/holochain-open-dev/common.git"
+    "url": "git+https://github.com/holochain-open-dev/infrastructure.git",
+    "directory": "packages/elements"
   },
   "exports": {
     ".": "./dist/index.js",

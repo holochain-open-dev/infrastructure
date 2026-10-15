@@ -2,6 +2,11 @@
   "name": "@holochain-open-dev/core-types",
   "version": "0.701.0",
   "description": "Typescript types for holochain core",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holochain-open-dev/infrastructure.git",
+    "directory": "packages/core-types"
+  },
   "main": "dist/index.js",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
